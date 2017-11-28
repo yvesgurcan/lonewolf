@@ -1,0 +1,16 @@
+Progression: 1 number field
+COMBAT SKILL: 1 number field
+ENDURANCE: 1 number field
+Kai Disciplines: 5 input fields
+Weapons: 2 input fields
+Belt Pouch: 1 input field (gold crowns; max 50)
+Meals: 1 number field
+Backpack Items: 8 input fields
+Special Items: 12 input fields
+
+Random number table.
+Combat result table.
+
+Enemy combat skill
+Enemy insurance
+Combat ratio (computed)
