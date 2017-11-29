@@ -28,18 +28,19 @@ export default class App extends Component {
 
 
 class CharacterSheetView extends Component {
-
-    componentDidMount() {
-        this.props.dispatch({type: "INIT"})
-    }
-
     render() {
         return (
             <View>
                 <Header1>Character Sheet</Header1>
+                <Progression/>
+                <HR/>
                 <CombatSkill/>
                 <Endurance/>
+                <EnemyCombatSkill/>
+                <EnemyEndurance/>
+                <CombatRatio/>
                 <RandomNumber/>
+                <HR/>
                 <Kai/>
                 <Weapons/>
                 <BeltPouch/>
@@ -93,29 +94,69 @@ class SaveAndLoadView extends Component {
 }
 const SaveAndLoad = connect(mapStateToProps)(SaveAndLoadView)
 
-class CombatSkillView extends Component {
+class Progression extends Component {
     render() {
         return (
             <View>
-                <Group name="Combat Skill" />
+                <Group name="Progression"  type="number"/>
             </View>
         )
     }
 }
-const CombatSkill = connect(mapStateToProps)(CombatSkillView)
 
-class EnduranceView extends Component {
+class CombatSkill extends Component {
     render() {
         return (
             <View>
-                <Group name="Endurance" />
+                <Group name="Combat Skill"  type="number"/>
             </View>
         )
     }
 }
-const Endurance = connect(mapStateToProps)(EnduranceView)
 
-class KaiView extends Component {
+class Endurance extends Component {
+    render() {
+        return (
+            <View>
+                <Group name="Endurance" type="number" />
+            </View>
+        )
+    }
+}
+
+class EnemyCombatSkill extends Component {
+    render() {
+        return (
+            <View>
+                <Group name="Enemy Combat Skill"  type="number"/>
+            </View>
+        )
+    }
+}
+
+class EnemyEndurance extends Component {
+    render() {
+        return (
+            <View>
+                <Group name="Enemy Endurance" type="number" />
+            </View>
+        )
+    }
+}
+
+class CombatRatioView extends Component {
+    render() {
+        return (
+            <View>
+                <Label>Combat Ratio</Label>
+                <Text>{this.props.CharacterSheet.CombatRatio || "-"}</Text>
+            </View>
+        )
+    }
+}
+const CombatRatio = connect(mapStateToProps)(CombatRatioView)
+
+class Kai extends Component {
     render() {
         return (
             <View>
@@ -139,7 +180,6 @@ class KaiView extends Component {
         )
     }
 }
-const Kai = connect(mapStateToProps)(KaiView)
 
 class WeaponsView extends Component {
     render() {
@@ -162,7 +202,7 @@ class BeltPouchView extends Component {
     render() {
         return (
             <View>
-                <Group name="BeltPouch" />
+                <Group name="BeltPouch" type="number"/>
             </View>
         )
     }
@@ -173,7 +213,7 @@ class MealsView extends Component {
     render() {
         return (
             <View>
-            <Group name="Meals" />
+            <Group name="Meals" type="number" />
             </View>
         )
     }

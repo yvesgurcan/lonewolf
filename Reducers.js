@@ -4,13 +4,7 @@ function CharacterSheet(State = null, Action) {
 
     let NewState = {...State}
 
-    if (Action.type === "INIT") {
-        NewState = {
-            CombatSkill: "YO",
-            Endurance: "",
-        }
-    }
-    else if (Action.type === "LOAD_GAME") {
+    if (Action.type === "LOAD_GAME") {
         NewState = JSON.parse(Action.value).CharacterSheet
         NewState.GameState = Action.value
         return NewState
@@ -25,6 +19,13 @@ function CharacterSheet(State = null, Action) {
     }
     else {
         NewState[Action.type] = Action.value
+    }
+
+    if (Action.type === "CombatSkill") {
+        NewState.CombatRatio = Action.value - State.EnemyCombatSkill
+    }
+    else if (Action.type === "EnemyCombatSkill") {
+        NewState.CombatRatio = State.CombatSkill - Action.value
     }
 
     let GameState = {...NewState}
