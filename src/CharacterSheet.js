@@ -32,7 +32,7 @@ class CharacterSheetView extends Component {
         return (
             <View>
                 <Header1>Character Sheet</Header1>
-                <Progression/>
+                <Section/>
                 <HR/>
                 <CombatSkill/>
                 <Endurance/>
@@ -94,11 +94,11 @@ class SaveAndLoadView extends Component {
 }
 const SaveAndLoad = connect(mapStateToProps)(SaveAndLoadView)
 
-class Progression extends Component {
+class Section extends Component {
     render() {
         return (
             <View>
-                <Group name="Progression"  type="number"/>
+                <Group name="Section"  type="number"/>
             </View>
         )
     }
@@ -108,21 +108,28 @@ class CombatSkill extends Component {
     render() {
         return (
             <View>
-                <Group name="Combat Skill"  type="number"/>
+                <Group name="Base Combat Skill" type="number"/>
+                <Group name="Combat Skill" type="number"/>
             </View>
         )
     }
 }
 
-class Endurance extends Component {
+class EnduranceView extends Component {
+    HealIncrement = () => {
+        this.props.dispatch({type: "HEAL+1"})
+    }
     render() {
         return (
             <View>
+                <Group name="Max Endurance" type="number" />
                 <Group name="Endurance" type="number" />
+                <Button onClick={this.HealIncrement}>Heal +1</Button>
             </View>
         )
     }
 }
+const Endurance = connect(mapStateToProps)(EnduranceView)
 
 class EnemyCombatSkill extends Component {
     render() {
@@ -149,7 +156,7 @@ class CombatRatioView extends Component {
         return (
             <View>
                 <Label>Combat Ratio</Label>
-                <Text>{this.props.CharacterSheet.CombatRatio || "-"}</Text>
+                <TextWithInputFont>{this.props.CharacterSheet.CombatRatio || "-"}</TextWithInputFont>
             </View>
         )
     }
@@ -175,6 +182,21 @@ class Kai extends Component {
                 </View>
                 <View>
                     <Input name="Kai5" />
+                </View>
+                <View>
+                    <Input name="Kai6" />
+                </View>
+                <View>
+                    <Input name="Kai7" />
+                </View>
+                <View>
+                    <Input name="Kai8" />
+                </View>
+                <View>
+                    <Input name="Kai9" />
+                </View>
+                <View>
+                    <Input name="Kai10" />
                 </View>
             </View>
         )
@@ -202,7 +224,7 @@ class BeltPouchView extends Component {
     render() {
         return (
             <View>
-                <Group name="BeltPouch" type="number"/>
+                <Group name="Belt Pouch" append="50 gold crowns maximum" type="number"/>
             </View>
         )
     }
@@ -314,7 +336,7 @@ class RandomNumber extends Component {
         return (
             <View>
                 <Label>Random Number</Label>
-                <Text style={{marginRight: "10px"}}>{this.state.number}</Text>
+                <TextWithInputFont>{this.state.number}</TextWithInputFont>
                 <Button onClick={this.generateNumber}>Generate Number</Button>
             </View>
         )
@@ -325,7 +347,7 @@ class Group extends Component {
     render() {
         return (
             <View>
-                <Label>{this.props.name}</Label>
+                <Label>{this.props.name}{this.props.append ? <Text> ({this.props.append})</Text> : null}</Label>
                 <Input
                     name={this.props.name.replace(/ /g,"")}
                     type={this.props.type}
@@ -345,9 +367,9 @@ class InputView extends Component {
     render() {
         if (this.props.box) {
             return (
-                <View>
+                <View style={{marginBottom: "2px"}}>
                     <textarea
-                        style={{width: "100%", height: "200px", marginBottom: "2px"}}
+                        style={{width: "98%", height: "200px", padding: "2px"}}
                         value={this.props.CharacterSheet[this.props.name] || this.props.value || ""}
                         onChange={this.onChange}
                     />
@@ -355,9 +377,9 @@ class InputView extends Component {
             )
         }
         return (
-            <View>
+            <View style={{marginBottom: "2px"}}>
                 <input
-                    style={{width: "100%", marginBottom: "2px"}}
+                    style={{width: "98%", padding: "2px"}}
                     value={this.props.CharacterSheet[this.props.name] || this.props.value || ""}
                     type={this.props.type}
                     onChange={this.onChange}
@@ -412,6 +434,14 @@ class Text extends Component {
     render() {
         return (
             <span {...this.props}/>
+        )
+    }
+}
+
+class TextWithInputFont extends Component {
+    render() {
+        return (
+            <Text className="input-font" {...this.props}/>
         )
     }
 }

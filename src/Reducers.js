@@ -17,6 +17,9 @@ function CharacterSheet(State = null, Action) {
         NewState.GameState = ""
         return NewState
     }
+    else if (Action.type === "HEAL+1") {
+        NewState.Endurance = Math.min(NewState.MaxEndurance || ++NewState.Endurance,++NewState.Endurance)
+    }
     else {
         NewState[Action.type] = Action.value
     }
