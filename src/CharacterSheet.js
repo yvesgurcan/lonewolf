@@ -364,6 +364,9 @@ class InputView extends Component {
         }
         this.props.dispatch({type: this.props.name, value: input.target.value})
     }
+    onClick = (input) => {
+        input.target.select()
+    }
     render() {
         if (this.props.box) {
             return (
@@ -372,6 +375,7 @@ class InputView extends Component {
                         style={{width: "98%", height: "200px", padding: "2px"}}
                         value={this.props.CharacterSheet[this.props.name] || this.props.value || ""}
                         onChange={this.onChange}
+                        onClick={this.onClick}
                     />
                 </View>
             )
@@ -383,6 +387,7 @@ class InputView extends Component {
                     value={this.props.CharacterSheet[this.props.name] || this.props.value || ""}
                     type={this.props.type}
                     onChange={this.onChange}
+                    onClick={this.onClick}
                 />
             </View>
         )
