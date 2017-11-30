@@ -365,6 +365,17 @@ class InputView extends Component {
         this.props.dispatch({type: this.props.name, value: input.target.value})
     }
     onClick = (input) => {
+
+        if (this.props.type === "number") return null
+
+        let inputElement = document.getElementById(this.props.name)
+
+        console.log(String(inputElement.selectionStart),String( inputElement.selectionEnd),String( input.target.value.length))
+
+        if (inputElement.selectionStart === 0 && inputElement.selectionEnd === input.target.value.length) return null
+
+        console.log("hello")
+
         input.target.select()
     }
     render() {
@@ -372,6 +383,7 @@ class InputView extends Component {
             return (
                 <View style={{marginBottom: "2px"}}>
                     <textarea
+                        id={this.props.name}
                         style={{width: "98%", height: "200px", padding: "2px"}}
                         value={this.props.CharacterSheet[this.props.name] || this.props.value || ""}
                         onChange={this.onChange}
@@ -383,6 +395,7 @@ class InputView extends Component {
         return (
             <View style={{marginBottom: "2px"}}>
                 <input
+                    id={this.props.name}
                     style={{width: "98%", padding: "2px"}}
                     value={this.props.CharacterSheet[this.props.name] || this.props.value || ""}
                     type={this.props.type}
