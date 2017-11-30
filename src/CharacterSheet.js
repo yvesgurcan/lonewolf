@@ -12,7 +12,34 @@ const store = createStore(
 const mapStateToProps = (state, ownProps) => {
     return {
         ...state,
-        ...ownProps
+        ...ownProps,
+        Books: [
+            {
+                name: "Flight from the Dark",
+                url: "",
+                map: "",
+            },
+            {
+                name: "Fire on the Water",
+                url: "",
+                map: "",
+            },
+            {
+                name: "The Caverns of Kalte",
+                url: "",
+                map: "",
+            },
+            {
+                name: "The Chasm of Doom",
+                url: "",
+                map: "",
+            },
+            {
+                name: "Shadow on the Sand",
+                url: "",
+                map: "",
+            },
+        ]
     }
 }
 
@@ -32,6 +59,8 @@ class CharacterSheetView extends Component {
         return (
             <View>
                 <Header1>Character Sheet</Header1>
+                <LinkToProject/>
+                <Book/>
                 <Section/>
                 <HR/>
                 <CombatSkill/>
@@ -55,44 +84,26 @@ class CharacterSheetView extends Component {
 }
 const CharacterSheet = connect(mapStateToProps)(CharacterSheetView)
 
-class SaveAndLoadView extends Component {
-
-    state = {gameId: null}
-
-    loadGame = () => {
-        this.props.dispatch({type: "LOAD_GAME", value: this.props.CharacterSheet.GameState})
-    }
-    modifyGameState = (input) => {
-        this.props.dispatch({type: "MODIFY_GAME_STATE", value: input.value})
-    }
-    clear = () => {
-        this.props.dispatch({type: "CLEAR_GAME_STATE"})
-    }
-    modifyRemoteGameId = (input) => {
-        this.setState({gameId: input.value})
-    }
-    loadGameRemotely = () => {
-        console.log("coming soon")
-    }
-    saveGameRemotely = () => {
-        console.log("coming soon")
-    }
+class LinkToProject extends Component {
     render() {
         return (
             <View>
-                <Label>Game State</Label>
-                <Input name="GameState" onChange={this.modifyGameState} box/>
-                <Button onClick={this.loadGame}>Load  Local Game</Button>
-                <Button onClick={this.clear}>Clear</Button>
-                <Label>Remote Game ID</Label>
-                <Input value={this.state.gameId} onChange={this.modifyRemoteGameId}/>
-                <Button onClick={this.loadGameRemotely}>Load Game Remotely</Button>
-                <Button onClick={this.saveGameRemotely}>Save Game Remotely</Button>
+                <Link href="https://www.projectaon.org/en/Main/Books" target="_blank">Project Aon</Link>
             </View>
         )
     }
 }
-const SaveAndLoad = connect(mapStateToProps)(SaveAndLoadView)
+
+class BookView extends Component {
+    render() {
+        return (
+            <View>
+                <Group name="Book" select={this.props.Books}/>
+            </View>
+        )
+    }
+}
+const Book = connect(mapStateToProps)(BookView)
 
 class Section extends Component {
     render() {
@@ -162,6 +173,37 @@ class CombatRatioView extends Component {
     }
 }
 const CombatRatio = connect(mapStateToProps)(CombatRatioView)
+
+class RandomNumber extends Component {
+
+    state = {number: "-"}
+
+    generateNumber = () => {
+        let randomizer = [
+            1,5,7,3,6,9,0,1,7,9,
+            3,9,2,8,1,7,4,9,7,8,
+            6,1,0,7,3,0,5,4,6,7,
+            0,2,8,9,2,9,6,0,2,4,
+            5,9,6,4,8,2,8,5,6,3,
+            0,3,1,3,9,7,5,0,1,5,
+            5,8,2,5,1,3,6,4,3,9,
+            7,0,4,8,6,4,5,1,4,2,
+            4,6,8,3,2,0,1,7,2,5,
+            8,3,7,0,9,6,2,4,8,1,
+        ]
+        let random = Math.floor(Math.random() * randomizer.length)
+        this.setState({number: randomizer[random]})
+    }
+    render() {
+        return (
+            <View>
+                <Label>Random Number</Label>
+                <TextWithInputFont>{this.state.number}</TextWithInputFont>
+                <Button onClick={this.generateNumber}>Generate Number</Button>
+            </View>
+        )
+    }
+}
 
 class Kai extends Component {
     render() {
@@ -312,36 +354,44 @@ class SpecialItemsView extends Component {
 }
 const SpecialItems = connect(mapStateToProps)(SpecialItemsView)
 
-class RandomNumber extends Component {
+class SaveAndLoadView extends Component {
 
-    state = {number: "-"}
+    state = {gameId: null}
 
-    generateNumber = () => {
-        let randomizer = [
-            1,5,7,3,6,9,0,1,7,9,
-            3,9,2,8,1,7,4,9,7,8,
-            6,1,0,7,3,0,5,4,6,7,
-            0,2,8,9,2,9,6,0,2,4,
-            5,9,6,4,8,2,8,5,6,3,
-            0,3,1,3,9,7,5,0,1,5,
-            5,8,2,5,1,3,6,4,3,9,
-            7,0,4,8,6,4,5,1,4,2,
-            4,6,8,3,2,0,1,7,2,5,
-            8,3,7,0,9,6,2,4,8,1,
-        ]
-        let random = Math.floor(Math.random() * randomizer.length)
-        this.setState({number: randomizer[random]})
+    loadGame = () => {
+        this.props.dispatch({type: "LOAD_GAME", value: this.props.CharacterSheet.GameState})
+    }
+    modifyGameState = (input) => {
+        this.props.dispatch({type: "MODIFY_GAME_STATE", value: input.value})
+    }
+    clear = () => {
+        this.props.dispatch({type: "CLEAR_GAME_STATE"})
+    }
+    modifyRemoteGameId = (input) => {
+        this.setState({gameId: input.value})
+    }
+    loadGameRemotely = () => {
+        console.log("coming soon")
+    }
+    saveGameRemotely = () => {
+        console.log("coming soon")
     }
     render() {
         return (
             <View>
-                <Label>Random Number</Label>
-                <TextWithInputFont>{this.state.number}</TextWithInputFont>
-                <Button onClick={this.generateNumber}>Generate Number</Button>
+                <Label>Game State</Label>
+                <Input name="GameState" onChange={this.modifyGameState} box/>
+                <Button onClick={this.loadGame}>Load  Local Game</Button>
+                <Button onClick={this.clear}>Clear</Button>
+                <Label>Remote Game ID</Label>
+                <Input value={this.state.gameId} onChange={this.modifyRemoteGameId}/>
+                <Button onClick={this.loadGameRemotely}>Load Game Remotely</Button>
+                <Button onClick={this.saveGameRemotely}>Save Game Remotely</Button>
             </View>
         )
     }
 }
+const SaveAndLoad = connect(mapStateToProps)(SaveAndLoadView)
 
 class Group extends Component {
     render() {
@@ -351,6 +401,8 @@ class Group extends Component {
                 <Input
                     name={this.props.name.replace(/ /g,"")}
                     type={this.props.type}
+                    select={this.props.select}
+                    box={this.props.box}
                 />
             </View>
         )
@@ -358,27 +410,28 @@ class Group extends Component {
 }
 
 class InputView extends Component {
+
     onChange = (input) => {
         if (this.props.onChange) {
             return this.props.onChange(input.target)
         }
         this.props.dispatch({type: this.props.name, value: input.target.value})
     }
-    onClick = (input) => {
-
-        if (this.props.type === "number") return null
-
-        let inputElement = document.getElementById(this.props.name)
-
-        console.log(String(inputElement.selectionStart),String( inputElement.selectionEnd),String( input.target.value.length))
-
-        if (inputElement.selectionStart === 0 && inputElement.selectionEnd === input.target.value.length) return null
-
-        console.log("hello")
-
-        input.target.select()
-    }
     render() {
+        if (this.props.select) {
+            return (
+                <View style={{marginBottom: "2px"}}>
+                    <select
+                        id={this.props.name}
+                        style={{width: "100%", padding: "2px"}}
+                        value={this.props.CharacterSheet[this.props.name] || this.props.value || ""}
+                        onChange={this.onChange}
+                    >
+                        {this.props.select.map(option => {return <option>{option.name}</option>})}
+                    </select>
+                </View>
+            )
+        }
         if (this.props.box) {
             return (
                 <View style={{marginBottom: "2px"}}>
@@ -387,7 +440,6 @@ class InputView extends Component {
                         style={{width: "98%", height: "200px", padding: "2px"}}
                         value={this.props.CharacterSheet[this.props.name] || this.props.value || ""}
                         onChange={this.onChange}
-                        onClick={this.onClick}
                     />
                 </View>
             )
@@ -400,7 +452,6 @@ class InputView extends Component {
                     value={this.props.CharacterSheet[this.props.name] || this.props.value || ""}
                     type={this.props.type}
                     onChange={this.onChange}
-                    onClick={this.onClick}
                 />
             </View>
         )
@@ -460,6 +511,14 @@ class TextWithInputFont extends Component {
     render() {
         return (
             <Text className="input-font" {...this.props}/>
+        )
+    }
+}
+
+class Link extends Component {
+    render() {
+        return (
+            <a href={this.props.href} target={this.props.target}>{this.props.children}</a>
         )
     }
 }
