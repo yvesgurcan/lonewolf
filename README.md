@@ -1,7 +1,7 @@
 # lonewolf
 A simple character sheet to play the Choose Your Own Adventure books of the Lone Wolf series
 
-# How to use the character sheet
+## How to use the character sheet
 
 Go to https://www.projectaon.org/en/Main/Home. Here, you can start your adventure with any of the Lone Wolf books.
 
