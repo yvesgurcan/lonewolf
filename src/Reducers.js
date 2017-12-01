@@ -17,6 +17,13 @@ function CharacterSheet(State = null, Action) {
         NewState.GameState = ""
         return NewState
     }
+    else if (Action.type === "UPDATE_BOOK") {
+        NewState.Book = Action.value
+    }
+    else if (Action.type === "UPDATE_ENDURANCE") {
+        NewState.EnemyEndurance -= Action.value.enemy
+        NewState.Endurance -= Action.value.lonewolf
+    }
     else if (Action.type === "HEAL+1") {
         NewState.Endurance = Math.min(NewState.MaxEndurance || ++NewState.Endurance,++NewState.Endurance)
     }

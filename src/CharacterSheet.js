@@ -13,33 +13,256 @@ const mapStateToProps = (state, ownProps) => {
     return {
         ...state,
         ...ownProps,
+        generateRandomNumber() {
+            let randomizer = [
+                1,5,7,3,6,9,0,1,7,9,
+                3,9,2,8,1,7,4,9,7,8,
+                6,1,0,7,3,0,5,4,6,7,
+                0,2,8,9,2,9,6,0,2,4,
+                5,9,6,4,8,2,8,5,6,3,
+                0,3,1,3,9,7,5,0,1,5,
+                5,8,2,5,1,3,6,4,3,9,
+                7,0,4,8,6,4,5,1,4,2,
+                4,6,8,3,2,0,1,7,2,5,
+                8,3,7,0,9,6,2,4,8,1,
+            ]
+            let random = Math.floor(Math.random() * randomizer.length)
+            return randomizer[random]
+        },
+        fight(number, CombatRatio) {
+
+
+            let results = {
+                minus11: [
+                    {enemy: 6, lonewolf: 0},
+                    {enemy: 0, lonewolf: "dead"},
+                    {enemy: 0, lonewolf: "dead"},
+                    {enemy: 0, lonewolf: 8},
+                    {enemy: 0, lonewolf: 8},
+                    {enemy: 1, lonewolf: 7},
+                    {enemy: 2, lonewolf: 6},
+                    {enemy: 3, lonewolf: 5},
+                    {enemy: 4, lonewolf: 4},
+                    {enemy: 5, lonewolf: 3},
+                ],
+                minus10: [
+                    {enemy: 7, lonewolf: 0},
+                    {enemy: 0, lonewolf: "dead"},
+                    {enemy: 0, lonewolf: 8},
+                    {enemy: 0, lonewolf: 7},
+                    {enemy: 1, lonewolf: 7},
+                    {enemy: 2, lonewolf: 6},
+                    {enemy: 3, lonewolf: 6},
+                    {enemy: 4, lonewolf: 5},
+                    {enemy: 5, lonewolf: 4},
+                    {enemy: 6, lonewolf: 3},
+                ],
+                minus8: [
+                    {enemy: 8, lonewolf: 0},
+                    {enemy: 0, lonewolf: 8},
+                    {enemy: 0, lonewolf: 7},
+                    {enemy: 1, lonewolf: 6},
+                    {enemy: 2, lonewolf: 6},
+                    {enemy: 3, lonewolf: 5},
+                    {enemy: 4, lonewolf: 5},
+                    {enemy: 5, lonewolf: 4},
+                    {enemy: 6, lonewolf: 3},
+                    {enemy: 7, lonewolf: 2},
+                ],
+                minus6: [
+                    {enemy: 9, lonewolf: 0},
+                    {enemy: 0, lonewolf: 6},
+                    {enemy: 1, lonewolf: 6},
+                    {enemy: 2, lonewolf: 5},
+                    {enemy: 3, lonewolf: 5},
+                    {enemy: 4, lonewolf: 4},
+                    {enemy: 5, lonewolf: 4},
+                    {enemy: 6, lonewolf: 3},
+                    {enemy: 7, lonewolf: 2},
+                    {enemy: 8, lonewolf: 0},
+                ],
+                minus4: [
+                    {enemy: 10, lonewolf: 0},
+                    {enemy: 1, lonewolf: 6},
+                    {enemy: 2, lonewolf: 5},
+                    {enemy: 3, lonewolf: 5},
+                    {enemy: 4, lonewolf: 4},
+                    {enemy: 5, lonewolf: 4},
+                    {enemy: 6, lonewolf: 3},
+                    {enemy: 7, lonewolf: 2},
+                    {enemy: 8, lonewolf: 1},
+                    {enemy: 9, lonewolf: 0},
+                ],
+                minus2: [
+                    {enemy: 11, lonewolf: 0},
+                    {enemy: 2, lonewolf: 5},
+                    {enemy: 3, lonewolf: 5},
+                    {enemy: 4, lonewolf: 4},
+                    {enemy: 5, lonewolf: 4},
+                    {enemy: 6, lonewolf: 3},
+                    {enemy: 7, lonewolf: 2},
+                    {enemy: 8, lonewolf: 2},
+                    {enemy: 9, lonewolf: 1},
+                    {enemy: 10, lonewolf: 0},
+                ],
+                0: [
+                    {enemy: 12, lonewolf: 0},
+                    {enemy: 3, lonewolf: 5},
+                    {enemy: 4, lonewolf: 4},
+                    {enemy: 5, lonewolf: 4},
+                    {enemy: 6, lonewolf: 3},
+                    {enemy: 7, lonewolf: 2},
+                    {enemy: 8, lonewolf: 2},
+                    {enemy: 9, lonewolf: 1},
+                    {enemy: 10, lonewolf: 0},
+                    {enemy: 11, lonewolf: 0},
+                ],
+                2: [
+                    {enemy: 14, lonewolf: 0},
+                    {enemy: 4, lonewolf: 5},
+                    {enemy: 5, lonewolf: 4},
+                    {enemy: 6, lonewolf: 3},
+                    {enemy: 7, lonewolf: 3},
+                    {enemy: 8, lonewolf: 2},
+                    {enemy: 9, lonewolf: 2},
+                    {enemy: 10, lonewolf: 1},
+                    {enemy: 11, lonewolf: 0},
+                    {enemy: 12, lonewolf: 0},
+                ],
+                4: [
+                    {enemy: 16, lonewolf: 0},
+                    {enemy: 5, lonewolf: 4},
+                    {enemy: 6, lonewolf: 3},
+                    {enemy: 7, lonewolf: 3},
+                    {enemy: 8, lonewolf: 2},
+                    {enemy: 9, lonewolf: 2},
+                    {enemy: 10, lonewolf: 2},
+                    {enemy: 11, lonewolf: 1},
+                    {enemy: 12, lonewolf: 0},
+                    {enemy: 14, lonewolf: 0},
+                ],
+                6: [
+                    {enemy: 18, lonewolf: 0},
+                    {enemy: 6, lonewolf: 4},
+                    {enemy: 7, lonewolf: 3},
+                    {enemy: 8, lonewolf: 3},
+                    {enemy: 9, lonewolf: 2},
+                    {enemy: 10, lonewolf: 2},
+                    {enemy: 11, lonewolf: 1},
+                    {enemy: 12, lonewolf: 0},
+                    {enemy: 14, lonewolf: 0},
+                    {enemy: 16, lonewolf: 0},
+                ],
+                8: [
+                    {enemy: "dead", lonewolf: 0},
+                    {enemy: 7, lonewolf: 4},
+                    {enemy: 8, lonewolf: 3},
+                    {enemy: 9, lonewolf: 2},
+                    {enemy: 10, lonewolf: 2},
+                    {enemy: 11, lonewolf: 2},
+                    {enemy: 12, lonewolf: 1},
+                    {enemy: 14, lonewolf: 0},
+                    {enemy: 16, lonewolf: 0},
+                    {enemy: 18, lonewolf: 0},
+                ],
+                10: [
+                    {enemy: "dead", lonewolf: 0},
+                    {enemy: 8, lonewolf: 3},
+                    {enemy: 9, lonewolf: 3},
+                    {enemy: 10, lonewolf: 2},
+                    {enemy: 11, lonewolf: 2},
+                    {enemy: 12, lonewolf: 2},
+                    {enemy: 14, lonewolf: 1},
+                    {enemy: 16, lonewolf: 0},
+                    {enemy: 18, lonewolf: 0},
+                    {enemy: "dead", lonewolf: 0},
+                ],
+                11: [
+                    {enemy: "dead", lonewolf: 0},
+                    {enemy: 9, lonewolf: 3},
+                    {enemy: 10, lonewolf: 2},
+                    {enemy: 11, lonewolf: 2},
+                    {enemy: 12, lonewolf: 2},
+                    {enemy: 14, lonewolf: 1},
+                    {enemy: 16, lonewolf: 1},
+                    {enemy: 18, lonewolf: 0},
+                    {enemy: "dead", lonewolf: 0},
+                    {enemy: "dead", lonewolf: 0},
+                ],
+
+            }
+            results.minus9 = results.minus10
+            results.minus7 = results.minus8
+            results.minus5 = results.minus6
+            results.minus3 = results.minus4
+            results.minus1 = results.minus2
+            results[1] = results[2]
+            results[3] = results[4]
+            results[5] = results[6]
+            results[7] = results[8]
+            results[9] = results[10]
+
+            return results[String(Math.max(-11,Math.min(CombatRatio,11))).replace("-","minus")][number]
+        },
         Books: [
             {
+                name: "Select Book",
+                url: null,
+            },
+            {
                 name: "Flight from the Dark",
-                url: "",
-                map: "",
+                url: "https://www.projectaon.org/en/xhtml/lw/01fftd/",
             },
             {
                 name: "Fire on the Water",
-                url: "",
-                map: "",
+                url: "https://www.projectaon.org/en/xhtml/lw/02fotw/",
             },
             {
                 name: "The Caverns of Kalte",
-                url: "",
-                map: "",
+                url: "https://www.projectaon.org/en/xhtml/lw/03tcok/",
             },
             {
                 name: "The Chasm of Doom",
-                url: "",
-                map: "",
+                url: "https://www.projectaon.org/en/xhtml/lw/04tcod/",
             },
             {
                 name: "Shadow on the Sand",
-                url: "",
-                map: "",
+                url: "https://www.projectaon.org/en/xhtml/lw/05sots/",
             },
-        ]
+            {
+                name: "The Kingdoms of Terror",
+                url: "https://www.projectaon.org/en/xhtml/lw/06tkot/",
+            },
+            {
+                name: "Castle Death",
+                url: "https://www.projectaon.org/en/xhtml/lw/07cd/",
+            },
+            {
+                name: "The Jungle of Horrors",
+                url: "https://www.projectaon.org/en/xhtml/lw/08tjoh/",
+            },
+            {
+                name: "The Cauldron of Fear",
+                url: "https://www.projectaon.org/en/xhtml/lw/09tcof/",
+            },
+            {
+                name: "The Dungeons of Torgar",
+                url: "https://www.projectaon.org/en/xhtml/lw/10tdot/",
+            },
+            {
+                name: "The Prisoners of Time",
+                url: "https://www.projectaon.org/en/xhtml/lw/11tpot/",
+            },
+            {
+                name: "The Masters of Darkness",
+                url: "https://www.projectaon.org/en/xhtml/lw/12tmod/",
+            },
+        ],
+        BookURLs: {
+            toc: "toc.htm",
+            map: "map.htm",
+            section: {prepend: "sect", append: ".htm"}
+        }
     }
 }
 
@@ -68,7 +291,6 @@ class CharacterSheetView extends Component {
                 <EnemyCombatSkill/>
                 <EnemyEndurance/>
                 <CombatRatio/>
-                <RandomNumber/>
                 <HR/>
                 <Kai/>
                 <Weapons/>
@@ -95,25 +317,47 @@ class LinkToProject extends Component {
 }
 
 class BookView extends Component {
+    onChange = (input) => {
+        let Book = this.props.Books.filter(book => {return book.name === input.value})[0]
+
+        this.props.dispatch({type: "UPDATE_BOOK", value: Book})
+    }
     render() {
         return (
             <View>
-                <Group name="Book" select={this.props.Books}/>
+                <Label>Book</Label>
+                <Input name="Book" value={this.props.CharacterSheet.Book ? this.props.CharacterSheet.Book.name : null} select={this.props.Books} onChange={this.onChange}/>
+                {this.props.CharacterSheet.Book ? <BookLinks/> : null}
             </View>
         )
     }
 }
 const Book = connect(mapStateToProps)(BookView)
 
-class Section extends Component {
+class BookLinksView extends Component {
     render() {
         return (
             <View>
-                <Group name="Section"  type="number"/>
+                <Link target="_blank" href={this.props.CharacterSheet.Book.url + this.props.BookURLs.toc}>Table of Contents</Link>
+                {" "}|{" "}
+                <Link target="_blank" href={this.props.CharacterSheet.Book.url + this.props.BookURLs.map}>Map</Link>
             </View>
         )
     }
 }
+const BookLinks = connect(mapStateToProps)(BookLinksView)
+
+class SectionView extends Component {
+    render() {
+        return (
+            <View>
+                <Group name="Section" type="number"/>
+                {this.props.CharacterSheet.Book && this.props.CharacterSheet.Section ? <Link target="_blank" href={this.props.CharacterSheet.Book.url + this.props.BookURLs.section.prepend + this.props.CharacterSheet.Section + this.props.BookURLs.section.append}>Go to Section</Link> : null}
+            </View>
+        )
+    }
+}
+const Section = connect(mapStateToProps)(SectionView)
 
 class CombatSkill extends Component {
     render() {
@@ -163,47 +407,59 @@ class EnemyEndurance extends Component {
 }
 
 class CombatRatioView extends Component {
+
+    state = {number: "-", damage: {}}
+
+    fight = () => {
+        let number = this.props.generateRandomNumber()
+        
+        this.setState({
+            number: number,
+            damage: this.props.fight(number, this.props.CharacterSheet.CombatRatio)
+        })
+    }
+
+    updateEndurance = () => {
+        this.props.dispatch({type: "UPDATE_ENDURANCE", value: this.state.damage})
+    }
+
+    generateRandomNumber = () => {
+        this.setState({number: this.props.generateRandomNumber()})
+    }
+
     render() {
         return (
             <View>
                 <Label>Combat Ratio</Label>
-                <TextWithInputFont>{this.props.CharacterSheet.CombatRatio || "-"}</TextWithInputFont>
+                <TextWithInputFont>{this.props.CharacterSheet.CombatRatio !== undefined ? this.props.CharacterSheet.CombatRatio : "-"}</TextWithInputFont>
+                <Label>Combat Results</Label>
+                <TextWithInputFont>
+                    Enemy:{" "}
+                    {this.state.damage.enemy !== undefined
+                        ? isNaN(this.state.damage.enemy*-1)
+                            ? this.state.damage.enemy
+                            : this.state.damage.enemy*-1
+                        : "-"
+                    }
+                    {" "}/{" "}
+                    Lone Wolf:{" "}
+                    {this.state.damage.lonewolf !== undefined
+                        ? isNaN(this.state.damage.lonewolf*-1)
+                            ? this.state.damage.lonewolf
+                            : this.state.damage.lonewolf*-1
+                        : "-"
+                    }
+                </TextWithInputFont>
+                <Button onClick={this.fight}>Fight</Button>
+                <Button onClick={this.updateEndurance}>Update Endurance</Button>
+                <Label>Random Number</Label>
+                <TextWithInputFont>{this.state.number}</TextWithInputFont>
+                <Button onClick={this.generateRandomNumber}>Generate Number</Button>
             </View>
         )
     }
 }
 const CombatRatio = connect(mapStateToProps)(CombatRatioView)
-
-class RandomNumber extends Component {
-
-    state = {number: "-"}
-
-    generateNumber = () => {
-        let randomizer = [
-            1,5,7,3,6,9,0,1,7,9,
-            3,9,2,8,1,7,4,9,7,8,
-            6,1,0,7,3,0,5,4,6,7,
-            0,2,8,9,2,9,6,0,2,4,
-            5,9,6,4,8,2,8,5,6,3,
-            0,3,1,3,9,7,5,0,1,5,
-            5,8,2,5,1,3,6,4,3,9,
-            7,0,4,8,6,4,5,1,4,2,
-            4,6,8,3,2,0,1,7,2,5,
-            8,3,7,0,9,6,2,4,8,1,
-        ]
-        let random = Math.floor(Math.random() * randomizer.length)
-        this.setState({number: randomizer[random]})
-    }
-    render() {
-        return (
-            <View>
-                <Label>Random Number</Label>
-                <TextWithInputFont>{this.state.number}</TextWithInputFont>
-                <Button onClick={this.generateNumber}>Generate Number</Button>
-            </View>
-        )
-    }
-}
 
 class Kai extends Component {
     render() {
@@ -424,10 +680,10 @@ class InputView extends Component {
                     <select
                         id={this.props.name}
                         style={{width: "100%", padding: "2px"}}
-                        value={this.props.CharacterSheet[this.props.name] || this.props.value || ""}
+                        value={this.props.value || this.props.CharacterSheet[this.props.name] || ""}
                         onChange={this.onChange}
                     >
-                        {this.props.select.map(option => {return <option>{option.name}</option>})}
+                        {this.props.select.map(option => {return <option key={option.name}>{option.name}</option>})}
                     </select>
                 </View>
             )
@@ -438,7 +694,7 @@ class InputView extends Component {
                     <textarea
                         id={this.props.name}
                         style={{width: "98%", height: "200px", padding: "2px"}}
-                        value={this.props.CharacterSheet[this.props.name] || this.props.value || ""}
+                        value={this.props.value || this.props.CharacterSheet[this.props.name] || ""}
                         onChange={this.onChange}
                     />
                 </View>
@@ -449,7 +705,7 @@ class InputView extends Component {
                 <input
                     id={this.props.name}
                     style={{width: "98%", padding: "2px"}}
-                    value={this.props.CharacterSheet[this.props.name] || this.props.value || ""}
+                    value={this.props.value || this.props.CharacterSheet[this.props.name] || ""}
                     type={this.props.type}
                     onChange={this.onChange}
                 />
