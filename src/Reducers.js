@@ -1,6 +1,34 @@
 import {combineReducers} from 'redux'
 
-function CharacterSheet(State = null, Action) {
+function GenerateFormattedDate(TimeInMilliseconds) {
+return [
+    [
+        TimeInMilliseconds.getMonth()+1,
+        TimeInMilliseconds.getDate(),
+        TimeInMilliseconds.getFullYear(),
+        ].join("/"),
+        "at",
+        [
+        PadNumber(TimeInMilliseconds.getHours()),
+        PadNumber(TimeInMilliseconds.getMinutes()),
+        ].join(":")
+    ].join(" ")
+}
+
+function PadNumber(NumberToPad) {
+    if (NumberToPad < 10) {
+        return "0" + NumberToPad
+    }
+    else {
+        return NumberToPad
+    }
+}
+
+const InitState = {
+    GameStarted: GenerateFormattedDate(new Date())
+}
+
+function CharacterSheet(State = InitState, Action) {
 
     let NewState = {...State}
 
@@ -23,6 +51,10 @@ function CharacterSheet(State = null, Action) {
     else if (Action.type === "UPDATE_ENDURANCE") {
         NewState.EnemyEndurance -= Action.value.enemy
         NewState.Endurance -= Action.value.lonewolf
+    }
+    else if (Action.type === "CLEAR_ENEMY_STATS") {
+        NewState.EnemyEndurance = ""
+        NewState.EnemyCombatSkill = ""
     }
     else if (Action.type === "HEAL+1") {
         NewState.Endurance = Math.min(NewState.MaxEndurance || ++NewState.Endurance,++NewState.Endurance)

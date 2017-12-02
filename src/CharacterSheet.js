@@ -359,6 +359,7 @@ class CharacterSheetView extends Component {
             <View>
                 <Header1>Character Sheet</Header1>
                 <LinkToProject/>
+                <GameMetaData/>
                 <Book/>
                 <Section/>
                 <HR/>
@@ -391,6 +392,17 @@ class LinkToProject extends Component {
         )
     }
 }
+
+class GameMetaDataView extends Component {
+    render() {
+        return (
+            <View>
+                <Label>Game Started</Label><Text>{this.props.CharacterSheet.GameStarted}</Text>
+            </View>
+        )
+    }
+}
+const GameMetaData = connect(mapStateToProps)(GameMetaDataView)
 
 class BookView extends Component {
     onChange = (input) => {
@@ -533,6 +545,10 @@ class CombatRatioView extends Component {
         this.props.dispatch({type: "UPDATE_ENDURANCE", value: this.state.damage})
     }
 
+    clearEnemyStats = () => {
+        this.props.dispatch({type: "CLEAR_ENEMY_STATS"})
+    }
+
     generateRandomNumber = () => {
         this.setState({number: this.props.generateRandomNumber()})
     }
@@ -542,7 +558,15 @@ class CombatRatioView extends Component {
             <View>
                 <View hidden={this.props.hideCR}>
                     <Label>Combat Ratio</Label>
-                    <TextWithInputFont>{this.props.CharacterSheet.CombatRatio !== undefined ? this.props.CharacterSheet.CombatRatio : "-"}</TextWithInputFont>
+                    <TextWithInputFont>
+                    {
+                        this.props.CharacterSheet.CombatRatio === undefined
+                        || isNaN(this.props.CharacterSheet.CombatRatio)
+                        || this.props.CharacterSheet.CombatSkill === ""
+                        || this.props.CharacterSheet.EnemyCombatSkill === ""
+                            ? "-"
+                            : this.props.CharacterSheet.CombatRatio
+                    }</TextWithInputFont>
                     <Label>Combat Results</Label>
                     <TextWithInputFont>
                         Enemy:{" "}
@@ -563,6 +587,7 @@ class CombatRatioView extends Component {
                     </TextWithInputFont>
                     <Button onClick={this.fight}>Fight</Button>
                     <Button onClick={this.updateEndurance}>Update Endurance</Button>
+                    <Button onClick={this.clearEnemyStats}>Clear Enemy Stats</Button>
                 </View>
                 <Label>Random Number</Label>
                 <TextWithInputFont>{this.state.number}</TextWithInputFont>
