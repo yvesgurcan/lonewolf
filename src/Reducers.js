@@ -25,13 +25,14 @@ function PadNumber(NumberToPad) {
 }
 
 const InitState = {
-    GameStarted: GenerateFormattedDate(new Date())
+    GameStarted: GenerateFormattedDate(new Date()),
 }
 
 function CharacterSheet(State = InitState, Action) {
 
     let NewState = {...State}
 
+    // special actions
     if (Action.type === "LOAD_GAME") {
         NewState = JSON.parse(Action.value).CharacterSheet
         NewState.GameState = Action.value
@@ -56,18 +57,33 @@ function CharacterSheet(State = InitState, Action) {
         NewState.EnemyEndurance = ""
         NewState.EnemyCombatSkill = ""
     }
-    else if (Action.type === "HEAL+1") {
-        NewState.Endurance = Math.min(NewState.MaxEndurance || ++NewState.Endurance,++NewState.Endurance)
+    else if (Action.type.indexOf("INCREMENT") > -1) {
+        let property = Action.type.replace("INCREMENT_", "")
+        NewState[property] = NewState[property] ? Math.floor(++NewState[property]) : 1
     }
+    else if (Action.type.indexOf("DECREMENT") > -1) {
+        let property = Action.type.replace("DECREMENT_", "")
+        NewState[property] = NewState[property] ? Math.floor(Math.max(0,--NewState[property])) : 0
+    }
+    // default action
     else {
-        NewState[Action.type] = Action.value
+        if (isNaN(Number(Action.value)) || Action.value === "") {
+            NewState[Action.type] = Action.value            
+        }
+        else {
+            NewState[Action.type] = Math.floor(Math.max(0, Number(Action.value)))
+        }
     }
 
-    if (Action.type === "CombatSkill") {
-        NewState.CombatRatio = Action.value - State.EnemyCombatSkill
+    // additional actions
+    if (Action.type === "CombatSkill" || Action.type.indexOf("_CombatSkill") > -1) {
+        NewState.CombatRatio = (Action.value || NewState.CombatSkill) - State.EnemyCombatSkill
     }
-    else if (Action.type === "EnemyCombatSkill") {
-        NewState.CombatRatio = State.CombatSkill - Action.value
+    else if (Action.type === "EnemyCombatSkill" || Action.type.indexOf("_EnemyCombatSkill") > -1) {
+        NewState.CombatRatio = State.CombatSkill - (Action.value || NewState.EnemyCombatSkill)
+    }
+    else if (Action.type === "BeltPouch" || Action.type.indexOf("_BeltPouch") > -1) {
+        NewState.BeltPouch = Math.min(50, NewState.BeltPouch)
     }
 
     let GameState = {...NewState}

@@ -3,6 +3,15 @@ import {createStore} from 'redux'
 import {Provider, connect} from 'react-redux'
 import Reducers from './Reducers'
 
+function PadNumber(NumberToPad) {
+    if (NumberToPad < 10) {
+        return "0" + NumberToPad
+    }
+    else {
+        return NumberToPad
+    }
+}
+
 const store = createStore(
   Reducers,
   {},
@@ -150,6 +159,20 @@ const mapStateToProps = (state, ownProps) => {
                 CombatSkill: 2,
             },
         ],
+        GenerateFormattedDate(TimeInMilliseconds) {
+        return [
+            [
+                TimeInMilliseconds.getMonth()+1,
+                TimeInMilliseconds.getDate(),
+                TimeInMilliseconds.getFullYear(),
+                ].join("/"),
+                "at",
+                [
+                PadNumber(TimeInMilliseconds.getHours()),
+                PadNumber(TimeInMilliseconds.getMinutes()),
+                ].join(":")
+            ].join(" ")
+        },
         generateRandomNumber() {
             let randomizer = [
                 1,5,7,3,6,9,0,1,7,9,
@@ -397,7 +420,12 @@ class GameMetaDataView extends Component {
     render() {
         return (
             <View>
-                <Label>Game Started</Label><Text>{this.props.CharacterSheet.GameStarted}</Text>
+                <Label>Game ID</Label>
+                <Text>{this.props.CharacterSheet.GameID || "-"}</Text>
+                <Label>Game Started</Label>
+                <Text>{this.props.CharacterSheet.GameStarted}</Text>
+                <Label>Game Last Saved</Label>
+                <Text>{this.props.CharacterSheet.GameSaved || "-"}</Text>
             </View>
         )
     }
@@ -448,7 +476,7 @@ class SectionView extends Component {
     render() {
         return (
             <View>
-                <Group name="Section" type="number"/>
+                <Group name="Section" type="number" noPlusAndMinus/>
                 {this.props.CharacterSheet.Book && this.props.CharacterSheet.Section ? <Link target="_blank" href={this.props.CharacterSheet.Book.url + this.props.BookURLs.section.prepend + this.props.CharacterSheet.Section + this.props.BookURLs.section.append}>Go to Section</Link> : null}
             </View>
         )
@@ -457,15 +485,11 @@ class SectionView extends Component {
 const Section = connect(mapStateToProps)(SectionView)
 
 class EnduranceView extends Component {
-    HealIncrement = () => {
-        this.props.dispatch({type: "HEAL+1"})
-    }
     render() {
         return (
             <View>
                 <Group name="Max Endurance" type="number" />
                 <Group name="Endurance" type="number" />
-                <Button onClick={this.HealIncrement}>Heal +1</Button>
             </View>
         )
     }
@@ -786,7 +810,7 @@ const SpecialItems = connect(mapStateToProps)(SpecialItemsView)
 
 class SaveAndLoadView extends Component {
 
-    state = {gameId: null, hideDetails: true}
+    state = {gameID: null || this.props.CharacterSheet.GameID, hideDetails: true}
 
     toggleDetails = () => {
         this.setState({hideDetails: !this.state.hideDetails})
@@ -802,7 +826,7 @@ class SaveAndLoadView extends Component {
         this.props.dispatch({type: "CLEAR_GAME_STATE"})
     }
     modifyRemoteGameId = (input) => {
-        this.setState({gameId: input.value})
+        this.setState({gameID: input.value})
     }
     loadGameRemotely = () => {
         console.log("coming soon")
@@ -810,16 +834,30 @@ class SaveAndLoadView extends Component {
     saveGameRemotely = () => {
         console.log("coming soon")
     }
+    gameStateAltered = () => {
+  
+        if (this.props.CharacterSheet.GameState === "") return null
+
+        let gameState = JSON.parse(this.props.CharacterSheet.GameState)
+
+        if (gameState.GameSaved === undefined) {
+            gameState.GameSaved = this.props.GenerateFormattedDate(new Date())
+            return JSON.stringify(gameState)    
+        }
+
+        return this.props.CharacterSheet.GameState
+
+    }
     render() {
         return (
             <View>
                 <Label>Game State</Label>
                 <View hidden={this.state.hideDetails}>
-                    <Input name="GameState" onChange={this.modifyGameState} box/>
+                    <Input name="GameState" value={this.gameStateAltered()} onChange={this.modifyGameState} box/>
                     <Button onClick={this.loadGame}>Load  Local Game</Button>
                     <Button onClick={this.clear}>Clear</Button>
                     <Label>Remote Game ID</Label>
-                    <Input value={this.state.gameId} onChange={this.modifyRemoteGameId}/>
+                    <Input value={this.state.gameID} onChange={this.modifyRemoteGameId}/>
                     <Button onClick={this.loadGameRemotely}>Load Game Remotely</Button>
                     <Button onClick={this.saveGameRemotely}>Save Game Remotely</Button>
                 </View>
@@ -840,6 +878,7 @@ class Group extends Component {
                 <Input
                     name={this.props.name.replace(/ /g,"")}
                     type={this.props.type}
+                    noPlusAndMinus={this.props.noPlusAndMinus}
                     select={this.props.select}
                     box={this.props.box}
                 />
@@ -856,6 +895,15 @@ class InputView extends Component {
         }
         this.props.dispatch({type: this.props.name, value: input.target.value})
     }
+
+    increment = () => {
+        this.props.dispatch({type: "INCREMENT_" + this.props.name})
+    }
+
+    decrement = () => {
+        this.props.dispatch({type: "DECREMENT_" + this.props.name})
+    }
+
     render() {
         if (this.props.hidden) return null
         if (this.props.select) {
@@ -863,7 +911,7 @@ class InputView extends Component {
                 <View style={{marginBottom: "2px"}}>
                     <select
                         id={this.props.name}
-                        style={{width: "100%", padding: "2px"}}
+                        style={{width: "98%", padding: "2px"}}
                         value={this.props.value || this.props.CharacterSheet[this.props.name] || ""}
                         onChange={this.onChange}
                     >
@@ -888,11 +936,19 @@ class InputView extends Component {
             <View style={{marginBottom: "2px"}}>
                 <input
                     id={this.props.name}
-                    style={{width: "98%", padding: "2px"}}
-                    value={this.props.value || this.props.CharacterSheet[this.props.name] || ""}
+                    style={{width: (this.props.type === "number" && !this.props.noPlusAndMinus ? "calc(98% - 68px)" : "98%"), padding: "2px"}}
+                    value={this.props.value || (this.props.CharacterSheet[this.props.name] === undefined ? "" : String(this.props.CharacterSheet[this.props.name]))}
                     type={this.props.type}
                     onChange={this.onChange}
                 />
+                {this.props.type === "number" && !this.props.noPlusAndMinus
+                    ?
+                    <Text>
+                        <Button style={{marginLeft: "5px", width: "25px", height: "34px"}} onClick={this.decrement} inline>-</Button>
+                        <Button style={{marginLeft: "5px", width: "25px", height: "34px"}} onClick={this.increment} inline>+</Button>
+                    </Text>
+                    : null
+                }
             </View>
         )
     }
@@ -916,8 +972,8 @@ class Button extends Component {
     }
     render() {
         return (
-            <View style={{marginTop: "10px"}}>
-                <button onClick={this.onClick}>{this.props.children}</button>
+            <View style={this.props.inline ? {display: "inline-block"} : {marginTop: "10px"}}>
+                <button style={this.props.style} onClick={this.onClick}>{this.props.children}</button>
             </View>
         )
     }
