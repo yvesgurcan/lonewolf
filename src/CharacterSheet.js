@@ -13,6 +13,143 @@ const mapStateToProps = (state, ownProps) => {
     return {
         ...state,
         ...ownProps,
+        Books: [
+            {
+                name: "Select Book",
+                url: null,
+            },
+            {
+                name: "Flight from the Dark",
+                url: "https://www.projectaon.org/en/xhtml/lw/01fftd/",
+            },
+            {
+                name: "Fire on the Water",
+                url: "https://www.projectaon.org/en/xhtml/lw/02fotw/",
+            },
+            {
+                name: "The Caverns of Kalte",
+                url: "https://www.projectaon.org/en/xhtml/lw/03tcok/",
+            },
+            {
+                name: "The Chasm of Doom",
+                url: "https://www.projectaon.org/en/xhtml/lw/04tcod/",
+            },
+            {
+                name: "Shadow on the Sand",
+                url: "https://www.projectaon.org/en/xhtml/lw/05sots/",
+            },
+            {
+                name: "The Kingdoms of Terror",
+                url: "https://www.projectaon.org/en/xhtml/lw/06tkot/",
+            },
+            {
+                name: "Castle Death",
+                url: "https://www.projectaon.org/en/xhtml/lw/07cd/",
+            },
+            {
+                name: "The Jungle of Horrors",
+                url: "https://www.projectaon.org/en/xhtml/lw/08tjoh/",
+            },
+            {
+                name: "The Cauldron of Fear",
+                url: "https://www.projectaon.org/en/xhtml/lw/09tcof/",
+            },
+            {
+                name: "The Dungeons of Torgar",
+                url: "https://www.projectaon.org/en/xhtml/lw/10tdot/",
+            },
+            {
+                name: "The Prisoners of Time",
+                url: "https://www.projectaon.org/en/xhtml/lw/11tpot/",
+            },
+            {
+                name: "The Masters of Darkness",
+                url: "https://www.projectaon.org/en/xhtml/lw/12tmod/",
+            },
+        ],
+        BookURLs: {
+            toc: "toc.htm",
+            map: "map.htm",
+            section: {prepend: "sect", append: ".htm"}
+        },
+        KaiDisciplines: [
+            {
+                name: "",
+            },
+            {
+                name: "Camouflage",
+            },
+            {
+                name: "Hunting: no need for a Meal when instructed to eat",
+            },
+            {
+                name: "Sixth Sense",
+            },
+            {
+                name: "Tracking",
+            },
+            {
+                name: "Healing: +1 ENDURANCE point for each section without combat",
+            },
+            {
+                name: "Mindshield: no points lost when attacked by Mindblast",
+            },
+            {
+                name: "Mindblast: +2 COMBAT SKILL points",
+                CombatSkill: 2,
+            },
+            {
+                name: "Animal Kinship",
+            },
+            {
+                name: "Mind Over Matter",
+            },
+            {
+                name: "Weaponskill in Dagger +2 COMBAT SKILL points if this weapon carried",
+                weapon: "Dagger",
+                CombatSkill: 2,
+            },
+            {
+                name: "Weaponskill in Spear +2 COMBAT SKILL points if this weapon carried",
+                weapon: "Spear",
+                CombatSkill: 2,
+            },
+            {
+                name: "Weaponskill in Mace +2 COMBAT SKILL points if this weapon carried",
+                weapon: "Mace",
+                CombatSkill: 2,
+            },
+            {
+                name: "Weaponskill in Short Sword +2 COMBAT SKILL points if this weapon carried",
+                weapon: "Short Sword",
+                CombatSkill: 2,
+            },
+            {
+                name: "Weaponskill in Warhammer +2 COMBAT SKILL points if this weapon carried",
+                weapon: "Warhammer",
+                CombatSkill: 2,
+            },
+            {
+                name: "Weaponskill in Sword +2 COMBAT SKILL points if this weapon carried",
+                weapon: "Sword",
+                CombatSkill: 2,
+            },
+            {
+                name: "Weaponskill in Axe +2 COMBAT SKILL points if this weapon carried",
+                weapon: "Axe",
+                CombatSkill: 2,
+            },
+            {
+                name: "Weaponskill in Quarterstaff +2 COMBAT SKILL points if this weapon carried",
+                weapon: "Quarterstaff",
+                CombatSkill: 2,
+            },
+            {
+                name: "Weaponskill in Broadsword +2 COMBAT SKILL points if this weapon carried",
+                weapon: "Broadsword",
+                CombatSkill: 2,
+            },
+        ],
         generateRandomNumber() {
             let randomizer = [
                 1,5,7,3,6,9,0,1,7,9,
@@ -30,8 +167,6 @@ const mapStateToProps = (state, ownProps) => {
             return randomizer[random]
         },
         fight(number, CombatRatio) {
-
-
             let results = {
                 minus11: [
                     {enemy: 6, lonewolf: 0},
@@ -204,65 +339,6 @@ const mapStateToProps = (state, ownProps) => {
 
             return results[String(Math.max(-11,Math.min(CombatRatio,11))).replace("-","minus")][number]
         },
-        Books: [
-            {
-                name: "Select Book",
-                url: null,
-            },
-            {
-                name: "Flight from the Dark",
-                url: "https://www.projectaon.org/en/xhtml/lw/01fftd/",
-            },
-            {
-                name: "Fire on the Water",
-                url: "https://www.projectaon.org/en/xhtml/lw/02fotw/",
-            },
-            {
-                name: "The Caverns of Kalte",
-                url: "https://www.projectaon.org/en/xhtml/lw/03tcok/",
-            },
-            {
-                name: "The Chasm of Doom",
-                url: "https://www.projectaon.org/en/xhtml/lw/04tcod/",
-            },
-            {
-                name: "Shadow on the Sand",
-                url: "https://www.projectaon.org/en/xhtml/lw/05sots/",
-            },
-            {
-                name: "The Kingdoms of Terror",
-                url: "https://www.projectaon.org/en/xhtml/lw/06tkot/",
-            },
-            {
-                name: "Castle Death",
-                url: "https://www.projectaon.org/en/xhtml/lw/07cd/",
-            },
-            {
-                name: "The Jungle of Horrors",
-                url: "https://www.projectaon.org/en/xhtml/lw/08tjoh/",
-            },
-            {
-                name: "The Cauldron of Fear",
-                url: "https://www.projectaon.org/en/xhtml/lw/09tcof/",
-            },
-            {
-                name: "The Dungeons of Torgar",
-                url: "https://www.projectaon.org/en/xhtml/lw/10tdot/",
-            },
-            {
-                name: "The Prisoners of Time",
-                url: "https://www.projectaon.org/en/xhtml/lw/11tpot/",
-            },
-            {
-                name: "The Masters of Darkness",
-                url: "https://www.projectaon.org/en/xhtml/lw/12tmod/",
-            },
-        ],
-        BookURLs: {
-            toc: "toc.htm",
-            map: "map.htm",
-            section: {prepend: "sect", append: ".htm"}
-        }
     }
 }
 
@@ -286,14 +362,14 @@ class CharacterSheetView extends Component {
                 <Book/>
                 <Section/>
                 <HR/>
-                <CombatSkill/>
                 <Endurance/>
-                <EnemyCombatSkill/>
-                <EnemyEndurance/>
-                <CombatRatio/>
+                <HR/>
+                <Combat/>
+                <HR/>
+                <Weapons/>
                 <HR/>
                 <Kai/>
-                <Weapons/>
+                <HR/>
                 <BeltPouch/>
                 <Meals/>
                 <Backpack/>
@@ -318,7 +394,16 @@ class LinkToProject extends Component {
 
 class BookView extends Component {
     onChange = (input) => {
-        let Book = this.props.Books.filter(book => {return book.name === input.value})[0]
+        let bookNumber = 0
+        let Book = this.props.Books.filter((book, index) => {
+            if (book.name === input.value) {
+                bookNumber = index
+                return true
+            }
+            return false
+        })[0]
+
+        Book = {...Book, number: bookNumber}
 
         this.props.dispatch({type: "UPDATE_BOOK", value: Book})
     }
@@ -359,17 +444,6 @@ class SectionView extends Component {
 }
 const Section = connect(mapStateToProps)(SectionView)
 
-class CombatSkill extends Component {
-    render() {
-        return (
-            <View>
-                <Group name="Base Combat Skill" type="number"/>
-                <Group name="Combat Skill" type="number"/>
-            </View>
-        )
-    }
-}
-
 class EnduranceView extends Component {
     HealIncrement = () => {
         this.props.dispatch({type: "HEAL+1"})
@@ -385,6 +459,42 @@ class EnduranceView extends Component {
     }
 }
 const Endurance = connect(mapStateToProps)(EnduranceView)
+
+class Combat extends Component {
+
+    state = {hideDetails: true}
+
+    toggleDetails = () => {
+        this.setState({hideDetails: !this.state.hideDetails})
+    }
+
+    render() {
+        return (
+            <View>
+                <CombatSkill/>
+                <View style={{cursor: "pointer", width: "100%", userSelect: "none"}} onClick={this.toggleDetails}>
+                    <Link >({this.state.hideDetails ? "more" : "less"})</Link>
+                </View>
+                <View hidden={this.state.hideDetails}>
+                    <EnemyCombatSkill/>
+                    <EnemyEndurance/>
+                </View>
+                <CombatRatio hideCR={this.state.hideDetails}/>
+            </View>
+        )
+    }
+}
+
+class CombatSkill extends Component {
+    render() {
+        return (
+            <View>
+                <Group name="Base Combat Skill" type="number"/>
+                <Group name="Combat Skill" type="number"/>
+            </View>
+        )
+    }
+}
 
 class EnemyCombatSkill extends Component {
     render() {
@@ -430,28 +540,30 @@ class CombatRatioView extends Component {
     render() {
         return (
             <View>
-                <Label>Combat Ratio</Label>
-                <TextWithInputFont>{this.props.CharacterSheet.CombatRatio !== undefined ? this.props.CharacterSheet.CombatRatio : "-"}</TextWithInputFont>
-                <Label>Combat Results</Label>
-                <TextWithInputFont>
-                    Enemy:{" "}
-                    {this.state.damage.enemy !== undefined
-                        ? isNaN(this.state.damage.enemy*-1)
-                            ? this.state.damage.enemy
-                            : this.state.damage.enemy*-1
-                        : "-"
-                    }
-                    {" "}/{" "}
-                    Lone Wolf:{" "}
-                    {this.state.damage.lonewolf !== undefined
-                        ? isNaN(this.state.damage.lonewolf*-1)
-                            ? this.state.damage.lonewolf
-                            : this.state.damage.lonewolf*-1
-                        : "-"
-                    }
-                </TextWithInputFont>
-                <Button onClick={this.fight}>Fight</Button>
-                <Button onClick={this.updateEndurance}>Update Endurance</Button>
+                <View hidden={this.props.hideCR}>
+                    <Label>Combat Ratio</Label>
+                    <TextWithInputFont>{this.props.CharacterSheet.CombatRatio !== undefined ? this.props.CharacterSheet.CombatRatio : "-"}</TextWithInputFont>
+                    <Label>Combat Results</Label>
+                    <TextWithInputFont>
+                        Enemy:{" "}
+                        {this.state.damage.enemy !== undefined
+                            ? isNaN(this.state.damage.enemy*-1)
+                                ? this.state.damage.enemy
+                                : this.state.damage.enemy*-1
+                            : "-"
+                        }
+                        {" "}/{" "}
+                        Lone Wolf:{" "}
+                        {this.state.damage.lonewolf !== undefined
+                            ? isNaN(this.state.damage.lonewolf*-1)
+                                ? this.state.damage.lonewolf
+                                : this.state.damage.lonewolf*-1
+                            : "-"
+                        }
+                    </TextWithInputFont>
+                    <Button onClick={this.fight}>Fight</Button>
+                    <Button onClick={this.updateEndurance}>Update Endurance</Button>
+                </View>
                 <Label>Random Number</Label>
                 <TextWithInputFont>{this.state.number}</TextWithInputFont>
                 <Button onClick={this.generateRandomNumber}>Generate Number</Button>
@@ -461,45 +573,58 @@ class CombatRatioView extends Component {
 }
 const CombatRatio = connect(mapStateToProps)(CombatRatioView)
 
-class Kai extends Component {
+class KaiView extends Component {
+
+    state = {hideDetails: true}
+
+    toggleDetails = () => {
+        this.setState({hideDetails: !this.state.hideDetails})
+    }
+
     render() {
         return (
             <View>
                 <Label>Kai Disciplines</Label>
-                <View>
-                    <Input name="Kai1" />
+                <View hidden={this.state.hideDetails}>
+                    <View>
+                        <Input name="Kai1" select={this.props.KaiDisciplines}/>
+                    </View>
+                    <View>
+                        <Input name="Kai2" select={this.props.KaiDisciplines}/>
+                    </View>
+                    <View>
+                        <Input name="Kai3" select={this.props.KaiDisciplines}/>
+                    </View>
+                    <View>
+                        <Input name="Kai4" select={this.props.KaiDisciplines}/>
+                    </View>
+                    <View>
+                        <Input name="Kai5" select={this.props.KaiDisciplines}/>
+                    </View>
+                    <View>
+                        <Input name="Kai6" select={this.props.KaiDisciplines} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number < 2}/>
+                    </View>
+                    <View>
+                        <Input name="Kai7" select={this.props.KaiDisciplines} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number < 3}/>
+                    </View>
+                    <View>
+                        <Input name="Kai8" select={this.props.KaiDisciplines} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number < 4}/>
+                    </View>
+                    <View>
+                        <Input name="Kai9" select={this.props.KaiDisciplines} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number < 5}/>
+                    </View>
+                    <View>
+                        <Input name="Kai10" select={this.props.KaiDisciplines} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number < 6}/>
+                    </View>
                 </View>
-                <View>
-                    <Input name="Kai2" />
-                </View>
-                <View>
-                    <Input name="Kai3" />
-                </View>
-                <View>
-                    <Input name="Kai4" />
-                </View>
-                <View>
-                    <Input name="Kai5" />
-                </View>
-                <View>
-                    <Input name="Kai6" />
-                </View>
-                <View>
-                    <Input name="Kai7" />
-                </View>
-                <View>
-                    <Input name="Kai8" />
-                </View>
-                <View>
-                    <Input name="Kai9" />
-                </View>
-                <View>
-                    <Input name="Kai10" />
+                <View style={{cursor: "pointer", width: "100%", userSelect: "none"}} onClick={this.toggleDetails}>
+                    <Link >({this.state.hideDetails ? "show" : "hide"})</Link>
                 </View>
             </View>
         )
     }
 }
+const Kai = connect(mapStateToProps)(KaiView)
 
 class WeaponsView extends Component {
     render() {
@@ -522,7 +647,7 @@ class BeltPouchView extends Component {
     render() {
         return (
             <View>
-                <Group name="Belt Pouch" append="50 gold crowns maximum" type="number"/>
+                <Group name="Belt Pouch" append="50 gold crowns max" type="number"/>
             </View>
         )
     }
@@ -532,8 +657,8 @@ const BeltPouch = connect(mapStateToProps)(BeltPouchView)
 class MealsView extends Component {
     render() {
         return (
-            <View>
-            <Group name="Meals" type="number" />
+            <View hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number !== 1}>
+                <Group name="Meals" type="number" />
             </View>
         )
     }
@@ -541,33 +666,45 @@ class MealsView extends Component {
 const Meals = connect(mapStateToProps)(MealsView)
 
 class BackpackView extends Component {
+
+    state = {hideDetails: true}
+
+    toggleDetails = () => {
+        this.setState({hideDetails: !this.state.hideDetails})
+    }
+
     render() {
         return (
             <View>
                 <Label>Backpack Items</Label>
-                <View>
-                    <Input name="BackpackItem1" />
+                <View hidden={this.state.hideDetails}>
+                    <View>
+                        <Input name="BackpackItem1" />
+                    </View>
+                    <View>
+                        <Input name="BackpackItem2" />
+                    </View>
+                    <View>
+                        <Input name="BackpackItem3" />
+                    </View>
+                    <View>
+                        <Input name="BackpackItem4" />
+                    </View>
+                    <View>
+                        <Input name="BackpackItem5" />
+                    </View>
+                    <View>
+                        <Input name="BackpackItem6" />
+                    </View>
+                    <View>
+                        <Input name="BackpackItem7" />
+                    </View>
+                    <View>
+                        <Input name="BackpackItem8" />
+                    </View>
                 </View>
-                <View>
-                    <Input name="BackpackItem2" />
-                </View>
-                <View>
-                    <Input name="BackpackItem3" />
-                </View>
-                <View>
-                    <Input name="BackpackItem4" />
-                </View>
-                <View>
-                    <Input name="BackpackItem5" />
-                </View>
-                <View>
-                    <Input name="BackpackItem6" />
-                </View>
-                <View>
-                    <Input name="BackpackItem7" />
-                </View>
-                <View>
-                    <Input name="BackpackItem8" />
+                <View style={{cursor: "pointer", width: "100%", userSelect: "none"}} onClick={this.toggleDetails}>
+                    <Link >({this.state.hideDetails ? "show" : "hide"})</Link>
                 </View>
             </View>
         )
@@ -576,33 +713,45 @@ class BackpackView extends Component {
 const Backpack = connect(mapStateToProps)(BackpackView)
 
 class SpecialItemsView extends Component {
+
+    state = {hideDetails: true}
+
+    toggleDetails = () => {
+        this.setState({hideDetails: !this.state.hideDetails})
+    }
+
     render() {
         return (
             <View>
                 <Label>Special Items</Label>
-                <View>
-                    <Input name="SpecialItem1" />
+                <View hidden={this.state.hideDetails}>
+                    <View>
+                        <Input name="SpecialItem1" />
+                    </View>
+                    <View>
+                        <Input name="SpecialItem2" />
+                    </View>
+                    <View>
+                        <Input name="SpecialItem3" />
+                    </View>
+                    <View>
+                        <Input name="SpecialItem4" />
+                    </View>
+                    <View>
+                        <Input name="SpecialItem5" />
+                    </View>
+                    <View>
+                        <Input name="SpecialItem6" />
+                    </View>
+                    <View>
+                        <Input name="SpecialItem7" />
+                    </View>
+                    <View>
+                        <Input name="SpecialItem8" />
+                    </View>
                 </View>
-                <View>
-                    <Input name="SpecialItem2" />
-                </View>
-                <View>
-                    <Input name="SpecialItem3" />
-                </View>
-                <View>
-                    <Input name="SpecialItem4" />
-                </View>
-                <View>
-                    <Input name="SpecialItem5" />
-                </View>
-                <View>
-                    <Input name="SpecialItem6" />
-                </View>
-                <View>
-                    <Input name="SpecialItem7" />
-                </View>
-                <View>
-                    <Input name="SpecialItem8" />
+                <View style={{cursor: "pointer", width: "100%", userSelect: "none"}} onClick={this.toggleDetails}>
+                    <Link >({this.state.hideDetails ? "show" : "hide"})</Link>
                 </View>
             </View>
         )
@@ -612,7 +761,11 @@ const SpecialItems = connect(mapStateToProps)(SpecialItemsView)
 
 class SaveAndLoadView extends Component {
 
-    state = {gameId: null}
+    state = {gameId: null, hideDetails: true}
+
+    toggleDetails = () => {
+        this.setState({hideDetails: !this.state.hideDetails})
+    }
 
     loadGame = () => {
         this.props.dispatch({type: "LOAD_GAME", value: this.props.CharacterSheet.GameState})
@@ -636,13 +789,18 @@ class SaveAndLoadView extends Component {
         return (
             <View>
                 <Label>Game State</Label>
-                <Input name="GameState" onChange={this.modifyGameState} box/>
-                <Button onClick={this.loadGame}>Load  Local Game</Button>
-                <Button onClick={this.clear}>Clear</Button>
-                <Label>Remote Game ID</Label>
-                <Input value={this.state.gameId} onChange={this.modifyRemoteGameId}/>
-                <Button onClick={this.loadGameRemotely}>Load Game Remotely</Button>
-                <Button onClick={this.saveGameRemotely}>Save Game Remotely</Button>
+                <View hidden={this.state.hideDetails}>
+                    <Input name="GameState" onChange={this.modifyGameState} box/>
+                    <Button onClick={this.loadGame}>Load  Local Game</Button>
+                    <Button onClick={this.clear}>Clear</Button>
+                    <Label>Remote Game ID</Label>
+                    <Input value={this.state.gameId} onChange={this.modifyRemoteGameId}/>
+                    <Button onClick={this.loadGameRemotely}>Load Game Remotely</Button>
+                    <Button onClick={this.saveGameRemotely}>Save Game Remotely</Button>
+                </View>
+                <View style={{cursor: "pointer", width: "100%", userSelect: "none"}} onClick={this.toggleDetails}>
+                    <Link >({this.state.hideDetails ? "show" : "hide"})</Link>
+                </View>
             </View>
         )
     }
@@ -652,7 +810,7 @@ const SaveAndLoad = connect(mapStateToProps)(SaveAndLoadView)
 class Group extends Component {
     render() {
         return (
-            <View>
+            <View hidden={this.props.hidden}>
                 <Label>{this.props.name}{this.props.append ? <Text> ({this.props.append})</Text> : null}</Label>
                 <Input
                     name={this.props.name.replace(/ /g,"")}
@@ -674,6 +832,7 @@ class InputView extends Component {
         this.props.dispatch({type: this.props.name, value: input.target.value})
     }
     render() {
+        if (this.props.hidden) return null
         if (this.props.select) {
             return (
                 <View style={{marginBottom: "2px"}}>
@@ -774,7 +933,7 @@ class TextWithInputFont extends Component {
 class Link extends Component {
     render() {
         return (
-            <a href={this.props.href} target={this.props.target}>{this.props.children}</a>
+            <a href={this.props.href} target={this.props.target} onClick={this.props.onClick} style={{color: "-webkit-link"}}>{this.props.children}</a>
         )
     }
 }
