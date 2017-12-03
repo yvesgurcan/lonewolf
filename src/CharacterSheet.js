@@ -834,34 +834,12 @@ class SaveAndLoadView extends Component {
     saveGameRemotely = () => {
         console.log("coming soon")
     }
-    gameStateAltered = () => {
-  
-        if (this.props.CharacterSheet.GameState === "") return null
-
-        if (/^[\],:{}\s]*$/.test(this.props.CharacterSheet.GameState.replace(/\\["\\\/bfnrtu]/g, '@').
-        replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']').
-        replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
-
-            let gameState = JSON.parse(this.props.CharacterSheet.GameState)
-
-            if (gameState.GameSaved === undefined) {
-                gameState.GameSaved = this.props.GenerateFormattedDate(new Date())
-                return JSON.stringify(gameState)    
-            }
-
-            return this.props.CharacterSheet.GameState
-
-        }
-
-        return this.props.CharacterSheet.GameState
-
-    }
     render() {
         return (
             <View>
                 <Label>Game State</Label>
                 <View hidden={this.state.hideDetails}>
-                    <Input name="GameState" value={this.gameStateAltered()} onChange={this.modifyGameState} box/>
+                    <Input name="GameState" value={this.props.CharacterSheet.GameState} onChange={this.modifyGameState} box/>
                     <Button onClick={this.loadGame}>Load  Local Game</Button>
                     <Button onClick={this.clear}>Clear</Button>
                     <Label>Remote Game ID</Label>

@@ -34,12 +34,28 @@ function CharacterSheet(State = InitState, Action) {
 
     // special actions
     if (Action.type === "LOAD_GAME") {
+
         NewState = JSON.parse(Action.value).CharacterSheet
         NewState.GameState = Action.value
+
+        if (!NewState.GameStarted) {
+            NewState.GameStarted = GenerateFormattedDate(new Date())
+        }
+
+        if (!NewState.GameSaved) {
+            NewState.GameSaved = GenerateFormattedDate(new Date())
+        }
+
+        let GameState = {...NewState}
+        delete GameState.GameState
+        NewState.GameState = JSON.stringify({CharacterSheet: GameState})
+
         return NewState
     }
     else if (Action.type === "MODIFY_GAME_STATE") {
+
         NewState.GameState = Action.value
+
         return NewState
     }
     else if (Action.type === "CLEAR_GAME_STATE") {
