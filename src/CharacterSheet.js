@@ -571,6 +571,7 @@ class CombatRatioView extends Component {
 
     clearEnemyStats = () => {
         this.props.dispatch({type: "CLEAR_ENEMY_STATS"})
+        this.setState({damage: {}})
     }
 
     generateRandomNumber = () => {
@@ -609,8 +610,22 @@ class CombatRatioView extends Component {
                             : "-"
                         }
                     </TextWithInputFont>
-                    <Button onClick={this.fight}>Fight</Button>
-                    <Button onClick={this.updateEndurance}>Update Endurance</Button>
+                    <Button onClick={this.fight} disabled={
+                        this.props.CharacterSheet.CombatSkill === undefined
+                        || this.props.CharacterSheet.CombatSkill === ""
+                        || this.props.CharacterSheet.EnemyCombatSkill === undefined
+                        || this.props.CharacterSheet.EnemyCombatSkill === ""
+                    }>Fight</Button>
+                    <Button onClick={this.updateEndurance} disabled={
+                        this.props.CharacterSheet.CombatSkill === undefined
+                        || this.props.CharacterSheet.CombatSkill === ""
+                        || this.props.CharacterSheet.EnemyCombatSkill === undefined
+                        || this.props.CharacterSheet.EnemyCombatSkill === ""
+                        || this.props.CharacterSheet.Endurance === undefined
+                        || this.props.CharacterSheet.Endurance === ""
+                        || this.props.CharacterSheet.EnemyEndurance === undefined
+                        || this.props.CharacterSheet.EnemyEndurance === ""
+                    }>Update Endurance</Button>
                     <Button onClick={this.clearEnemyStats}>Clear Enemy Stats</Button>
                 </View>
                 <Label>Random Number</Label>
@@ -998,7 +1013,7 @@ class Button extends Component {
     render() {
         return (
             <View style={this.props.inline ? {display: "inline-block"} : {marginTop: "10px"}}>
-                <button style={this.props.style} onClick={this.onClick}>{this.props.children}</button>
+                <button style={this.props.style} onClick={this.onClick} disabled={this.props.disabled}>{this.props.children}</button>
             </View>
         )
     }
