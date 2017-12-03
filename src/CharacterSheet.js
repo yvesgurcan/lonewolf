@@ -465,10 +465,23 @@ class SectionView extends Component {
 const Section = connect(mapStateToProps)(SectionView)
 
 class EnduranceView extends Component {
+
+    getBonuses = () => {
+
+        let bonuses = []
+        let {CharacterSheet} = {...this.props}
+
+        // bonuses from special items
+        // TODO
+        
+        return bonuses.join(", ")
+    }
+
     render() {
         return (
             <View>
                 <Group name="Max Endurance" type="number" />
+                <Text>{this.getBonuses()}</Text>
                 <Group name="Endurance" type="number" />
             </View>
         )
@@ -501,16 +514,56 @@ class Combat extends Component {
     }
 }
 
-class CombatSkill extends Component {
+class CombatSkillView extends Component {
+
+    getBonuses = () => {
+
+        let bonuses = []
+        let {CharacterSheet, KaiDisciplines} = {...this.props}
+
+        // bonuses from kai disciplines
+        for (let i = 1; i <= 10; i++) {
+            let kaiDiscipline = CharacterSheet["Kai" + i]
+            if (kaiDiscipline !== undefined) {
+                if (kaiDiscipline.toLowerCase().indexOf("mindblast") > -1) {
+                    bonuses.push("+2 (mindblast)")
+                }
+                else if (kaiDiscipline.toLowerCase().indexOf("weaponskill") > -1) {
+                    for (let x = 1; x <= 2; x++) {
+                        let weapon = CharacterSheet["Weapon" + x]
+                        let weaponSkill = KaiDisciplines.filter(function(kai) {
+                            // special case: do not consider a "short sword" as a regular sword
+                            if (weapon && (weapon.toLowerCase().indexOf("short sword") > -1) && kai.weapon && kai.weapon.toLowerCase() === "sword") {
+                                return false
+                            }
+                            return kai.name === kaiDiscipline && kai.weapon && weapon && weapon.toLowerCase().indexOf(kai.weapon.toLowerCase()) > -1 
+                        })
+                        if (weaponSkill.length > 0) {
+                            bonuses.push("+2 (weaponskill: " + weapon + ")")
+                            break
+                        }
+                    }
+                }
+            }
+        }
+
+        // bonuses from special items
+        // TODO
+
+        return bonuses.join(", ")
+    }
+
     render() {
         return (
             <View>
                 <Group name="Base Combat Skill" type="number"/>
+                <Text>{this.getBonuses()}</Text>
                 <Group name="Combat Skill" type="number"/>
             </View>
         )
     }
 }
+const CombatSkill = connect(mapStateToProps)(CombatSkillView)
 
 class EnemyCombatSkill extends Component {
     render() {
@@ -928,7 +981,7 @@ class InputView extends Component {
             <View style={{marginBottom: "8px"}}>
                 <input
                     id={this.props.name}
-                    style={{width: (this.props.type === "number" && !this.props.noPlusAndMinus ? "calc(98% - 68px)" : "calc(98% - 34px)"), height: "26px", padding: "2px"}}
+                    style={{width: (this.props.type === "number" && !this.props.noPlusAndMinus ? "calc(98% - 68px)" : "calc(98% - 36px)"), height: "26px", padding: "2px"}}
                     value={this.props.value || (this.props.CharacterSheet[this.props.name] === undefined ? "" : String(this.props.CharacterSheet[this.props.name]))}
                     type={this.props.type}
                     onChange={this.onChange}
