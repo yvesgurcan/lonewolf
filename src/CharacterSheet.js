@@ -476,7 +476,7 @@ class SectionView extends Component {
     render() {
         return (
             <View>
-                <Group name="Section" type="number" noPlusAndMinus/>
+                <Group name="Section" type="number" numbers noPlusAndMinus/>
                 {this.props.CharacterSheet.Book && this.props.CharacterSheet.Section ? <Link target="_blank" href={this.props.CharacterSheet.Book.url + this.props.BookURLs.section.prepend + this.props.CharacterSheet.Section + this.props.BookURLs.section.append}>Go to Section</Link> : null}
             </View>
         )
@@ -878,6 +878,7 @@ class Group extends Component {
                 <Input
                     name={this.props.name.replace(/ /g,"")}
                     type={this.props.type}
+                    numbers={this.props.numbers}
                     noPlusAndMinus={this.props.noPlusAndMinus}
                     select={this.props.select}
                     box={this.props.box}
@@ -893,6 +894,12 @@ class InputView extends Component {
         if (this.props.onChange) {
             return this.props.onChange(input.target)
         }
+
+        if (!input.target) {
+            let value = (this.props.CharacterSheet[this.props.name] || "") + input
+            return this.props.dispatch({type: this.props.name, value: value})
+        }
+
         this.props.dispatch({type: this.props.name, value: input.target.value})
     }
 
@@ -949,6 +956,22 @@ class InputView extends Component {
                     </Text>
                     : null
                 }
+                {this.props.numbers
+                    ? 
+                    <View>
+                        <Button addFaceValue={this.onChange} style={{marginRight: "5px", marginTop: "5px", width: "25px", height: "34px"}} inline>1</Button>
+                        <Button addFaceValue={this.onChange} style={{marginRight: "5px", marginTop: "5px", width: "25px", height: "34px"}} inline>2</Button>
+                        <Button addFaceValue={this.onChange} style={{marginRight: "5px", marginTop: "5px", width: "25px", height: "34px"}} inline>3</Button>
+                        <Button addFaceValue={this.onChange} style={{marginRight: "5px", marginTop: "5px", width: "25px", height: "34px"}} inline>4</Button>
+                        <Button addFaceValue={this.onChange} style={{marginRight: "5px", marginTop: "5px", width: "25px", height: "34px"}} inline>5</Button>
+                        <Button addFaceValue={this.onChange} style={{marginRight: "5px", marginTop: "5px", width: "25px", height: "34px"}} inline>6</Button>
+                        <Button addFaceValue={this.onChange} style={{marginRight: "5px", marginTop: "5px", width: "25px", height: "34px"}} inline>7</Button>
+                        <Button addFaceValue={this.onChange} style={{marginRight: "5px", marginTop: "5px", width: "25px", height: "34px"}} inline>8</Button>
+                        <Button addFaceValue={this.onChange} style={{marginRight: "5px", marginTop: "5px", width: "25px", height: "34px"}} inline>9</Button>
+                        <Button addFaceValue={this.onChange} style={{marginRight: "5px", marginTop: "5px", width: "25px", height: "34px"}} inline>0</Button>
+                    </View>
+                    : null
+                }
             </View>
         )
     }
@@ -967,6 +990,11 @@ class Label extends Component {
 
 class Button extends Component {
     onClick = (input) => {
+
+        if (this.props.addFaceValue) {
+            this.props.addFaceValue(this.props.children)
+        }
+
         if (!this.props.onClick) return false
         this.props.onClick(input.target)
     }
