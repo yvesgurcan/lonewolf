@@ -919,11 +919,15 @@ class InputView extends Component {
         this.props.dispatch({type: "DECREMENT_" + this.props.name})
     }
 
+    clear = () => {
+        this.props.dispatch({type: this.props.name, value: ""})
+    }
+
     render() {
         if (this.props.hidden) return null
         if (this.props.select) {
             return (
-                <View style={{marginBottom: "2px"}}>
+                <View style={{marginBottom: "8px"}}>
                     <select
                         id={this.props.name}
                         style={{width: "98%", padding: "2px"}}
@@ -937,7 +941,7 @@ class InputView extends Component {
         }
         if (this.props.box) {
             return (
-                <View style={{marginBottom: "2px"}}>
+                <View style={{marginBottom: "8px"}}>
                     <textarea
                         id={this.props.name}
                         style={{width: "98%", height: "200px", padding: "2px"}}
@@ -948,14 +952,21 @@ class InputView extends Component {
             )
         }
         return (
-            <View style={{marginBottom: "2px"}}>
+            <View style={{marginBottom: "8px"}}>
                 <input
                     id={this.props.name}
-                    style={{width: (this.props.type === "number" && !this.props.noPlusAndMinus ? "calc(98% - 68px)" : "98%"), padding: "2px"}}
+                    style={{width: (this.props.type === "number" && !this.props.noPlusAndMinus ? "calc(98% - 68px)" : "calc(98% - 34px)"), height: "26px", padding: "2px"}}
                     value={this.props.value || (this.props.CharacterSheet[this.props.name] === undefined ? "" : String(this.props.CharacterSheet[this.props.name]))}
                     type={this.props.type}
                     onChange={this.onChange}
                 />
+                {this.props.type !== "number" || this.props.noPlusAndMinus
+                    ?
+                    <Text>
+                        <Button style={{marginLeft: "5px", width: "25px", height: "34px"}} onClick={this.clear} inline>X</Button>
+                    </Text>
+                    : null
+                }
                 {this.props.type === "number" && !this.props.noPlusAndMinus
                     ?
                     <Text>
