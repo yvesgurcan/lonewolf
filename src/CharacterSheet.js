@@ -3,15 +3,6 @@ import {createStore} from 'redux'
 import {Provider, connect} from 'react-redux'
 import Reducers from './Reducers'
 
-function PadNumber(NumberToPad) {
-    if (NumberToPad < 10) {
-        return "0" + NumberToPad
-    }
-    else {
-        return NumberToPad
-    }
-}
-
 const store = createStore(
   Reducers,
   {},
@@ -159,20 +150,9 @@ const mapStateToProps = (state, ownProps) => {
                 CombatSkill: 2,
             },
         ],
-        GenerateFormattedDate(TimeInMilliseconds) {
-        return [
-            [
-                TimeInMilliseconds.getMonth()+1,
-                TimeInMilliseconds.getDate(),
-                TimeInMilliseconds.getFullYear(),
-                ].join("/"),
-                "at",
-                [
-                PadNumber(TimeInMilliseconds.getHours()),
-                PadNumber(TimeInMilliseconds.getMinutes()),
-                ].join(":")
-            ].join(" ")
-        },
+        BackpackItems: [
+            "Meal"
+        ],
         generateRandomNumber() {
             let randomizer = [
                 1,5,7,3,6,9,0,1,7,9,
