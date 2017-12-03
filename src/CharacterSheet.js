@@ -838,11 +838,19 @@ class SaveAndLoadView extends Component {
   
         if (this.props.CharacterSheet.GameState === "") return null
 
-        let gameState = JSON.parse(this.props.CharacterSheet.GameState)
+        if (/^[\],:{}\s]*$/.test(this.props.CharacterSheet.GameState.replace(/\\["\\\/bfnrtu]/g, '@').
+        replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']').
+        replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
 
-        if (gameState.GameSaved === undefined) {
-            gameState.GameSaved = this.props.GenerateFormattedDate(new Date())
-            return JSON.stringify(gameState)    
+            let gameState = JSON.parse(this.props.CharacterSheet.GameState)
+
+            if (gameState.GameSaved === undefined) {
+                gameState.GameSaved = this.props.GenerateFormattedDate(new Date())
+                return JSON.stringify(gameState)    
+            }
+
+            return this.props.CharacterSheet.GameState
+
         }
 
         return this.props.CharacterSheet.GameState
