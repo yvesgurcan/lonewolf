@@ -101,6 +101,12 @@ function CharacterSheet(State = InitState, Action) {
     else if (Action.type === "BeltPouch" || Action.type.indexOf("_BeltPouch") > -1) {
         NewState.BeltPouch = Math.min(50, NewState.BeltPouch)
     }
+    else if (Action.type === "Endurance" || Action.type.indexOf("_Endurance") > -1) {
+
+        NewState.Endurance = Math.min(NewState.MaxEndurance !== undefined && NewState.MaxEndurance !== "" ? NewState.MaxEndurance : NewState.Endurance, NewState.Endurance)
+
+
+    }
 
     let GameState = {...NewState}
     delete GameState.GameState
