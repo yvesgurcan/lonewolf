@@ -362,7 +362,9 @@ class CharacterSheetView extends Component {
             <View>
                 <Header1>Character Sheet</Header1>
                 <LinkToProject/>
+                <HR/>
                 <GameMetaData/>
+                <HR/>
                 <Book/>
                 <Section/>
                 <HR/>
@@ -376,7 +378,9 @@ class CharacterSheetView extends Component {
                 <HR/>
                 <BeltPouch/>
                 <Meals/>
+                <HR/>
                 <Backpack/>
+                <HR/>
                 <SpecialItems/>
                 <HR/>
                 <SaveAndLoad/>
@@ -466,16 +470,43 @@ const Section = connect(mapStateToProps)(SectionView)
 
 class EnduranceView extends Component {
 
-    getBonuses = () => {
+    getBonuses = (returnRawData) => {
 
         let bonuses = []
+        let bonusValues = []
         let {CharacterSheet} = {...this.props}
 
         // bonuses from special items
-        // TODO
+        for (let i = 1; i <= 12; i++) {
+            let item = CharacterSheet["SpecialItem" + i]
+            if (item !== undefined && item.length > 0) {
+                let bonusTextIndex = item.toLowerCase().indexOf("endurance")
+                if (bonusTextIndex > -1) {
+                    let bonusValueIndex = item.substring(Math.min(bonusTextIndex-5, bonusTextIndex),item.length).indexOf("+")
+                    if (bonusValueIndex > -1) {
+                        let bonusValueAbsoluteIndex = bonusTextIndex-Math.min(5, bonusTextIndex)+bonusValueIndex
+                        let bonusValue = item.substring(bonusValueAbsoluteIndex,bonusValueAbsoluteIndex+3)
+                        bonuses.push(<Text key={Math.random()}>+{Number(Math.floor(bonusValue))}&nbsp;(special&nbsp;item) </Text>)
+                        bonusValues.push(Number(Math.floor(bonusValue)))
+                    }
+                }
+            }
+        }
         
-        return bonuses.join(", ")
+        if (returnRawData === true) {
+            return bonusValues
+        }
+
+        return bonuses.map(bonus => {return bonus})
     }
+
+    addBonus = () => {
+        
+         let bonuses = this.getBonuses(true)
+ 
+         this.props.dispatch({type: "MaxEndurance", value: (this.props.CharacterSheet.MaxEndurance || 0) + (bonuses.length > 0 ? bonuses.reduce((sum, value) => {return sum+value}) : 0)})
+ 
+     }
 
     render() {
         return (
@@ -501,12 +532,14 @@ class Combat extends Component {
         return (
             <View>
                 <CombatSkill/>
-                <View style={{cursor: "pointer", width: "100%", userSelect: "none"}} onClick={this.toggleDetails}>
-                    <Link >({this.state.hideDetails ? "more" : "less"})</Link>
+                <View style={{width: "100%"}} onClick={this.toggleDetails}>
+                    <Link>({this.state.hideDetails ? "show Enemy Combat Stats" : "hide Enemy Combat Stats"})</Link>
                 </View>
                 <View hidden={this.state.hideDetails}>
+                    <HR/>
                     <EnemyCombatSkill/>
                     <EnemyEndurance/>
+                    <EnemyImmunity/>
                 </View>
                 <CombatRatio hideCR={this.state.hideDetails}/>
             </View>
@@ -516,17 +549,19 @@ class Combat extends Component {
 
 class CombatSkillView extends Component {
 
-    getBonuses = () => {
+    getBonuses = (returnRawData) => {
 
         let bonuses = []
+        let bonusValues = []
         let {CharacterSheet, KaiDisciplines} = {...this.props}
 
         // bonuses from kai disciplines
         for (let i = 1; i <= 10; i++) {
             let kaiDiscipline = CharacterSheet["Kai" + i]
             if (kaiDiscipline !== undefined) {
-                if (kaiDiscipline.toLowerCase().indexOf("mindblast") > -1) {
-                    bonuses.push("+2 (mindblast)")
+                if (kaiDiscipline.toLowerCase().indexOf("mindblast") > -1 && !this.props.CharacterSheet.ImmunetoMindblast) {
+                    bonuses.push(<Text key={Math.random()}>+2&nbsp;(mindblast) </Text>)
+                    bonusValues.push(2)
                 }
                 else if (kaiDiscipline.toLowerCase().indexOf("weaponskill") > -1) {
                     for (let x = 1; x <= 2; x++) {
@@ -539,7 +574,8 @@ class CombatSkillView extends Component {
                             return kai.name === kaiDiscipline && kai.weapon && weapon && weapon.toLowerCase().indexOf(kai.weapon.toLowerCase()) > -1 
                         })
                         if (weaponSkill.length > 0) {
-                            bonuses.push("+2 (weaponskill: " + weapon + ")")
+                            bonuses.push(<Text key={Math.random()}>+2&nbsp;(weaponskill:&nbsp;{weapon}) </Text>)
+                            bonusValues.push(2)
                             break
                         }
                     }
@@ -548,15 +584,42 @@ class CombatSkillView extends Component {
         }
 
         // bonuses from special items
-        // TODO
+        for (let i = 1; i <= 12; i++) {
+            let item = CharacterSheet["SpecialItem" + i]
+            if (item !== undefined && item.length > 0) {
+                let bonusTextIndex = item.toLowerCase().indexOf("combat skill")
+                if (bonusTextIndex > -1) {
+                    let bonusValueIndex = item.substring(Math.min(bonusTextIndex-5, bonusTextIndex),item.length).indexOf("+")
+                    if (bonusValueIndex > -1) {
+                        let bonusValueAbsoluteIndex = bonusTextIndex-Math.min(5, bonusTextIndex)+bonusValueIndex
+                        let bonusValue = item.substring(bonusValueAbsoluteIndex,bonusValueAbsoluteIndex+3)
+                        bonuses.push(<Text key={Math.random()}>+{Number(Math.floor(bonusValue))}&nbsp;(special&nbsp;item) </Text>)
+                        bonusValues.push(Number(Math.floor(bonusValue)))
+                    }
+                }
+            }
+        }
 
-        return bonuses.join(", ")
+        if (returnRawData === true) {
+            return bonusValues
+        }
+
+        return bonuses.map(bonus => {return bonus})
+    }
+
+    addBonus = () => {
+       
+        let bonuses = this.getBonuses(true)
+
+        this.props.dispatch({type: "CombatSkill", value: (this.props.CharacterSheet.BaseCombatSkill || 0) + (bonuses.length > 0 ? bonuses.reduce((sum, value) => {return sum+value}) : 0)})
+
     }
 
     render() {
         return (
             <View>
                 <Group name="Base Combat Skill" type="number"/>
+                <Button onClick={this.addBonus} style={{marginRight: "5px"}} inline>Update Combat Skill</Button>
                 <Text>{this.getBonuses()}</Text>
                 <Group name="Combat Skill" type="number"/>
             </View>
@@ -580,6 +643,15 @@ class EnemyEndurance extends Component {
         return (
             <View>
                 <Group name="Enemy Endurance" type="number" />
+            </View>
+        )
+    }
+}
+class EnemyImmunity extends Component {
+    render() {
+        return (
+            <View>
+                <Group name="Immune to Mindblast" type="checkbox" />
             </View>
         )
     }
@@ -661,6 +733,7 @@ class CombatRatioView extends Component {
                     }>Update Endurance</Button>
                     <Button onClick={this.clearEnemyStats}>Clear Enemy Stats</Button>
                 </View>
+                <HR/>
                 <Label>Random Number</Label>
                 <TextWithInputFont>{this.state.number}</TextWithInputFont>
                 <Button onClick={this.generateRandomNumber}>Generate Number</Button>
@@ -714,8 +787,8 @@ class KaiView extends Component {
                         <Input name="Kai10" select={this.props.KaiDisciplines} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number < 6}/>
                     </View>
                 </View>
-                <View style={{cursor: "pointer", width: "100%", userSelect: "none"}} onClick={this.toggleDetails}>
-                    <Link >({this.state.hideDetails ? "show" : "hide"})</Link>
+                <View style={{width: "100%"}} onClick={this.toggleDetails}>
+                    <Link>({this.state.hideDetails ? "show" : "hide"})</Link>
                 </View>
             </View>
         )
@@ -800,8 +873,8 @@ class BackpackView extends Component {
                         <Input name="BackpackItem8" />
                     </View>
                 </View>
-                <View style={{cursor: "pointer", width: "100%", userSelect: "none"}} onClick={this.toggleDetails}>
-                    <Link >({this.state.hideDetails ? "show" : "hide"})</Link>
+                <View style={{width: "100%"}} onClick={this.toggleDetails}>
+                    <Link>({this.state.hideDetails ? "show" : "hide"})</Link>
                 </View>
             </View>
         )
@@ -847,8 +920,8 @@ class SpecialItemsView extends Component {
                         <Input name="SpecialItem8" />
                     </View>
                 </View>
-                <View style={{cursor: "pointer", width: "100%", userSelect: "none"}} onClick={this.toggleDetails}>
-                    <Link >({this.state.hideDetails ? "show" : "hide"})</Link>
+                <View style={{width: "100%"}} onClick={this.toggleDetails}>
+                    <Link>({this.state.hideDetails ? "show" : "hide"})</Link>
                 </View>
             </View>
         )
@@ -895,8 +968,8 @@ class SaveAndLoadView extends Component {
                     <Button onClick={this.loadGameRemotely}>Load Game Remotely</Button>
                     <Button onClick={this.saveGameRemotely}>Save Game Remotely</Button>
                 </View>
-                <View style={{cursor: "pointer", width: "100%", userSelect: "none"}} onClick={this.toggleDetails}>
-                    <Link >({this.state.hideDetails ? "show" : "hide"})</Link>
+                <View style={{width: "100%"}} onClick={this.toggleDetails}>
+                    <Link>({this.state.hideDetails ? "show" : "hide"})</Link>
                 </View>
             </View>
         )
@@ -908,7 +981,7 @@ class Group extends Component {
     render() {
         return (
             <View hidden={this.props.hidden}>
-                <Label>{this.props.name}{this.props.append ? <Text> ({this.props.append})</Text> : null}</Label>
+                <Label hidden={this.props.type === "checkbox"}>{this.props.name}{this.props.append ? <Text> ({this.props.append})</Text> : null}</Label>
                 <Input
                     name={this.props.name.replace(/ /g,"")}
                     type={this.props.type}
@@ -916,25 +989,39 @@ class Group extends Component {
                     noPlusAndMinus={this.props.noPlusAndMinus}
                     select={this.props.select}
                     box={this.props.box}
+                    inline={this.props.type === "checkbox"}
                 />
+                <LabelInline htmlFor={this.props.name.replace(/ /g,"")} hidden={this.props.type !== "checkbox"} style={this.props.type !== "checkbox" ? null : {height: "26px", display: "inline"}}>{this.props.name}{this.props.append ? <Text> ({this.props.append})</Text> : null}</LabelInline>
+
             </View>
         )
     }
 }
 
+
+
+
 class InputView extends Component {
 
     onChange = (input) => {
+
         if (this.props.onChange) {
             return this.props.onChange(input.target)
         }
 
+        let value = input.target.value
+
         if (!input.target) {
-            let value = (this.props.CharacterSheet[this.props.name] || "") + input
+            value = (this.props.CharacterSheet[this.props.name] || "") + input
+
             return this.props.dispatch({type: this.props.name, value: value})
         }
 
-        this.props.dispatch({type: this.props.name, value: input.target.value})
+        if (this.props.type === "checkbox") {
+            value = input.target.checked
+        }
+
+        this.props.dispatch({type: this.props.name, value: value})
     }
 
     increment = () => {
@@ -978,15 +1065,16 @@ class InputView extends Component {
             )
         }
         return (
-            <View style={{marginBottom: "8px"}}>
+            <View style={{marginBottom: "8px", display: (this.props.inline ? "inline-block" : null)}}>
                 <input
                     id={this.props.name}
-                    style={{width: (this.props.type === "number" && !this.props.noPlusAndMinus ? "calc(98% - 68px)" : "calc(98% - 36px)"), height: "26px", padding: "2px"}}
+                    style={this.props.type === "checkbox" ? null : {width: (this.props.type === "number" && !this.props.noPlusAndMinus ? "calc(98% - 68px)" : "calc(98% - 36px)"), height: "26px", padding: "2px"}}
                     value={this.props.value || (this.props.CharacterSheet[this.props.name] === undefined ? "" : String(this.props.CharacterSheet[this.props.name]))}
+                    checked={this.props.type === "checkbox" ? (this.props.CharacterSheet[this.props.name] || false) : null}
                     type={this.props.type}
                     onChange={this.onChange}
                 />
-                {this.props.type !== "number" || this.props.noPlusAndMinus
+                {(this.props.type !== "number" && this.props.type !== "checkbox") || this.props.noPlusAndMinus
                     ?
                     <Text>
                         <Button style={{marginLeft: "5px", width: "25px", height: "34px"}} onClick={this.clear} inline>X</Button>
@@ -1026,9 +1114,17 @@ const Input = connect(mapStateToProps)(InputView)
 class Label extends Component {
     render() {
         return (
-            <View style={{marginTop: "10px"}}>
+            <View style={{marginTop: "10px"}} hidden={this.props.hidden}>
                 <label style={{fontWeight: "bold"}}>{this.props.children}:</label>
             </View>
+        )
+    }
+}
+
+class LabelInline extends Component {
+    render() {
+        return (
+            <label {...this.props}>{this.props.children}:</label>
         )
     }
 }
@@ -1087,7 +1183,7 @@ class TextWithInputFont extends Component {
 class Link extends Component {
     render() {
         return (
-            <a href={this.props.href} target={this.props.target} onClick={this.props.onClick} style={{color: "-webkit-link"}}>{this.props.children}</a>
+            <a href={this.props.href} target={this.props.target} onClick={this.props.onClick} style={{color: "-webkit-link", cursor: "pointer", userSelect: "none"}}>{this.props.children}</a>
         )
     }
 }

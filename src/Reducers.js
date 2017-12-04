@@ -72,6 +72,7 @@ function CharacterSheet(State = InitState, Action) {
     else if (Action.type === "CLEAR_ENEMY_STATS") {
         NewState.EnemyEndurance = ""
         NewState.EnemyCombatSkill = ""
+        NewState.ImmunetoMindblast = false
     }
     else if (Action.type.indexOf("INCREMENT") > -1) {
         let property = Action.type.replace("INCREMENT_", "")
@@ -83,7 +84,7 @@ function CharacterSheet(State = InitState, Action) {
     }
     // default action
     else {
-        if (isNaN(Number(Action.value)) || Action.value === "") {
+        if (isNaN(Number(Action.value)) || Action.value === "" || Action.value === true || Action.value === false) {
             NewState[Action.type] = Action.value            
         }
         else {
