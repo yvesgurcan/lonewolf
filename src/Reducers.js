@@ -33,7 +33,27 @@ function CharacterSheet(State = InitState, Action) {
     let NewState = {...State}
 
     // special actions
-    if (Action.type === "LOAD_GAME") {
+    if (Action.type === "INIT") {
+
+        let storedState = localStorage.getItem("GameState")
+
+        if (storedState !== null) {
+
+            console.log("Game loaded from local storage.\n", storedState)
+
+            NewState = JSON.parse(storedState).CharacterSheet
+            
+        }
+
+    }
+    else if (Action.type === "LOAD_GAME") {
+
+        if (Action.value === "") {
+            NewState = {...InitState}
+            NewState.GameState = JSON.stringify({CharacterSheet: {...InitState}})
+            localStorage.setItem("GameState", NewState.GameState)
+            return NewState
+        }
 
         NewState = JSON.parse(Action.value).CharacterSheet
         NewState.GameState = Action.value
@@ -50,6 +70,8 @@ function CharacterSheet(State = InitState, Action) {
         delete GameState.GameState
         NewState.GameState = JSON.stringify({CharacterSheet: GameState})
 
+        localStorage.setItem("GameState", NewState.GameState)
+        
         return NewState
     }
     else if (Action.type === "MODIFY_GAME_STATE") {
@@ -112,6 +134,10 @@ function CharacterSheet(State = InitState, Action) {
     let GameState = {...NewState}
     delete GameState.GameState
     NewState.GameState = JSON.stringify({CharacterSheet: GameState})
+
+    if (Action.type.indexOf("@@") === -1) {
+        localStorage.setItem("GameState", NewState.GameState)        
+    }
 
     return NewState
 

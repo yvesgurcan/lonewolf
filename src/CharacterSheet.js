@@ -367,6 +367,11 @@ export default class App extends Component {
 
 
 class CharacterSheetView extends Component {
+
+    componentDidMount() {
+        this.props.dispatch({type: "INIT"})
+    }
+
     render() {
         return (
             <View>
@@ -1024,7 +1029,7 @@ class SaveAndLoadView extends Component {
                 <Label>Game State</Label>
                 <View hidden={this.state.hideDetails}>
                     <Input name="GameState" value={this.props.CharacterSheet.GameState} onChange={this.modifyGameState} box/>
-                    <Button onClick={this.loadGame}>Load Local Game</Button>
+        <Button onClick={this.loadGame}>{this.props.CharacterSheet.GameState === "" ? <Text>Start New Game</Text> : <Text>Load Game</Text>}</Button>
                     <Button onClick={this.clear}>Clear Game State</Button>
                     <HR/>
                     <Label>Remote Game ID</Label>
@@ -1034,6 +1039,8 @@ class SaveAndLoadView extends Component {
                     <View>{this.state.preRequestFeedback}</View>
                     <Button onClick={this.loadGameRemotely}>Load Game Remotely</Button>
                     <Button onClick={this.saveGameRemotely}>Save Game Remotely</Button>
+                    <Input name="Autosave" type="checkbox" inline/>
+                    <LabelInline htmlFor="Autosave">Auto save</LabelInline>
                 </View>
                 <View style={{width: "100%"}} onClick={this.toggleDetails}>
                     <Link>({this.state.hideDetails ? "show" : "hide"})</Link>
@@ -1204,7 +1211,7 @@ class Label extends Component {
 class LabelInline extends Component {
     render() {
         return (
-            <label {...this.props}>{this.props.children}:</label>
+            <label {...this.props} style={{...this.props.style, userSelect: "none"}}>{this.props.children}.</label>
         )
     }
 }
