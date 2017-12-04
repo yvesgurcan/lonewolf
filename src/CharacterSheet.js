@@ -13,6 +13,16 @@ const mapStateToProps = (state, ownProps) => {
     return {
         ...state,
         ...ownProps,
+        API(request, payload) {
+            if (request === "loadgame") {
+
+            }
+            else if (request === "savegame") {
+
+            }
+
+            return {done: true, error: false}
+        },
         Books: [
             {
                 name: "Select Book",
@@ -383,7 +393,10 @@ class CharacterSheetView extends Component {
                 <HR/>
                 <SpecialItems/>
                 <HR/>
+                <Notes/>
+                <HR/>
                 <SaveAndLoad/>
+                <Spacer/>
             </View>
         )
     }
@@ -929,6 +942,30 @@ class SpecialItemsView extends Component {
 }
 const SpecialItems = connect(mapStateToProps)(SpecialItemsView)
 
+class NotesView extends Component {
+
+    state = {hideDetails: true}
+
+    toggleDetails = () => {
+        this.setState({hideDetails: !this.state.hideDetails})
+    }
+
+    render() {
+        return (
+            <View>
+                <Label>Notes</Label>
+                <View hidden={this.state.hideDetails}>
+                    <Input name="Notes" box/>
+                </View>
+                <View style={{width: "100%"}} onClick={this.toggleDetails}>
+                    <Link>({this.state.hideDetails ? "show" : "hide"})</Link>
+                </View>
+            </View>
+        )
+    }
+}
+const Notes = connect(mapStateToProps)(NotesView)
+
 class SaveAndLoadView extends Component {
 
     state = {gameID: null || this.props.CharacterSheet.GameID, hideDetails: true}
@@ -949,11 +986,37 @@ class SaveAndLoadView extends Component {
     modifyRemoteGameId = (input) => {
         this.setState({gameID: input.value})
     }
+    modifyPassword = (input) => {
+        this.setState({password: input.value})
+    }
     loadGameRemotely = () => {
-        console.log("coming soon")
+        this.setState({preRequestFeedback: "Loading..."})
+        let response = this.props.API("loadgame", this.state.gameID)
+
+        if (response.done) {
+            this.setState({preRequestFeedback: response.error})
+        }
     }
     saveGameRemotely = () => {
-        console.log("coming soon")
+
+    if (this.state.password === undefined || this.state.password === "") {
+        return this.setState({preRequestFeedback: "Please enter the password."})
+    }
+    if (this.state.password.length < 8) {
+        return this.setState({preRequestFeedback: "This password is too short."})
+    }
+    this.setState({preRequestFeedback: "Saving..."})
+
+        let payload = {
+            gameID: this.state.gameID,
+            password: this.state.password,
+            gameState: this.props.CharacterSheet.GameState,
+        }
+        let response = this.props.API("savegame", payload)
+
+        if (response.done) {
+            this.setState({preRequestFeedback: response.error})
+        }
     }
     render() {
         return (
@@ -961,10 +1024,14 @@ class SaveAndLoadView extends Component {
                 <Label>Game State</Label>
                 <View hidden={this.state.hideDetails}>
                     <Input name="GameState" value={this.props.CharacterSheet.GameState} onChange={this.modifyGameState} box/>
-                    <Button onClick={this.loadGame}>Load  Local Game</Button>
-                    <Button onClick={this.clear}>Clear</Button>
+                    <Button onClick={this.loadGame}>Load Local Game</Button>
+                    <Button onClick={this.clear}>Clear Game State</Button>
+                    <HR/>
                     <Label>Remote Game ID</Label>
                     <Input value={this.state.gameID} onChange={this.modifyRemoteGameId}/>
+                    <Label>Password</Label>
+                    <Input value={this.state.password} type="password" onChange={this.modifyPassword}/>
+                    <View>{this.state.preRequestFeedback}</View>
                     <Button onClick={this.loadGameRemotely}>Load Game Remotely</Button>
                     <Button onClick={this.saveGameRemotely}>Save Game Remotely</Button>
                 </View>
@@ -976,6 +1043,14 @@ class SaveAndLoadView extends Component {
     }
 }
 const SaveAndLoad = connect(mapStateToProps)(SaveAndLoadView)
+
+class Spacer extends Component {
+    render() {
+        return (
+            <View style={{height: "50px"}}/>
+        )
+    }
+}
 
 class Group extends Component {
     render() {
@@ -1033,6 +1108,11 @@ class InputView extends Component {
     }
 
     clear = () => {
+
+        if (!this.props.name) {
+            return this.props.onChange("")
+        }
+
         this.props.dispatch({type: this.props.name, value: ""})
     }
 
