@@ -6,3 +6,4 @@ Checkbox: Undead (x2 damage thanks to Sommerswerd)
 Make toggle link inline-block instead of 100% width.
 Pad left-right section number buttons.
 When clicking a field, select all content. (It looks like this might be trickier than it seems)
+Combat: keep track of rounds.
