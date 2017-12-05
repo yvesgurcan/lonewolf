@@ -13,11 +13,33 @@ const mapStateToProps = (state, ownProps) => {
     return {
         ...state,
         ...ownProps,
-        API(request, payload) {
+        API(request, payload, dispatch) {
             if (request === "loadgame") {
+
+                if (window.debugApp) {
+                    console.log(
+                        ["Load game API request.\n",
+                        "Payload: "].join(""), payload
+                    )
+                }
+
+                if (dispatch) {
+                    store.dispatch({type: "LOAD_GAME_FROM_API", value: JSON.stringify(state)})
+                }
 
             }
             else if (request === "savegame") {
+
+                if (window.debugApp) {
+                    console.log(
+                        ["Save game API request.\n",
+                        "Payload: "].join(""), payload
+                    )
+                }
+
+                if (dispatch) {
+                    store.dispatch({type: "UPDATE_GAME_ID", value: Math.random()})
+                }
 
             }
 
@@ -369,7 +391,8 @@ export default class App extends Component {
 class CharacterSheetView extends Component {
 
     componentDidMount() {
-        this.props.dispatch({type: "INIT"})
+        this.props.dispatch({type: "INIT", API: this.props.API, request: "loadgame"})
+        console.log("Set debugApp to true to see game state data.")
     }
 
     render() {
@@ -447,7 +470,7 @@ class BookView extends Component {
 
         Book = {...Book, number: bookNumber}
 
-        this.props.dispatch({type: "UPDATE_BOOK", value: Book})
+        this.props.dispatch({type: "UPDATE_BOOK", value: Book, API: this.props.API})
     }
     render() {
         return (
@@ -522,7 +545,7 @@ class EnduranceView extends Component {
         
          let bonuses = this.getBonuses(true)
  
-         this.props.dispatch({type: "MaxEndurance", value: (this.props.CharacterSheet.MaxEndurance || 0) + (bonuses.length > 0 ? bonuses.reduce((sum, value) => {return sum+value}) : 0)})
+         this.props.dispatch({type: "MaxEndurance", value: (this.props.CharacterSheet.MaxEndurance || 0) + (bonuses.length > 0 ? bonuses.reduce((sum, value) => {return sum+value}) : 0), API: this.props.API})
  
      }
 
@@ -629,7 +652,7 @@ class CombatSkillView extends Component {
        
         let bonuses = this.getBonuses(true)
 
-        this.props.dispatch({type: "CombatSkill", value: (this.props.CharacterSheet.BaseCombatSkill || 0) + (bonuses.length > 0 ? bonuses.reduce((sum, value) => {return sum+value}) : 0)})
+        this.props.dispatch({type: "CombatSkill", value: (this.props.CharacterSheet.BaseCombatSkill || 0) + (bonuses.length > 0 ? bonuses.reduce((sum, value) => {return sum+value}) : 0), API: this.props.API})
 
     }
 
@@ -689,11 +712,11 @@ class CombatRatioView extends Component {
     }
 
     updateEndurance = () => {
-        this.props.dispatch({type: "UPDATE_ENDURANCE", value: this.state.damage})
+        this.props.dispatch({type: "UPDATE_ENDURANCE", value: this.state.damage, API: this.props.API})
     }
 
     clearEnemyStats = () => {
-        this.props.dispatch({type: "CLEAR_ENEMY_STATS"})
+        this.props.dispatch({type: "CLEAR_ENEMY_STATS", API: this.props.API})
         this.setState({damage: {}})
     }
 
@@ -973,30 +996,44 @@ const Notes = connect(mapStateToProps)(NotesView)
 
 class SaveAndLoadView extends Component {
 
-    state = {gameID: null || this.props.CharacterSheet.GameID, hideDetails: true}
+    state = {hideDetails: true}
 
     toggleDetails = () => {
         this.setState({hideDetails: !this.state.hideDetails})
     }
 
     loadGame = () => {
-        this.props.dispatch({type: "LOAD_GAME", value: this.props.CharacterSheet.GameState})
+        this.props.dispatch({type: "LOAD_GAME", value: this.props.CharacterSheet.GameState, API: this.props.API})
     }
     modifyGameState = (input) => {
-        this.props.dispatch({type: "MODIFY_GAME_STATE", value: input.value})
+        this.props.dispatch({type: "MODIFY_GAME_STATE", value: input.value, API: this.props.API})
     }
     clear = () => {
-        this.props.dispatch({type: "CLEAR_GAME_STATE"})
-    }
-    modifyRemoteGameId = (input) => {
-        this.setState({gameID: input.value})
+        this.props.dispatch({type: "CLEAR_GAME_STATE", API: this.props.API})
     }
     modifyPassword = (input) => {
         this.setState({password: input.value})
     }
     loadGameRemotely = () => {
+
+        if (this.props.CharacterSheet.GameID === undefined || this.props.CharacterSheet.GameID === "") {
+            return this.setState({preRequestFeedback: "Please enter the ID of the game."})
+        }
+
+        if (this.props.CharacterSheet.Password === undefined || this.props.CharacterSheet.Password === "") {
+            return this.setState({preRequestFeedback: "Please enter the password."})
+        }
+        if (this.props.CharacterSheet.Password.length < 8) {
+            return this.setState({preRequestFeedback: "This password is too short."})
+        }
+
         this.setState({preRequestFeedback: "Loading..."})
-        let response = this.props.API("loadgame", this.state.gameID)
+        
+        let payload = {
+            gameID: this.props.CharacterSheet.GameID,
+            password: this.props.CharacterSheet.Password,
+        }
+        let response = this.props.API("loadgame", payload, true)
 
         if (response.done) {
             this.setState({preRequestFeedback: response.error})
@@ -1004,20 +1041,21 @@ class SaveAndLoadView extends Component {
     }
     saveGameRemotely = () => {
 
-    if (this.state.password === undefined || this.state.password === "") {
-        return this.setState({preRequestFeedback: "Please enter the password."})
-    }
-    if (this.state.password.length < 8) {
-        return this.setState({preRequestFeedback: "This password is too short."})
-    }
-    this.setState({preRequestFeedback: "Saving..."})
+        if (this.props.CharacterSheet.Password === undefined || this.props.CharacterSheet.Password === "") {
+            return this.setState({preRequestFeedback: "Please enter the password."})
+        }
+        if (this.props.CharacterSheet.Password.length < 8) {
+            return this.setState({preRequestFeedback: "This password is too short."})
+        }
+        
+        this.setState({preRequestFeedback: "Saving..."})
 
         let payload = {
-            gameID: this.state.gameID,
-            password: this.state.password,
+            gameID: this.props.CharacterSheet.GameID,
+            password: this.props.CharacterSheet.Password,
             gameState: this.props.CharacterSheet.GameState,
         }
-        let response = this.props.API("savegame", payload)
+        let response = this.props.API("savegame", payload, true)
 
         if (response.done) {
             this.setState({preRequestFeedback: response.error})
@@ -1033,9 +1071,8 @@ class SaveAndLoadView extends Component {
                     <Button onClick={this.clear}>Clear Game State</Button>
                     <HR/>
                     <Label>Remote Game ID</Label>
-                    <Input value={this.state.gameID} onChange={this.modifyRemoteGameId}/>
-                    <Label>Password</Label>
-                    <Input value={this.state.password} type="password" onChange={this.modifyPassword}/>
+                    <Input name="GameID"/>
+                    <Group name="Password" type="password"/>
                     <View>{this.state.preRequestFeedback}</View>
                     <Button onClick={this.loadGameRemotely}>Load Game Remotely</Button>
                     <Button onClick={this.saveGameRemotely}>Save Game Remotely</Button>
@@ -1091,27 +1128,29 @@ class InputView extends Component {
             return this.props.onChange(input.target)
         }
 
-        let value = input.target.value
+        let value = null
 
         if (!input.target) {
             value = (this.props.CharacterSheet[this.props.name] || "") + input
 
-            return this.props.dispatch({type: this.props.name, value: value})
+            return this.props.dispatch({type: this.props.name, value: value, API: this.props.API})
         }
+
+        value = input.target.value
 
         if (this.props.type === "checkbox") {
             value = input.target.checked
         }
 
-        this.props.dispatch({type: this.props.name, value: value})
+        this.props.dispatch({type: this.props.name, value: value, API: this.props.API})
     }
 
     increment = () => {
-        this.props.dispatch({type: "INCREMENT_" + this.props.name})
+        this.props.dispatch({type: "INCREMENT_" + this.props.name, API: this.props.API})
     }
 
     decrement = () => {
-        this.props.dispatch({type: "DECREMENT_" + this.props.name})
+        this.props.dispatch({type: "DECREMENT_" + this.props.name, API: this.props.API})
     }
 
     clear = () => {
@@ -1120,7 +1159,7 @@ class InputView extends Component {
             return this.props.onChange("")
         }
 
-        this.props.dispatch({type: this.props.name, value: ""})
+        this.props.dispatch({type: this.props.name, value: "", API: this.props.API})
     }
 
     render() {

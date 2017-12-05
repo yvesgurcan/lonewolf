@@ -39,19 +39,32 @@ function CharacterSheet(State = InitState, Action) {
 
         if (storedState !== null) {
 
-            console.log("Game loaded from local storage.\n", storedState)
+            if (window.debugApp) {
+                console.log(
+                    ["Game loaded locally.\n",
+                    "localStorage: ",storedState].join("")
+                )    
+            }
 
             NewState = JSON.parse(storedState).CharacterSheet
             
         }
 
     }
-    else if (Action.type === "LOAD_GAME") {
+    else if (Action.type === "LOAD_GAME" || Action.type === "LOAD_GAME_FROM_API") {
 
         if (Action.value === "") {
             NewState = {...InitState}
             NewState.GameState = JSON.stringify({CharacterSheet: {...InitState}})
             localStorage.setItem("GameState", NewState.GameState)
+
+            if (window.debugApp) {
+                console.log(
+                    ["Game reset locally.\n",
+                    "localStorage: ",NewState.GameState].join("")
+                )    
+            }
+
             return NewState
         }
 
@@ -71,8 +84,26 @@ function CharacterSheet(State = InitState, Action) {
         NewState.GameState = JSON.stringify({CharacterSheet: GameState})
 
         localStorage.setItem("GameState", NewState.GameState)
+
+        if (window.debugApp) {
+            if (Action.type === "LOAD_GAME_FROM_API") {
+                console.log(
+                    ["Game loaded from API.\n",
+                    "localStorage: ",NewState.GameState].join("")
+                )        
+            }
+            else {
+                console.log(
+                    ["Game loaded locally from text area.\n",
+                    "localStorage: ",NewState.GameState].join("")
+                )
+            }
+        }
         
         return NewState
+    }
+    else if (Action.type === "UPDATE_GAME_ID") {
+        NewState.GameID = Action.value
     }
     else if (Action.type === "MODIFY_GAME_STATE") {
 
@@ -112,6 +143,7 @@ function CharacterSheet(State = InitState, Action) {
         else {
             NewState[Action.type] = Math.floor(Math.max(0, Number(Action.value)))
         }
+    
     }
 
     // additional actions
@@ -133,10 +165,24 @@ function CharacterSheet(State = InitState, Action) {
 
     let GameState = {...NewState}
     delete GameState.GameState
+    delete GameState.Password
     NewState.GameState = JSON.stringify({CharacterSheet: GameState})
 
-    if (Action.type.indexOf("@@") === -1) {
-        localStorage.setItem("GameState", NewState.GameState)        
+    if (Action.type.indexOf("@@") === -1 && JSON.stringify(State) !== JSON.stringify(NewState)) {
+
+        localStorage.setItem("GameState", NewState.GameState)
+
+        if (window.debugApp) {
+            console.log(
+                ["Game saved locally.\n",
+                "localStorage: ",NewState.GameState].join("")
+            )
+        }
+
+        if (Action.API && NewState.Autosave) {
+            Action.API(Action.request || "savegame", NewState.GameState, false)            
+        }
+
     }
 
     return NewState
