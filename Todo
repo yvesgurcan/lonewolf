@@ -7,3 +7,5 @@ Make toggle link inline-block instead of 100% width.
 Pad left-right section number buttons.
 When clicking a field, select all content. (It looks like this might be trickier than it seems)
 Combat: keep track of rounds.
+Remove kai disciplnes already selected from dropdown options.
+Add padding around HR.
