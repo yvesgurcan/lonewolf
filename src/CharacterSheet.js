@@ -23,7 +23,7 @@ const mapStateToProps = (state, ownProps) => {
                     )
                 }
 
-                fetch("https://qdrc7541jc.execute-api.us-west-2.amazonaws.com/dev?gameId=" + payload.gameId + "password=" + payload.Password)
+                fetch("https://qdrc7541jc.execute-api.us-west-2.amazonaws.com/dev?gameID=" + (payload.gameID || "") + "&password=" + (encodeURIComponent(payload.password) || ""), {mode: 'no-cors'})
 
 
                 if (dispatch) {
@@ -451,7 +451,7 @@ class GameMetaDataView extends Component {
         return (
             <View>
                 <Label>Game ID</Label>
-                <Text>{this.props.CharacterSheet.GameID || "-"}</Text>
+                <Text>{String(this.props.CharacterSheet.GameID) || "-"}</Text>
                 <Label>Game Started</Label>
                 <Text>{this.props.CharacterSheet.GameStarted}</Text>
                 <Label>Game Last Saved</Label>
@@ -1035,8 +1035,8 @@ class SaveAndLoadView extends Component {
         this.setState({preRequestFeedback: "Loading..."})
         
         let payload = {
-            gameID: this.props.CharacterSheet.GameID,
-            password: this.props.CharacterSheet.Password,
+            gameID: String(this.props.CharacterSheet.GameID),
+            password: String(this.props.CharacterSheet.Password),
         }
         let response = this.props.API("loadgame", payload, true)
 
@@ -1056,8 +1056,8 @@ class SaveAndLoadView extends Component {
         this.setState({preRequestFeedback: "Saving..."})
 
         let payload = {
-            gameID: this.props.CharacterSheet.GameID,
-            password: this.props.CharacterSheet.Password,
+            gameID: String(this.props.CharacterSheet.GameID),
+            password: String(this.props.CharacterSheet.Password),
             gameState: this.props.CharacterSheet.GameState,
         }
         let response = this.props.API("savegame", payload, true)
