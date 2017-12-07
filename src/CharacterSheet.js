@@ -27,6 +27,7 @@ const mapStateToProps = (state, ownProps) => {
 
 
                 if (dispatch) {
+                    // replace value by actual response
                     store.dispatch({type: "LOAD_GAME_FROM_API", value: JSON.stringify(state)})
                 }
 
@@ -43,6 +44,7 @@ const mapStateToProps = (state, ownProps) => {
                 }
 
                 if (dispatch) {
+                    // replace value by actual response
                     store.dispatch({type: "UPDATE_GAME_ID", value: Math.random()})
                 }
 
