@@ -30,17 +30,39 @@ const mapStateToProps = (state, ownProps) => {
 
                 fetch("https://qdrc7541jc.execute-api.us-west-2.amazonaws.com/dev?gameID=" + (String(payload.gameID) || "") + "&password=" + (encodeURIComponent(String(payload.password)) || ""))
                     .then(function(response) {
-
-                        return response.json()
+                        
+                        return response.json()   
 
                     }).then(function(content) {
+
+                        if (content.error) {
+                            return store.dispatch({type: "UPDATE_REQUEST_FEEDBACK", value: content})
+                        }
+                        else {
+
+                            store.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Success!"})
+                            
+                            // TODO: Resolve potential mismatch between RequestFeedback.gameID and CharacterSheet.GameID
+                            // store.dispatch({type: "GameID", value: XXX})
+
+                            setTimeout(function() {
+                                store.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: null})
+                            }, 5000)
+                        }
 
                         if (dispatch) {
                             // replace value by actual response
                             store.dispatch({type: "LOAD_GAME_FROM_API", value: content.gameState})
                         }
 
-                })
+                    }).catch(function(error) {
+
+                        if(!navigator.onLine) {
+                            return store.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Request error: You are offline."})
+                        }
+
+                        store.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Request error: " + error.message + "."})
+                    })
 
             }
             else if (request === "savegame") {
@@ -410,8 +432,7 @@ class CharacterSheetView extends Component {
         console.log("Set debugApp to true to see game state data.")
 
         this.props.dispatch({type: "INIT"})
-
-        this.props.API("loadgame", {gameID: this.props.CharacterSheet.GameID, password: this.props.CharacterSheet.Password}, true)
+        this.props.dispatch({type: "INIT_REQUEST_FEEDBACK"})
 
     }
 
@@ -1031,55 +1052,54 @@ class SaveAndLoadView extends Component {
     clear = () => {
         this.props.dispatch({type: "CLEAR_GAME_STATE", API: this.props.API})
     }
+    modifyGameID = (input) => {
+        this.props.dispatch({type: "UPDATE_GAME_ID_REQUEST_FEEDBACK", value: input.value})
+    }
     modifyPassword = (input) => {
-        this.setState({password: input.value})
+        this.props.dispatch({type: "UPDATE_PASSWORD_REQUEST_FEEDBACK", value: input.value})
     }
     loadGameRemotely = () => {
 
-        if (this.props.CharacterSheet.GameID === undefined || this.props.CharacterSheet.GameID === "") {
-            return this.setState({preRequestFeedback: "Please enter the ID of the game."})
+        if (this.props.RequestFeedback.gameID === undefined || this.props.RequestFeedback.gameID === "") {
+            return this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Please enter the ID of the game."})
+        } 
+
+        if (this.props.RequestFeedback.password === undefined || this.props.RequestFeedback.password === "") {
+            return this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Please enter the password."})
+        }
+        if (this.props.RequestFeedback.password.length < 8) {
+            return this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "This password is too short."})
         }
 
-        if (this.props.CharacterSheet.Password === undefined || this.props.CharacterSheet.Password === "") {
-            return this.setState({preRequestFeedback: "Please enter the password."})
-        }
-        if (this.props.CharacterSheet.Password.length < 8) {
-            return this.setState({preRequestFeedback: "This password is too short."})
-        }
-
-        this.setState({preRequestFeedback: "Loading..."})
+        this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Loading..."})
         
         let payload = {
-            gameID: String(this.props.CharacterSheet.GameID),
-            password: String(this.props.CharacterSheet.Password),
+            gameID: String(this.props.RequestFeedback.gameID),
+            password: String(this.props.RequestFeedback.password),
         }
-        let response = this.props.API("loadgame", payload, true)
+        
+        this.props.API("loadgame", payload, true)
 
-        if (response.done) {
-            this.setState({preRequestFeedback: response.error})
-        }
     }
     saveGameRemotely = () => {
 
-        if (this.props.CharacterSheet.Password === undefined || this.props.CharacterSheet.Password === "") {
-            return this.setState({preRequestFeedback: "Please enter the password."})
+        if (this.props.RequestFeedback.password === undefined || this.props.RequestFeedback.password === "") {
+            return this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Please enter the password."})
         }
-        if (this.props.CharacterSheet.Password.length < 8) {
-            return this.setState({preRequestFeedback: "This password is too short."})
+        if (this.props.RequestFeedback.password.length < 8) {
+            return this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "This password is too short."})
         }
         
-        this.setState({preRequestFeedback: "Saving..."})
+        this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Saving..."})
 
         let payload = {
-            gameID: String(this.props.CharacterSheet.GameID),
-            password: String(this.props.CharacterSheet.Password),
+            gameID: String(this.props.RequestFeedback.gameID),
+            password: String(this.props.RequestFeedback.password),
             gameState: this.props.CharacterSheet.GameState,
         }
-        let response = this.props.API("savegame", payload, true)
 
-        if (response.done) {
-            this.setState({preRequestFeedback: response.error})
-        }
+        this.props.API("savegame", payload, true)
+
     }
     render() {
         return (
@@ -1087,13 +1107,14 @@ class SaveAndLoadView extends Component {
                 <Label>Game State</Label>
                 <View hidden={this.state.hideDetails}>
                     <Input name="GameState" value={this.props.CharacterSheet.GameState} onChange={this.modifyGameState} box/>
-        <Button onClick={this.loadGame}>{this.props.CharacterSheet.GameState === "" ? <Text>Start New Game</Text> : <Text>Load Game</Text>}</Button>
+                    <Button onClick={this.loadGame}>{this.props.CharacterSheet.GameState === "" ? <Text>Start New Game</Text> : <Text>Load Game</Text>}</Button>
                     <Button onClick={this.clear}>Clear Game State</Button>
                     <HR/>
                     <Label>Remote Game ID</Label>
-                    <Input name="GameID"/>
-                    <Group name="Password" type="password"/>
-                    <View>{this.state.preRequestFeedback}</View>
+                    <Input value={this.props.RequestFeedback.gameID} onChange={this.modifyGameID}/>
+                    <Label>Password</Label>
+                    <Input type="password" value={this.props.RequestFeedback.password} onChange={this.modifyPassword}/>
+                    <View>{this.props.RequestFeedback ? this.props.RequestFeedback.message : null}</View>
                     <Button onClick={this.loadGameRemotely}>Load Game Remotely</Button>
                     <Button onClick={this.saveGameRemotely}>Save Game Remotely</Button>
                     <Input name="Autosave" type="checkbox" inline/>

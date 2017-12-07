@@ -24,6 +24,40 @@ function PadNumber(NumberToPad) {
     }
 }
 
+const InitStateRequestFeedback = {
+    error: false,
+    message : "",
+}
+
+function RequestFeedback(State = InitStateRequestFeedback, Action) {
+
+    let NewState = {...State}
+
+    switch(Action.type) {
+
+        case "UPDATE_GAME_ID_REQUEST_FEEDBACK":
+            NewState.gameID = Action.value
+            break
+        case "UPDATE_PASSWORD_REQUEST_FEEDBACK":
+            NewState.password = Action.value
+            break
+        case "UPDATE_VALIDATION_REQUEST_FEEDBACK":
+            NewState.message = Action.value
+            break
+        case "UPDATE_REQUEST_FEEDBACK":
+            NewState = {...NewState, ...Action.value}
+            break
+
+        case "INIT_REQUEST_FEEDBACK":
+        default:
+            break
+
+    }
+
+    return NewState
+
+}
+
 const InitState = {
     GameStarted: GenerateFormattedDate(new Date()),
 }
@@ -31,6 +65,10 @@ const InitState = {
 function CharacterSheet(State = InitState, Action) {
 
     let NewState = {...State}
+
+    if (Action.type.indexOf("REQUEST_FEEDBACK") > -1) {
+        return NewState
+    }
 
     // special actions
     if (Action.type === "INIT") {
@@ -58,7 +96,6 @@ function CharacterSheet(State = InitState, Action) {
             NewState = {...InitState}
 
             let GameState = {CharacterSheet: {...NewState}}
-            delete GameState.Password
 
             NewState.GameState = JSON.stringify(GameState)
             localStorage.setItem("GameState", NewState.GameState)
@@ -164,7 +201,6 @@ function CharacterSheet(State = InitState, Action) {
 
     let GameState = {...NewState}
     delete GameState.GameState
-    delete GameState.Password
     NewState.GameState = JSON.stringify({CharacterSheet: GameState})
 
     if (Action.type.indexOf("@@") === -1 && JSON.stringify(State) !== JSON.stringify(NewState)) {
@@ -180,6 +216,10 @@ function CharacterSheet(State = InitState, Action) {
 
         if (Action.API && NewState.Autosave) {
 
+            // debugger
+
+            // TODO: Grab gameID from RequestFeedback when saving.
+
             Action.API(Action.request || "savegame", {gameID: NewState.GameID, password: NewState.Password, gameState: NewState.GameState}, false)            
         }
 
@@ -190,5 +230,6 @@ function CharacterSheet(State = InitState, Action) {
 }
 
 export default combineReducers({
-    CharacterSheet
+    RequestFeedback,
+    CharacterSheet,
 })
