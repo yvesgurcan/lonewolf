@@ -219,7 +219,7 @@ function CharacterSheet(State = InitState, Action) {
 
             // TODO: Grab gameID from RequestFeedback when saving.
 
-            Action.API(Action.request || "savegame", {gameID: NewState.GameID, password: NewState.Password, gameState: NewState.GameState}, false)            
+            Action.API(Action.request || "savegame", {gameState: NewState.GameState}, false)            
         }
 
     }

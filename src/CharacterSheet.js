@@ -19,6 +19,9 @@ const mapStateToProps = (state, ownProps) => {
         ...ownProps,
         API(request, payload, dispatch) {
 
+            payload.password = state.RequestFeedback.password
+            payload.gameID = String(state.RequestFeedback.gameID)
+
             // debug
             if (window.debugApp && request === "loadgame") {
 
@@ -146,7 +149,6 @@ const mapStateToProps = (state, ownProps) => {
                         return store.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Game with ID '" + payload.gameID + "' was successfully deleted."})
                     }
 
-                    // replace value by actual response
                     store.dispatch({type: "UPDATE_ACTUAL_GAME_ID_REQUEST_FEEDBACK", value: responseContent.gameID})
                 }
 
