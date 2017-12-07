@@ -11,77 +11,153 @@ const store = createStore(
 
 window.debugApp = true
 
+let APItimeout = null
+
 const mapStateToProps = (state, ownProps) => {
     return {
         ...state,
         ...ownProps,
         API(request, payload, dispatch) {
 
-            if (!payload.password) return null
+            // debug
+            if (window.debugApp && request === "loadgame") {
+
+                console.log(
+                    ["Load game API request.\n",
+                    "Request payload: "].join(""), payload
+                )
+            }
+            else if (window.debugApp && request === "savegame") {
+
+                console.log(
+                    ["Save game API request.\n",
+                    "Request payload: "].join(""), payload
+                )
+            }
+
+            // validation
+            if (!payload.password) {
+
+                if (window.debugApp) {
+                    console.error("Can't send API request without a password.")
+                }
+
+                return null
+            }
+
+            // parameters
+            let url = "https://qdrc7541jc.execute-api.us-west-2.amazonaws.com/dev"
+            let parameters = {}
 
             if (request === "loadgame") {
 
-                if (window.debugApp) {
-                    console.log(
-                        ["Load game API request.\n",
-                        "Payload: "].join(""), payload
-                    )
+                url += "?gameID=" + (String(payload.gameID) || "") + "&password=" + (encodeURIComponent(String(payload.password)) || "")
+
+                parameters = {
+                    method: "get",
+                    body: null,
                 }
-
-                fetch("https://qdrc7541jc.execute-api.us-west-2.amazonaws.com/dev?gameID=" + (String(payload.gameID) || "") + "&password=" + (encodeURIComponent(String(payload.password)) || ""))
-                    .then(function(response) {
-                        
-                        return response.json()   
-
-                    }).then(function(content) {
-
-                        if (content.error) {
-                            return store.dispatch({type: "UPDATE_REQUEST_FEEDBACK", value: content})
-                        }
-                        else {
-
-                            store.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Success!"})
-                            
-                            // TODO: Resolve potential mismatch between RequestFeedback.gameID and CharacterSheet.GameID
-                            // store.dispatch({type: "GameID", value: XXX})
-
-                            setTimeout(function() {
-                                store.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: null})
-                            }, 5000)
-                        }
-
-                        if (dispatch) {
-                            // replace value by actual response
-                            store.dispatch({type: "LOAD_GAME_FROM_API", value: content.gameState})
-                        }
-
-                    }).catch(function(error) {
-
-                        if(!navigator.onLine) {
-                            return store.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Request error: You are offline."})
-                        }
-
-                        store.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Request error: " + error.message + "."})
-                    })
 
             }
             else if (request === "savegame") {
 
-                if (window.debugApp) {
-                    console.log(
-                        ["Save game API request.\n",
-                        "Payload: "].join(""), payload
-                    )
+                debugger
+
+                let headers = new Headers()
+                headers.append("Content-Type","application/json")
+
+                parameters = {
+                    headers: headers,
+                    method: "post",
+                    body: JSON.stringify(payload),
                 }
 
-                if (dispatch) {
+            }
+            else {
+
+                if (window.debugApp) {
+
+                    console.error("Unexpected request '" + request + "'. Unable to configure the request parameters.")
+                }
+
+                return null
+            }
+
+            // request
+            fetch(url, parameters)
+            .then(function(response) {
+                    
+                return response.json()   
+
+            }).then(function(responseContent) {
+
+                // custom server error (ok = true)
+                if (responseContent.error) {
+
+                    return store.dispatch({type: "UPDATE_REQUEST_FEEDBACK", value: responseContent})
+
+                }
+                // success
+                else {
+
+                    store.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Success!"})
+
+                    APItimeout = setTimeout(function() {
+                        store.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: null})
+                    }, 5000)
+
+                    // response
+                    handleResponse(request, responseContent, payload, dispatch)
+
+                }
+
+                
+
+            }).catch(function(error) {
+
+                // offline
+                if(!navigator.onLine) {
+                    return store.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Request error: You are offline."})
+                }
+
+                // server error
+                store.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Request error: " + error.message + "."})
+
+            })
+
+            function handleResponse(request, responseContent, payload, dispatch) {
+
+                if (window.debugApp) {
+
+                    console.log(
+                        ["API response resolved successfully.\n",
+                        "Response content: "].join(""), responseContent
+                    )
+
+                }
+
+                if (request === "loadgame" && dispatch) {
                     // replace value by actual response
-                    store.dispatch({type: "UPDATE_GAME_ID", value: Math.random()})
+                    store.dispatch({type: "LOAD_GAME_FROM_API", value: responseContent.gameState})
+                    store.dispatch({type: "UPDATE_ACTUAL_GAME_ID_REQUEST_FEEDBACK", value: payload.gameID})
+                }
+
+                if (request === "savegame" && dispatch) {
+
+                    // deleted game
+                    if (responseContent.deleted) {
+                        return store.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Game with ID '" + payload.gameID + "' was successfully deleted."})
+                    }
+
+                    // replace value by actual response
+                    store.dispatch({type: "UPDATE_ACTUAL_GAME_ID_REQUEST_FEEDBACK", value: responseContent.gameID})
                 }
 
             }
 
-            return {done: true, error: false}
+           
+                
+
         },
         Books: [
             {
@@ -487,7 +563,7 @@ class GameMetaDataView extends Component {
         return (
             <View>
                 <Label>Game ID</Label>
-                <Text>{this.props.CharacterSheet.GameID !== undefined ? String(this.props.CharacterSheet.GameID) : "-"}</Text>
+                <Text>{this.props.RequestFeedback.actualGameID !== undefined ? String(this.props.RequestFeedback.actualGameID) : "-"}</Text>
                 <Label>Game Started</Label>
                 <Text>{this.props.CharacterSheet.GameStarted}</Text>
                 <Label>Game Last Saved</Label>
@@ -1045,6 +1121,10 @@ class SaveAndLoadView extends Component {
 
     loadGame = () => {
         this.props.dispatch({type: "LOAD_GAME", value: this.props.CharacterSheet.GameState, API: this.props.API})
+
+        if (this.props.CharacterSheet.GameState === "") {
+            this.props.dispatch({type: "UPDATE_ACTUAL_GAME_ID_REQUEST_FEEDBACK"})
+        }
     }
     modifyGameState = (input) => {
         this.props.dispatch({type: "MODIFY_GAME_STATE", value: input.value, API: this.props.API})
@@ -1059,6 +1139,8 @@ class SaveAndLoadView extends Component {
         this.props.dispatch({type: "UPDATE_PASSWORD_REQUEST_FEEDBACK", value: input.value})
     }
     loadGameRemotely = () => {
+
+        clearTimeout(APItimeout)
 
         if (this.props.RequestFeedback.gameID === undefined || this.props.RequestFeedback.gameID === "") {
             return this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Please enter the ID of the game."})
@@ -1083,6 +1165,12 @@ class SaveAndLoadView extends Component {
     }
     saveGameRemotely = () => {
 
+        clearTimeout(APItimeout)
+
+        if (this.props.CharacterSheet.GameState === "" && this.props.RequestFeedback.gameID === undefined || this.props.RequestFeedback.gameID === "") {
+            return this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Please enter the ID of the game you wish to delete."})
+        }
+
         if (this.props.RequestFeedback.password === undefined || this.props.RequestFeedback.password === "") {
             return this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Please enter the password."})
         }
@@ -1093,7 +1181,7 @@ class SaveAndLoadView extends Component {
         this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Saving..."})
 
         let payload = {
-            gameID: String(this.props.RequestFeedback.gameID),
+            gameID: this.props.RequestFeedback.gameID === undefined ? "" : String(this.props.RequestFeedback.gameID),
             password: String(this.props.RequestFeedback.password),
             gameState: this.props.CharacterSheet.GameState,
         }
@@ -1116,7 +1204,7 @@ class SaveAndLoadView extends Component {
                     <Input type="password" value={this.props.RequestFeedback.password} onChange={this.modifyPassword}/>
                     <View>{this.props.RequestFeedback ? this.props.RequestFeedback.message : null}</View>
                     <Button onClick={this.loadGameRemotely}>Load Game Remotely</Button>
-                    <Button onClick={this.saveGameRemotely}>Save Game Remotely</Button>
+                    <Button onClick={this.saveGameRemotely}>{this.props.CharacterSheet.GameState === "" ? "Delete Game Remotely" : "Save Game Remotely"}</Button>
                     <Input name="Autosave" type="checkbox" inline/>
                     <LabelInline htmlFor="Autosave">Auto save</LabelInline>
                 </View>

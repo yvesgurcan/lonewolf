@@ -34,7 +34,9 @@ function RequestFeedback(State = InitStateRequestFeedback, Action) {
     let NewState = {...State}
 
     switch(Action.type) {
-
+        case "UPDATE_ACTUAL_GAME_ID_REQUEST_FEEDBACK":
+            NewState.actualGameID = Action.value
+            // falls through
         case "UPDATE_GAME_ID_REQUEST_FEEDBACK":
             NewState.gameID = Action.value
             break
@@ -137,9 +139,6 @@ function CharacterSheet(State = InitState, Action) {
         }
         
         return NewState
-    }
-    else if (Action.type === "UPDATE_GAME_ID") {
-        NewState.GameID = Action.value
     }
     else if (Action.type === "MODIFY_GAME_STATE") {
 
