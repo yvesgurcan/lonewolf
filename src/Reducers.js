@@ -54,8 +54,13 @@ function CharacterSheet(State = InitState, Action) {
     else if (Action.type === "LOAD_GAME" || Action.type === "LOAD_GAME_FROM_API") {
 
         if (Action.value === "") {
+            
             NewState = {...InitState}
-            NewState.GameState = JSON.stringify({CharacterSheet: {...InitState}})
+
+            let GameState = {CharacterSheet: {...NewState}}
+            delete GameState.Password
+
+            NewState.GameState = JSON.stringify(GameState)
             localStorage.setItem("GameState", NewState.GameState)
 
             if (window.debugApp) {
@@ -86,13 +91,7 @@ function CharacterSheet(State = InitState, Action) {
         localStorage.setItem("GameState", NewState.GameState)
 
         if (window.debugApp) {
-            if (Action.type === "LOAD_GAME_FROM_API") {
-                console.log(
-                    ["Game loaded from API.\n",
-                    "localStorage: ",NewState.GameState].join("")
-                )        
-            }
-            else {
+            if (Action.type === "LOAD_GAME") {
                 console.log(
                     ["Game loaded locally from text area.\n",
                     "localStorage: ",NewState.GameState].join("")
@@ -120,7 +119,7 @@ function CharacterSheet(State = InitState, Action) {
     }
     else if (Action.type === "UPDATE_ENDURANCE") {
         NewState.EnemyEndurance = Math.max(0, NewState.EnemyEndurance - Action.value.enemy)
-        NewState.Endurance = Math.max(0, NewState.Endurance - Action.value.lonewolf)
+        NewState.Endurance = Math.max(0, NewState.Endurance - Action.valsue.lonewolf)
     }
     else if (Action.type === "CLEAR_ENEMY_STATS") {
         NewState.EnemyEndurance = ""
@@ -172,15 +171,16 @@ function CharacterSheet(State = InitState, Action) {
 
         localStorage.setItem("GameState", NewState.GameState)
 
-        if (window.debugApp) {
+        /*if (window.debugApp) {
             console.log(
                 ["Game saved locally.\n",
                 "localStorage: ",NewState.GameState].join("")
             )
-        }
+        }*/
 
         if (Action.API && NewState.Autosave) {
-            Action.API(Action.request || "savegame", NewState.GameState, false)            
+
+            Action.API(Action.request || "savegame", {gameID: NewState.GameID, password: NewState.Password, gameState: NewState.GameState}, false)            
         }
 
     }

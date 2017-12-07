@@ -9,11 +9,16 @@ const store = createStore(
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 )
 
+window.debugApp = true
+
 const mapStateToProps = (state, ownProps) => {
     return {
         ...state,
         ...ownProps,
         API(request, payload, dispatch) {
+
+            if (!payload.password) return null
+
             if (request === "loadgame") {
 
                 if (window.debugApp) {
@@ -23,15 +28,19 @@ const mapStateToProps = (state, ownProps) => {
                     )
                 }
 
-                fetch("https://qdrc7541jc.execute-api.us-west-2.amazonaws.com/dev?gameID=" + (payload.gameID || "") + "&password=" + (encodeURIComponent(payload.password) || ""), {mode: 'no-cors'})
+                fetch("https://qdrc7541jc.execute-api.us-west-2.amazonaws.com/dev?gameID=" + (String(payload.gameID) || "") + "&password=" + (encodeURIComponent(String(payload.password)) || ""))
+                    .then(function(response) {
 
+                        return response.json()
 
-                if (dispatch) {
-                    // replace value by actual response
-                    store.dispatch({type: "LOAD_GAME_FROM_API", value: JSON.stringify(state)})
-                }
+                    }).then(function(content) {
 
+                        if (dispatch) {
+                            // replace value by actual response
+                            store.dispatch({type: "LOAD_GAME_FROM_API", value: content.gameState})
+                        }
 
+                })
 
             }
             else if (request === "savegame") {
@@ -398,8 +407,12 @@ export default class App extends Component {
 class CharacterSheetView extends Component {
 
     componentDidMount() {
-        this.props.dispatch({type: "INIT", API: this.props.API, request: "loadgame"})
         console.log("Set debugApp to true to see game state data.")
+
+        this.props.dispatch({type: "INIT"})
+
+        this.props.API("loadgame", {gameID: this.props.CharacterSheet.GameID, password: this.props.CharacterSheet.Password}, true)
+
     }
 
     render() {
@@ -453,7 +466,7 @@ class GameMetaDataView extends Component {
         return (
             <View>
                 <Label>Game ID</Label>
-                <Text>{String(this.props.CharacterSheet.GameID) || "-"}</Text>
+                <Text>{this.props.CharacterSheet.GameID !== undefined ? String(this.props.CharacterSheet.GameID) : "-"}</Text>
                 <Label>Game Started</Label>
                 <Text>{this.props.CharacterSheet.GameStarted}</Text>
                 <Label>Game Last Saved</Label>
