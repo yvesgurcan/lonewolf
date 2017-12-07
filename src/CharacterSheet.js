@@ -60,9 +60,6 @@ const mapStateToProps = (state, ownProps) => {
 
             }
             else if (request === "savegame") {
-
-                debugger
-
                 let headers = new Headers()
                 headers.append("Content-Type","application/json")
 
