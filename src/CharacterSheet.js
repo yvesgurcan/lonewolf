@@ -23,9 +23,14 @@ const mapStateToProps = (state, ownProps) => {
                     )
                 }
 
+                fetch("https://qdrc7541jc.execute-api.us-west-2.amazonaws.com/dev?gameId=" + payload.gameId + "password=" + payload.Password)
+
+
                 if (dispatch) {
                     store.dispatch({type: "LOAD_GAME_FROM_API", value: JSON.stringify(state)})
                 }
+
+
 
             }
             else if (request === "savegame") {
