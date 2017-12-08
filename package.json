@@ -1,6 +1,6 @@
 {
-  "name": "charactersheet",
-  "version": "0.8.0",
+  "name": "lonewolf-charactersheet",
+  "version": "0.9.0",
   "private": true,
   "dependencies": {
     "react": "^16.2.0",
