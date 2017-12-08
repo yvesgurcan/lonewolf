@@ -671,7 +671,8 @@ class BookView extends Component {
     onChange = (input) => {
         let bookNumber = 0
         let Book = this.props.Books.filter((book, index) => {
-            if (book.name === input.value) {
+
+            if (book.name === index + " - " + input.value) {
                 bookNumber = index
                 return true
             }
@@ -682,6 +683,7 @@ class BookView extends Component {
 
         this.props.dispatch({type: "UPDATE_BOOK", value: Book, API: this.props.API, save: true})
     }
+
     render() {
         return (
             <View>
