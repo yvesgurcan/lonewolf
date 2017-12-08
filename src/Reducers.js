@@ -155,7 +155,7 @@ function CharacterSheet(State = InitState, Action) {
     }
     else if (Action.type === "UPDATE_ENDURANCE") {
         NewState.EnemyEndurance = Math.max(0, NewState.EnemyEndurance - Action.value.enemy)
-        NewState.Endurance = Math.max(0, NewState.Endurance - Action.valsue.lonewolf)
+        NewState.Endurance = Math.max(0, NewState.Endurance - Action.value.lonewolf)
     }
     else if (Action.type === "CLEAR_ENEMY_STATS") {
         NewState.EnemyEndurance = ""
