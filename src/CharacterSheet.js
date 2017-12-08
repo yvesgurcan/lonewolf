@@ -9,8 +9,6 @@ const store = createStore(
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 )
 
-window.debugApp = true
-
 let APItimeout = null
 
 const mapStateToProps = (state, ownProps) => {
@@ -672,8 +670,6 @@ class BookView extends Component {
         let bookNumber = 0
         let Book = this.props.Books.filter((book, index) => {
 
-            debugger
-
             if (index + " - " + book.name === input.value) {
                 bookNumber = index
                 return true
@@ -958,7 +954,7 @@ class CombatRatioView extends Component {
         let state = {
             number: number,
             damage: this.props.fight(number, this.props.CharacterSheet.CombatRatio),
-            round: ++this.state.round,
+            round: this.state.round + 1,
         }
 
         this.setState(state)
@@ -1521,6 +1517,7 @@ class InputView extends Component {
             
             this.props.optGroups.map((optGroup, index) => {
                 options.splice(optGroup.position, 0, optGroups[index])
+                return null
             })
 
             return (options)
