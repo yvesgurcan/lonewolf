@@ -672,7 +672,9 @@ class BookView extends Component {
         let bookNumber = 0
         let Book = this.props.Books.filter((book, index) => {
 
-            if (book.name === index + " - " + input.value) {
+            debugger
+
+            if (index + " - " + book.name === input.value) {
                 bookNumber = index
                 return true
             }
