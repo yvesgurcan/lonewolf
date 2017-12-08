@@ -193,8 +193,22 @@ function CharacterSheet(State = InitState, Action) {
     }
     else if (Action.type === "Endurance" || Action.type.indexOf("_Endurance") > -1) {
 
-        NewState.Endurance = Math.min(NewState.MaxEndurance !== undefined && NewState.MaxEndurance !== "" ? NewState.MaxEndurance : NewState.Endurance, NewState.Endurance)
+        if (NewState.Endurance !== "") {
 
+            NewState.Endurance = Math.min(NewState.MaxEndurance !== undefined && NewState.MaxEndurance !== "" ? NewState.MaxEndurance : NewState.Endurance, NewState.Endurance)     
+
+        }
+
+    }
+    else if (Action.type === "MaxEndurance" || Action.type.indexOf("_MaxEndurance") > -1) {
+
+        if (NewState.Endurance > NewState.MaxEndurance || NewState.Endurance === "") {
+            NewState.Endurance = NewState.MaxEndurance
+        }
+
+        if (Action.type.indexOf("INCREMENT") > -1 && NewState.Endurance === NewState.MaxEndurance-1) {
+            NewState.Endurance = NewState.MaxEndurance
+        }
 
     }
 
@@ -202,7 +216,7 @@ function CharacterSheet(State = InitState, Action) {
     delete GameState.GameState
     NewState.GameState = JSON.stringify({CharacterSheet: GameState})
 
-    if (Action.type === "AUTO_SAVE" || Action.type.indexOf("@@") === -1 && JSON.stringify(State) !== JSON.stringify(NewState)) {
+    if ((Action.type === "AUTO_SAVE" || Action.type.indexOf("@@") === -1) && JSON.stringify(State) !== JSON.stringify(NewState)) {
 
         localStorage.setItem("GameState", NewState.GameState)
 
