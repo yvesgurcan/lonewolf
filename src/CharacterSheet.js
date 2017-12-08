@@ -670,7 +670,7 @@ class BookView extends Component {
         let bookNumber = 0
         let Book = this.props.Books.filter((book, index) => {
 
-            if (index + " - " + book.name === input.value) {
+            if (String(index) + " - " + book.name === input.value) {
                 bookNumber = index
                 return true
             }
@@ -678,6 +678,8 @@ class BookView extends Component {
         })[0]
 
         Book = {...Book, number: bookNumber}
+
+        debugger
 
         this.props.dispatch({type: "UPDATE_BOOK", value: Book, API: this.props.API, save: true})
     }
@@ -687,7 +689,7 @@ class BookView extends Component {
             <View>
                 <Label onClick={this.toggleDetails}>Book</Label>
                 <View hidden={this.state.hideDetails}>
-                    <Input name="Book" value={this.props.CharacterSheet.Book ? this.props.CharacterSheet.Book.name : null} select={this.props.Books} optGroups={this.props.BookGroups} showIndex onChange={this.onChange}/>
+                    <Input name="Book" value={this.props.CharacterSheet.Book ? this.props.CharacterSheet.Book.number + " - " + this.props.CharacterSheet.Book.name : null} select={this.props.Books} optGroups={this.props.BookGroups} showIndex onChange={this.onChange}/>
                     {this.props.CharacterSheet.Book ? <BookLinks/> : null}
                     <Section/>
                 </View>
