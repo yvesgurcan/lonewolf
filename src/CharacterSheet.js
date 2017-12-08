@@ -17,10 +17,14 @@ const mapStateToProps = (state, ownProps) => {
     return {
         ...state,
         ...ownProps,
-        API(request, payload, dispatch) {
+        API(request, dispatch, gameState = null) {
 
-            payload.password = state.RequestFeedback.password
-            payload.gameID = String(state.RequestFeedback.gameID)
+            // get payload from state (optionally, gameState can be passed as an argument)
+            let payload = {
+                password: state.RequestFeedback.password === undefined ? undefined : String(state.RequestFeedback.password),
+                gameID: state.RequestFeedback.gameID === undefined ? "" : String(state.RequestFeedback.gameID),
+                gameState: gameState || state.CharacterSheet.GameState,
+            }
 
             // debug
             if (window.debugApp && request === "loadgame") {
@@ -45,7 +49,26 @@ const mapStateToProps = (state, ownProps) => {
                     console.error("Can't send API request without a password.")
                 }
 
+                // autosave
+                if (gameState != null) {
+                    APItimeout = setTimeout(function() {
+                        store.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "You must enter the password to save automatically."})
+                    }, 200)
+                }
+
                 return null
+            }
+
+            // autosave
+            if (gameState != null) {
+
+                clearTimeout(APItimeout)
+
+                APItimeout = setTimeout(function() {
+                    store.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Saving..."})
+                }, 50)
+
+                
             }
 
             // parameters
@@ -86,13 +109,15 @@ const mapStateToProps = (state, ownProps) => {
             // request
             fetch(url, parameters)
             .then(function(response) {
-                    
+
                 return response.json()   
 
             }).then(function(responseContent) {
 
                 // custom server error (ok = true)
                 if (responseContent.error) {
+
+                    clearTimeout(APItimeout)
 
                     return store.dispatch({type: "UPDATE_REQUEST_FEEDBACK", value: responseContent})
 
@@ -149,6 +174,9 @@ const mapStateToProps = (state, ownProps) => {
                         return store.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Game with ID '" + payload.gameID + "' was successfully deleted."})
                     }
 
+                    
+                }
+                else if (request === "savegame") {
                     store.dispatch({type: "UPDATE_ACTUAL_GAME_ID_REQUEST_FEEDBACK", value: responseContent.gameID})
                 }
 
@@ -586,7 +614,7 @@ class BookView extends Component {
 
         Book = {...Book, number: bookNumber}
 
-        this.props.dispatch({type: "UPDATE_BOOK", value: Book, API: this.props.API})
+        this.props.dispatch({type: "UPDATE_BOOK", value: Book, API: this.props.API, save: true})
     }
     render() {
         return (
@@ -828,11 +856,11 @@ class CombatRatioView extends Component {
     }
 
     updateEndurance = () => {
-        this.props.dispatch({type: "UPDATE_ENDURANCE", value: this.state.damage, API: this.props.API})
+        this.props.dispatch({type: "UPDATE_ENDURANCE", value: this.state.damage, API: this.props.API, save: true})
     }
 
     clearEnemyStats = () => {
-        this.props.dispatch({type: "CLEAR_ENEMY_STATS", API: this.props.API})
+        this.props.dispatch({type: "CLEAR_ENEMY_STATS", API: this.props.API, save: true})
         this.setState({damage: {}})
     }
 
@@ -1154,19 +1182,14 @@ class SaveAndLoadView extends Component {
 
         this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Loading..."})
         
-        let payload = {
-            gameID: String(this.props.RequestFeedback.gameID),
-            password: String(this.props.RequestFeedback.password),
-        }
-        
-        this.props.API("loadgame", payload, true)
+        this.props.API("loadgame", true)
 
     }
     saveGameRemotely = () => {
 
         clearTimeout(APItimeout)
 
-        if (this.props.CharacterSheet.GameState === "" && this.props.RequestFeedback.gameID === undefined || this.props.RequestFeedback.gameID === "") {
+        if (this.props.CharacterSheet.GameState === "" && (this.props.RequestFeedback.gameID === undefined || this.props.RequestFeedback.gameID === "")) {
             return this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Please enter the ID of the game you wish to delete."})
         }
 
@@ -1179,13 +1202,17 @@ class SaveAndLoadView extends Component {
         
         this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Saving..."})
 
-        let payload = {
-            gameID: this.props.RequestFeedback.gameID === undefined ? "" : String(this.props.RequestFeedback.gameID),
-            password: String(this.props.RequestFeedback.password),
-            gameState: this.props.CharacterSheet.GameState,
+        this.props.API("savegame", true)
+
+    }
+    toggleAutoSave = (input) => {
+
+        if (this.props.RequestFeedback.gameID === undefined || this.props.RequestFeedback.gameID === "") {
+            return this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Please enter a game ID before enabling autosaving."})
         }
 
-        this.props.API("savegame", payload, true)
+        this.props.dispatch({type: "Autosave", value: input.checked, API: this.props.API, save: true})
+        this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: null})
 
     }
     render() {
@@ -1194,17 +1221,17 @@ class SaveAndLoadView extends Component {
                 <Label>Game State</Label>
                 <View hidden={this.state.hideDetails}>
                     <Input name="GameState" value={this.props.CharacterSheet.GameState} onChange={this.modifyGameState} box/>
-                    <Button onClick={this.loadGame}>{this.props.CharacterSheet.GameState === "" ? <Text>Start New Game</Text> : <Text>Load Game</Text>}</Button>
-                    <Button onClick={this.clear}>Clear Game State</Button>
+                    <Button onClick={this.loadGame}>{this.props.CharacterSheet.GameState === "" ? <Text>Start New Game</Text> : <Text>Load Custom Game State</Text>}</Button>
+                    <Button onClick={this.clear}>Clear Custom Game State</Button>
                     <HR/>
                     <Label>Remote Game ID</Label>
-                    <Input value={this.props.RequestFeedback.gameID} onChange={this.modifyGameID}/>
+                    <Input value={this.props.RequestFeedback.gameID} onChange={this.modifyGameID} noAutoSave/>
                     <Label>Password</Label>
-                    <Input type="password" value={this.props.RequestFeedback.password} onChange={this.modifyPassword}/>
+                    <Input type="password" value={this.props.RequestFeedback.password} onChange={this.modifyPassword} noAutoSave/>
                     <View>{this.props.RequestFeedback ? this.props.RequestFeedback.message : null}</View>
                     <Button onClick={this.loadGameRemotely}>Load Game Remotely</Button>
                     <Button onClick={this.saveGameRemotely}>{this.props.CharacterSheet.GameState === "" ? "Delete Game Remotely" : "Save Game Remotely"}</Button>
-                    <Input name="Autosave" type="checkbox" inline/>
+                    <Input name="Autosave" type="checkbox" onChange={this.toggleAutoSave} inline/>
                     <LabelInline htmlFor="Autosave">Auto save</LabelInline>
                 </View>
                 <View style={{width: "100%"}} onClick={this.toggleDetails}>
@@ -1261,7 +1288,7 @@ class InputView extends Component {
         if (!input.target) {
             value = (this.props.CharacterSheet[this.props.name] || "") + input
 
-            return this.props.dispatch({type: this.props.name, value: value, API: this.props.API})
+            return this.props.dispatch({type: this.props.name, value: value, API: this.props.API, save: true})
         }
 
         value = input.target.value
@@ -1270,15 +1297,19 @@ class InputView extends Component {
             value = input.target.checked
         }
 
-        this.props.dispatch({type: this.props.name, value: value, API: this.props.API})
+        this.props.dispatch({type: this.props.name, value: value, API: this.props.API, save: this.props.type === "checkbox"})
+    }
+
+    onBlur = () => {
+        this.props.dispatch({type: "AUTO_SAVE", API: this.props.API, save: true})
     }
 
     increment = () => {
-        this.props.dispatch({type: "INCREMENT_" + this.props.name, API: this.props.API})
+        this.props.dispatch({type: "INCREMENT_" + this.props.name, API: this.props.API, save: true})
     }
 
     decrement = () => {
-        this.props.dispatch({type: "DECREMENT_" + this.props.name, API: this.props.API})
+        this.props.dispatch({type: "DECREMENT_" + this.props.name, API: this.props.API, save: true})
     }
 
     clear = () => {
@@ -1287,7 +1318,7 @@ class InputView extends Component {
             return this.props.onChange("")
         }
 
-        this.props.dispatch({type: this.props.name, value: "", API: this.props.API})
+        this.props.dispatch({type: this.props.name, value: "", API: this.props.API, save: true})
     }
 
     render() {
@@ -1314,6 +1345,7 @@ class InputView extends Component {
                         style={{width: "98%", height: "200px", padding: "2px"}}
                         value={this.props.value || this.props.CharacterSheet[this.props.name] || ""}
                         onChange={this.onChange}
+                        onBlur={this.onBlur}
                     />
                 </View>
             )
@@ -1327,6 +1359,7 @@ class InputView extends Component {
                     checked={this.props.type === "checkbox" ? (this.props.CharacterSheet[this.props.name] || false) : null}
                     type={this.props.type}
                     onChange={this.onChange}
+                    onBlur={this.props.type === "checkbox" || this.props.noAutoSave ? null : this.onBlur}
                 />
                 {(this.props.type !== "number" && this.props.type !== "checkbox") || this.props.noPlusAndMinus
                     ?

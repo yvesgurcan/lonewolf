@@ -202,7 +202,7 @@ function CharacterSheet(State = InitState, Action) {
     delete GameState.GameState
     NewState.GameState = JSON.stringify({CharacterSheet: GameState})
 
-    if (Action.type.indexOf("@@") === -1 && JSON.stringify(State) !== JSON.stringify(NewState)) {
+    if (Action.type === "AUTO_SAVE" || Action.type.indexOf("@@") === -1 && JSON.stringify(State) !== JSON.stringify(NewState)) {
 
         localStorage.setItem("GameState", NewState.GameState)
 
@@ -213,13 +213,8 @@ function CharacterSheet(State = InitState, Action) {
             )
         }*/
 
-        if (Action.API && NewState.Autosave) {
-
-            // debugger
-
-            // TODO: Grab gameID from RequestFeedback when saving.
-
-            Action.API(Action.request || "savegame", {gameState: NewState.GameState}, false)            
+        if (Action.API && Action.save && NewState.Autosave) {
+            Action.API(Action.request || "savegame", false, NewState.GameState)            
         }
 
     }
