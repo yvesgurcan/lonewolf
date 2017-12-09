@@ -597,9 +597,10 @@ class CharacterSheetView extends Component {
                 <HR/>
                 <Book/>
                 <HR/>
-                <Endurance/>
-                <HR/>
-                <Combat/>
+                <Combat>
+                    <Endurance/>
+                    <HR/>
+                </Combat>
                 <HR/>
                 <Weapons/>
                 <HR/>
@@ -810,6 +811,8 @@ class Combat extends Component {
             <View>
                 <CombatSkill/>
                 <HR/>
+                {/* endurance */}
+                {this.props.children}
                 <Label onClick={this.toggleDetails}>Enemy Combat Skill</Label>
                 <View hidden={this.state.hideDetails}>
                     <EnemyCombatSkill/>
@@ -951,8 +954,6 @@ class CombatRatioView extends Component {
         
         let number = this.props.generateRandomNumber()
         
-        this.props.dispatch({type: "FIGHT", API: this.props.API, save: true})
-
         let state = {
             number: number,
             damage: this.props.fight(number, this.props.CharacterSheet.CombatRatio),
@@ -964,13 +965,16 @@ class CombatRatioView extends Component {
         return state
     }
 
-    updateEndurance = (damage = null) => {
-        this.props.dispatch({type: "UPDATE_ENDURANCE", value: damage || this.state.damage, API: this.props.API, save: true})
+    updateEndurance = (input, damage = null) => {
+
+        if (this.state.damage.enemy === undefined && this.state.damage.lonewolf === undefined) return null
+
+        this.props.dispatch({type: "UPDATE_ENDURANCE", value: (damage || this.state.damage), API: this.props.API, save: true})
     }
 
     fightAndUpdateEndurance = () => {
         let damage = this.fight().damage
-        this.updateEndurance(damage)
+        this.updateEndurance(null, damage)
     }
 
     clearEnemyStats = () => {
