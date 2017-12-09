@@ -33,6 +33,17 @@ import {
     Switch,
     Button,
 } from 'react-native'
+
+import {
+    Header1,
+    Link,
+    TextWithInputFont,
+    Label,
+    LabelInline,
+    PickerItemGroup,
+    PickerItem,
+    HR,
+} from './NativeComponents'
 */
 
 let APItimeout = null
