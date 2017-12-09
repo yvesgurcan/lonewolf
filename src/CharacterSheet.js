@@ -3,6 +3,8 @@ import {createStore} from 'redux'
 import {Provider, connect} from 'react-redux'
 import Reducers from './Reducers'
 
+import {} from './WebComponents'
+
 const store = createStore(
   Reducers,
   {},
@@ -597,9 +599,10 @@ class CharacterSheetView extends Component {
                 <HR/>
                 <Book/>
                 <HR/>
-                <Endurance/>
-                <HR/>
-                <Combat/>
+                <Combat>
+                    <Endurance/>
+                    <HR/>
+                </Combat>
                 <HR/>
                 <Weapons/>
                 <HR/>
@@ -678,8 +681,6 @@ class BookView extends Component {
         })[0]
 
         Book = {...Book, number: bookNumber}
-
-        debugger
 
         this.props.dispatch({type: "UPDATE_BOOK", value: Book, API: this.props.API, save: true})
     }
@@ -810,6 +811,8 @@ class Combat extends Component {
             <View>
                 <CombatSkill/>
                 <HR/>
+                {/* endurance */}
+                {this.props.children}
                 <Label onClick={this.toggleDetails}>Enemy Combat Skill</Label>
                 <View hidden={this.state.hideDetails}>
                     <EnemyCombatSkill/>
@@ -951,8 +954,6 @@ class CombatRatioView extends Component {
         
         let number = this.props.generateRandomNumber()
         
-        this.props.dispatch({type: "FIGHT", API: this.props.API, save: true})
-
         let state = {
             number: number,
             damage: this.props.fight(number, this.props.CharacterSheet.CombatRatio),
@@ -964,13 +965,16 @@ class CombatRatioView extends Component {
         return state
     }
 
-    updateEndurance = (damage = null) => {
-        this.props.dispatch({type: "UPDATE_ENDURANCE", value: damage || this.state.damage, API: this.props.API, save: true})
+    updateEndurance = (input, damage = null) => {
+
+        if (this.state.damage.enemy === undefined && this.state.damage.lonewolf === undefined) return null
+
+        this.props.dispatch({type: "UPDATE_ENDURANCE", value: (damage || this.state.damage), API: this.props.API, save: true})
     }
 
     fightAndUpdateEndurance = () => {
         let damage = this.fight().damage
-        this.updateEndurance(damage)
+        this.updateEndurance(null, damage)
     }
 
     clearEnemyStats = () => {
@@ -1507,14 +1511,14 @@ class InputView extends Component {
         if (this.props.optGroups) {
 
             let optGroups = this.props.optGroups.map((optGroup, index) => {
-                return (<optgroup key={optGroup.name} label={optGroup.name}/>)
+                return (<PickerItemGroup key={optGroup.name} label={optGroup.name}/>)
             })
 
             let options = this.props.select.map((option, index) => {
 
                 
 
-                return <option key={option.name}>{this.props.showIndex ? index + " - " + option.name : option.name}</option>
+                return <PickerItem key={option.name}>{this.props.showIndex ? index + " - " + option.name : option.name}</PickerItem>
             })
             
             this.props.optGroups.map((optGroup, index) => {
@@ -1527,7 +1531,7 @@ class InputView extends Component {
         else {
 
             return (
-                this.props.select.map((option, index) => {return <option key={option.name}>{this.props.showIndex ? index + " - " + option.name : option.name}</option>})
+                this.props.select.map((option, index) => {return <PickerItem key={option.name}>{this.props.showIndex ? index + " - " + option.name : option.name}</PickerItem>})
             )
 
         }
@@ -1538,14 +1542,14 @@ class InputView extends Component {
         if (this.props.select) {
             return (
                 <View style={{marginBottom: "8px"}}>
-                    <select
+                    <Picker
                         id={this.props.name}
                         style={{width: "98%", padding: "2px"}}
                         value={this.props.value || this.props.CharacterSheet[this.props.name] || ""}
                         onChange={this.onChange}
                     >
                         {this.generateSelectOptions()}
-                    </select>
+                    </Picker>
                 </View>
             )
         }
@@ -1564,7 +1568,7 @@ class InputView extends Component {
         }
         return (
             <View style={{marginBottom: "8px", display: (this.props.inline ? "inline-block" : null)}}>
-                <input
+                <TextInput
                     id={this.props.name}
                     style={this.props.type === "checkbox" ? null : {width: (this.props.type === "number" && !this.props.noPlusAndMinus ? "calc(98% - 68px)" : "calc(98% - 36px)"), height: "26px", padding: "2px"}}
                     value={this.props.value || (this.props.CharacterSheet[this.props.name] === undefined ? "" : String(this.props.CharacterSheet[this.props.name]))}
@@ -1624,6 +1628,34 @@ class InputView extends Component {
     }
 }
 const Input = connect(mapStateToProps)(InputView)
+
+class TextInput extends Component {
+    render() {
+        return (
+            <input {...this.props}/>
+        )
+    }
+}
+
+class Picker extends Component {
+    render() {
+        return (
+            <select {...this.props} />
+        )
+    }
+}
+
+class PickerItemGroup extends Component {
+    render() {
+        return <optgroup {...this.props} />
+    }
+}
+
+class PickerItem extends Component  {
+    render() {
+        return <option {...this.props} />
+    }
+}
 
 class Label extends Component {
     render() {
