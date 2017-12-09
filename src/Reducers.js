@@ -79,7 +79,7 @@ function CharacterSheet(State = InitState, Action) {
 
         if (storedState !== null) {
 
-            if (window.debugApp) {
+            if (window && window.debugApp) {
                 console.log(
                     ["Game loaded locally.\n",
                     "localStorage: ",storedState].join("")
@@ -102,7 +102,7 @@ function CharacterSheet(State = InitState, Action) {
             NewState.GameState = JSON.stringify(GameState)
             localStorage.setItem("GameState", NewState.GameState)
 
-            if (window.debugApp) {
+            if (window && window.debugApp) {
                 console.log(
                     ["Game reset locally.\n",
                     "localStorage: ",NewState.GameState].join("")
@@ -129,7 +129,7 @@ function CharacterSheet(State = InitState, Action) {
 
         localStorage.setItem("GameState", NewState.GameState)
 
-        if (window.debugApp) {
+        if (window && window.debugApp) {
             if (Action.type === "LOAD_GAME") {
                 console.log(
                     ["Game loaded locally from text area.\n",
@@ -220,7 +220,7 @@ function CharacterSheet(State = InitState, Action) {
 
         localStorage.setItem("GameState", NewState.GameState)
 
-        /*if (window.debugApp) {
+        /*if (window && window.debugApp) {
             console.log(
                 ["Game saved locally.\n",
                 "localStorage: ",NewState.GameState].join("")

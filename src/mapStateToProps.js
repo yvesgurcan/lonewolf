@@ -16,14 +16,14 @@ export const mapStateToProps = (state, ownProps) => {
             }
 
             // debug
-            if (window.debugApp && request === "loadgame") {
+            if (window && window.debugApp && request === "loadgame") {
 
                 console.log(
                     ["Load game API request.\n",
                     "Request payload: "].join(""), payload
                 )
             }
-            else if (window.debugApp && request === "savegame") {
+            else if (window && window.debugApp && request === "savegame") {
 
                 console.log(
                     ["Save game API request.\n",
@@ -34,7 +34,7 @@ export const mapStateToProps = (state, ownProps) => {
             // validation
             if (!payload.password) {
 
-                if (window.debugApp) {
+                if (window && window.debugApp) {
                     console.error("Can't send API request without a password.")
                 }
 
@@ -141,7 +141,7 @@ export const mapStateToProps = (state, ownProps) => {
 
             function handleResponse(request, responseContent, payload, dispatch) {
 
-                if (window.debugApp) {
+                if (window && window.debugApp) {
 
                     console.log(
                         ["API response resolved successfully.\n",
@@ -361,6 +361,16 @@ export const mapStateToProps = (state, ownProps) => {
                 weapon: "Broadsword",
                 CombatSkill: 2,
             },
+        ],
+        MagnakaiLevels: [
+            {name: "Kai Master Superior"},
+            {name: "Primate"},
+            {name: "Tutelary"},
+            {name: "Principalin"},
+            {name: "Mentora"},
+            {name: "Scion-kai"},
+            {name: "Archmaster"},
+            {name: "Kai Grand Master"},
         ],
         BackpackItems: [
             "Meal"
