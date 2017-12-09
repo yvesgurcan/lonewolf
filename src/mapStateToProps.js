@@ -372,8 +372,18 @@ export const mapStateToProps = (state, ownProps) => {
             {name: "Archmaster"},
             {name: "Kai Grand Master"},
         ],
+        MagnakaiDisciplines: [
+            {
+                name: "",
+            },
+        ],
         BackpackItems: [
-            "Meal"
+            "Meal",
+            "Potions of Laumspur +4 Endurance",
+            "Shovel",
+            "Hourglass",
+            "Torch",
+            "Tinderbox",
         ],
         generateRandomNumber() {
             let randomizer = [
