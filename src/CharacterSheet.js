@@ -585,6 +585,63 @@ class KaiView extends Component {
 }
 const Kai = connect(mapStateToProps)(KaiView)
 
+class MagnakaiView extends Component {
+
+    state = {hideDetails: true}
+
+    toggleDetails = () => {
+        this.setState({hideDetails: !this.state.hideDetails})
+    }
+
+    render() {
+
+        if (this.props.CharacterSheet.Book && this.props.CharacterSheet.Book.number >= 6) {
+            return null
+        }
+
+        return (
+            <View>
+                <Label onClick={this.toggleDetails}>Kai Disciplines</Label>
+                <View hidden={this.state.hideDetails}>
+                    <View>
+                        <Input name="Magnakai1" select={this.props.MagnakaiDisciplines}/>
+                    </View>
+                    <View>
+                        <Input name="Magnakai2" select={this.props.MagnakaiDisciplines}/>
+                    </View>
+                    <View>
+                        <Input name="Magnakai3" select={this.props.MagnakaiDisciplines}/>
+                    </View>
+                    <View>
+                        <Input name="Magnakai4" select={this.props.MagnakaiDisciplines} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number < 7}/>
+                    </View>
+                    <View>
+                        <Input name="Magnakai5" select={this.props.MagnakaiDisciplines} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number < 8}/>
+                    </View>
+                    <View>
+                        <Input name="Magnakai6" select={this.props.MagnakaiDisciplines} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number < 9}/>
+                    </View>
+                    <View>
+                        <Input name="Magnakai7" select={this.props.MagnakaiDisciplines} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number < 10}/>
+                    </View>
+                    <View>
+                        <Input name="Magnakai8" select={this.props.MagnakaiDisciplines} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number < 11}/>
+                    </View>
+                    <View>
+                        <Input name="Magnakai9" select={this.props.v} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number < 12}/>
+                    </View>
+                    <View>
+                        <Input name="Magnakai10" select={this.props.MagnakaiDisciplines} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number < 13}/>
+                    </View>
+                    <Group name="Magnakai Level" select={this.props.MagnakaiLevels}/>
+                </View>
+                <HR/>
+            </View>
+        )
+    }
+}
+const Magnakai = connect(mapStateToProps)(MagnakaiView)
+
 class WeaponsView extends Component {
 
     state = {hideDetails: true}
