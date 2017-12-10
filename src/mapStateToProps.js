@@ -372,9 +372,61 @@ export const mapStateToProps = (state, ownProps) => {
             {name: "Archmaster"},
             {name: "Kai Grand Master"},
         ],
+        LoreCircles: [
+            {
+                name: "Circle of Fire and Circle of Solaris",
+                position: 1,
+            },
+            {
+                name: "Circle of Fire",
+                position: 3,
+            },
+            {
+                name: "Circle of Light",
+                position: 5,
+            },
+            {
+                name: "Circle of Solaris",
+                position: 8,
+            },
+            {
+                name: "Circle of the Spirit",
+                position: 11,
+            },
+        ],
         MagnakaiDisciplines: [
             {
                 name: "",
+            },
+            {
+                name: "Huntmastery",
+            },
+            {
+                name: "Weaponmastery +3 COMBAT SKILL points",
+            },
+            {
+                name: "Animal Control",
+            },
+            {
+                name: "Curing: +1 ENDURANCE point for each section without combat",
+            },
+            {
+                name: "Invisibility",
+            },
+            {
+                name: "Pathsmanship",
+            },
+            {
+                name: "Psi-surge: +4 COMBAT SKILL points but −2 ENDURANCE points per round; and Mindblast: +2 COMBAT SKILL points (cannot be used simultaneously)",
+            },
+            {
+                name: "Psi-screen: no points lost when attacked by Mindforce",
+            },
+            {
+                name: "Nexus",
+            },
+            {
+                name: "Divination",
             },
         ],
         BackpackItems: [
