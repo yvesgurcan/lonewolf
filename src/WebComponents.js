@@ -106,11 +106,14 @@ export class Button extends Component {
         this.props.onClick(input.target)
     }
     render() {
+
+        if (this.props.hidden) return null
         return (
             <View style={this.props.inline ? {display: "inline-block"} : {marginTop: "10px"}}>
                 <button style={this.props.style} onClick={this.onClick} disabled={this.props.disabled}>{this.props.children}</button>
             </View>
         )
+        
     }
 }
 
