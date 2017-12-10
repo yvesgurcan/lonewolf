@@ -25,13 +25,21 @@ Your character sheet is saved locally automatically. When you reload the page fr
 
 You can also copy the current game state and paste it back in the dedicated field at any point. Remote loading/saving is password-protected.
 
-### Select a book
+### Select a Book
 
 Once you have chosen which Lone Wolf book you will play, make sure to select the corresponding Book option from the list on the character sheet. Enter 1 under the Section field. Links will be automatically generated so that you can quickly access the table of content of the book, the map of the world you are playing in, and the numbered section where you left the game.
 
-### Enter your combat skill
+### Enter your Combat Skill
 
-Follow the instructions provided in the book to create your character. Enter your combat skill score under Base Combat Skill and click on Update Combat Skill to populate the field underneath. It might seem redundant at first to have two fields to keep track of your combat skill, but this enhancement will prove to be very useful when the elements that influence your combat skill change.
+Follow the instructions provided in the Game Rules section of the book to create your character. Click on Generate Random Number to help determine your Combat Skill score. Enter the adjusted number under Base Combat Skill and click on Update Combat Skill to populate the field underneath. It might seem redundant at first to have two fields to keep track of your Combat Skill, but this enhancement will prove to be very useful when the elements that influence your base score change.
+
+### Enter your Endurance Points
+
+Similarly to your combat skill, follow the instructions of the book to detetmine your Endurance Points. Enter the score under Max Endurance and click on Heal to Max to copy the number underneath.
+
+### Enter your Weapons
+
+Read the Equipment section of the book to determine which Weapons you start with.
 
 ## Get in touch
 
