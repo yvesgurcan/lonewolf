@@ -162,6 +162,9 @@ function CharacterSheet(State = InitState, Action) {
         NewState.EnemyCombatSkill = ""
         NewState.ImmunetoMindblast = false
     }
+    else if (Action.type === "ARCHMASTER_CURING") {
+        NewState.Endurance = (NewState.Endurance || 0) + 20
+    }
     else if (Action.type.indexOf("INCREMENT") > -1) {
         let property = Action.type.replace("INCREMENT_", "")
         NewState[property] = NewState[property] ? Math.floor(++NewState[property]) : 1
@@ -191,7 +194,7 @@ function CharacterSheet(State = InitState, Action) {
     else if (Action.type === "BeltPouch" || Action.type.indexOf("_BeltPouch") > -1) {
         NewState.BeltPouch = Math.min(50, NewState.BeltPouch)
     }
-    else if (Action.type === "Endurance" || Action.type.indexOf("_Endurance") > -1) {
+    else if (Action.type === "ARCHMASTER_CURING" || Action.type === "Endurance" || Action.type.indexOf("_Endurance") > -1) {
 
         if (NewState.Endurance !== "") {
 
@@ -200,7 +203,7 @@ function CharacterSheet(State = InitState, Action) {
         }
 
     }
-    else if (Action.type === "MaxEndurance" || Action.type.indexOf("_MaxEndurance") > -1) {
+    else if (Action.type === "ARCHMASTER_CURING" || Action.type === "MaxEndurance" || Action.type.indexOf("_MaxEndurance") > -1) {
 
         if (NewState.Endurance > NewState.MaxEndurance || NewState.Endurance === "") {
             NewState.Endurance = NewState.MaxEndurance

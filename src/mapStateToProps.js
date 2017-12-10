@@ -274,7 +274,10 @@ export const mapStateToProps = (state, ownProps) => {
         BookURLs: {
             toc: "toc.htm",
             map: "map.htm",
-            section: {prepend: "sect", append: ".htm"}
+            section: {prepend: "sect", append: ".htm"},
+            disciplines: "discplnz.htm",
+            improveddisciplines: "imprvdsc.htm",
+            lorecircles: "lorecrcl.htm",
         },
         KaiLevels: [
             {name: "Initiate"},
@@ -437,6 +440,102 @@ export const mapStateToProps = (state, ownProps) => {
             "Torch",
             "Tinderbox",
         ],
+        checkLoreCircle(LoreCircle) {
+
+            let {CharacterSheet} = {...state}
+
+            let requirementMet = false
+            let requiredCount  = 0
+
+            for (let i = 1; i <= 10; i++) {
+                
+                let magnakaiDiscipline = CharacterSheet["Magnakai" + i]
+
+                if (magnakaiDiscipline !== undefined && magnakaiDiscipline !== "") {
+
+                    switch(LoreCircle) {
+
+                        default:
+                            break
+                        
+                        case "Circle Of Fire":
+
+                            if (magnakaiDiscipline.toLowerCase().indexOf("huntmastery") > -1) {
+                                requiredCount++
+                            }
+                            if (magnakaiDiscipline.toLowerCase().indexOf("weaponmastery") > -1) {
+                                requiredCount++
+                            }
+
+                            if (requiredCount === 2) {
+                                requirementMet = true
+                            }
+
+                            break
+
+                        case "Circle Of Light":
+
+                            if (magnakaiDiscipline.toLowerCase().indexOf("animal control") > -1) {
+                                requiredCount++
+                            }
+                            if (magnakaiDiscipline.toLowerCase().indexOf("curing") > -1) {
+                                requiredCount++
+                            }
+
+                            if (requiredCount === 2) {
+                                requirementMet = true
+                            }
+
+                            break
+
+                        case "Circle Of Solaris":
+
+                            if (magnakaiDiscipline.toLowerCase().indexOf("huntmastery") > -1) {
+                                requiredCount++
+                            }
+                            if (magnakaiDiscipline.toLowerCase().indexOf("invisibility") > -1) {
+                                requiredCount++
+                            }
+                            if (magnakaiDiscipline.toLowerCase().indexOf("pathsmanship") > -1) {
+                                requiredCount++
+                            }
+
+                            if (requiredCount === 3) {
+                                requirementMet = true
+                            }
+
+                            break
+
+                        case "Circle Of The Spirit":
+
+                            if (magnakaiDiscipline.toLowerCase().indexOf("psi-surge") > -1) {
+                                requiredCount++
+                            }
+                            if (magnakaiDiscipline.toLowerCase().indexOf("psi-screen") > -1) {
+                                requiredCount++
+                            }
+                            if (magnakaiDiscipline.toLowerCase().indexOf("nexus") > -1) {
+                                requiredCount++
+                            }
+                            if (magnakaiDiscipline.toLowerCase().indexOf("divination") > -1) {
+                                requiredCount++
+                            }
+
+                            if (requiredCount === 4) {
+                                requirementMet = true
+                            }
+
+                            break
+
+                    }
+
+                }
+
+            }
+
+            return requirementMet
+
+        },
         generateRandomNumber() {
             let randomizer = [
                 1,5,7,3,6,9,0,1,7,9,
