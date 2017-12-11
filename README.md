@@ -39,7 +39,11 @@ Similarly to your combat skill, follow the instructions of the book to detetmine
 
 ### Enter your Weapons
 
-Read the Equipment section of the book to determine which Weapons you start with.
+Read the Equipment section of the book to determine which Weapons you start with. Simply enter the name of the weapons in the appropriate fields in no particular order. Make sure that the spelling of the weapon names is correct.
+
+### Enter your Gold Crowns
+
+Again, use the Generate Random Number to determine how many gold crowns you possess. Enter the number under Belt Pouch.
 
 ## Get in touch
 
