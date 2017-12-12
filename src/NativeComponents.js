@@ -31,11 +31,19 @@ export class TextWithInputFont extends Component {
     }
 }
 
+export class TextArea extends Component {
+    render() {
+        return (
+            <TextInput {...this.props}/>
+        )
+    }
+}
+
 export class Label extends Component {
     render() {
         return (
             <View style={{marginTop: "10px"}} hidden={this.props.hidden} onClick={this.props.onClick}>
-                <Text style={{fontWeight: "bold"}}>{this.props.children}:</Text>
+                <Text style={{fontWeight: "bold"}}>{this.props.children}{this.props.noColon ? null : ":"}</Text>
             </View>
         )
     }

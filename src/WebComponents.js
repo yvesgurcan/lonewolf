@@ -46,7 +46,7 @@ export class Label extends Component {
     render() {
         return (
             <View style={{marginTop: "10px"}} hidden={this.props.hidden} onClick={this.props.onClick}>
-                <label style={{fontWeight: "bold"}}>{this.props.children}:</label>
+                <label style={{fontWeight: "bold"}}>{this.props.children}{this.props.noColon ? null : ":"}</label>
             </View>
         )
     }
@@ -64,6 +64,14 @@ export class TextInput extends Component {
     render() {
         return (
             <input {...this.props}/>
+        )
+    }
+}
+
+export class TextArea extends Component {
+    render() {
+        return (
+            <textarea {...this.props}/>
         )
     }
 }

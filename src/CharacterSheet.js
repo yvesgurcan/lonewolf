@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import { Provider, connect } from 'react-redux'
 
 // Redux
-import {store} from './Store'
-import {mapStateToProps} from './mapStateToProps'
+import { store } from './Store'
+import { mapStateToProps } from './mapStateToProps'
 
 // Web Components (React)
 import {
@@ -14,11 +14,6 @@ import {
     TextWithInputFont,
     Label,
     LabelInline,
-    TextInput, // mimicks React Native built-in component
-    Picker, // mimicks React Native built-in component
-    PickerItemGroup,
-    PickerItem, // mimicks React Native built-in component (Picker.Item)
-    Switch, // mimicks React Native built-in component
     Button, // mimicks React Native built-in component
     HR
 } from './WebComponents'
@@ -28,9 +23,6 @@ import {
 import {
     View,
     Text,
-    TextInput,
-    Picker,
-    Switch,
     Button,
 } from 'react-native'
 
@@ -40,11 +32,19 @@ import {
     TextWithInputFont,
     Label,
     LabelInline,
-    PickerItemGroup,
-    PickerItem,
     HR,
 } from './NativeComponents'
 */
+
+// Shared Components
+import {
+    ShowDetails,
+    Group,
+    Input,
+    Spacer,
+} from './UtilityComponents'
+
+import Styles from './Styles'
 
 let APItimeout = null
 
@@ -119,37 +119,21 @@ class LinkToProject extends Component {
 }
 
 class GameMetaDataView extends Component {
-
-    state = {hideDetails: false}
-
-    toggleDetails = () => {
-        this.setState({hideDetails: !this.state.hideDetails})
-    }
-
     render() {
         return (
-            <View>
-                <Label onClick={this.toggleDetails}>Game ID</Label>
-                <View hidden={this.state.hideDetails}>
-                    <Text>{this.props.RequestFeedback.actualGameID !== undefined ? String(this.props.RequestFeedback.actualGameID) : "-"}</Text>
-                    <Label>Game Started</Label>
-                    <Text>{this.props.CharacterSheet.GameStarted}</Text>
-                    <Label>Game Last Saved</Label>
-                    <Text>{this.props.CharacterSheet.GameSaved || "-"}</Text>
-                </View>
-            </View>
+            <ShowDetails label="Game ID" startVisible>
+                <Text>{this.props.RequestFeedback.actualGameID !== undefined ? String(this.props.RequestFeedback.actualGameID) : "-"}</Text>
+                <Label>Game Started</Label>
+                <Text>{this.props.CharacterSheet.GameStarted}</Text>
+                <Label>Game Last Saved</Label>
+                <Text>{this.props.CharacterSheet.GameSaved || "-"}</Text>
+            </ShowDetails>
         )
     }
 }
 const GameMetaData = connect(mapStateToProps)(GameMetaDataView)
 
 class BookView extends Component {
-
-    state = {hideDetails: false}
-
-    toggleDetails = () => {
-        this.setState({hideDetails: !this.state.hideDetails})
-    }
 
     onChange = (input) => {
         let bookNumber = 0
@@ -169,14 +153,11 @@ class BookView extends Component {
 
     render() {
         return (
-            <View>
-                <Label onClick={this.toggleDetails}>Book</Label>
-                <View hidden={this.state.hideDetails}>
-                    <Input name="Book" value={this.props.CharacterSheet.Book ? this.props.CharacterSheet.Book.number + " - " + this.props.CharacterSheet.Book.name : null} select={this.props.Books} optGroups={this.props.BookGroups} showIndex onChange={this.onChange}/>
-                    {this.props.CharacterSheet.Book ? <BookLinks/> : null}
-                    <Section/>
-                </View>
-            </View>
+            <ShowDetails label="Book">
+                <Input name="Book" value={this.props.CharacterSheet.Book ? this.props.CharacterSheet.Book.number + " - " + this.props.CharacterSheet.Book.name : null} select={this.props.Books} optGroups={this.props.BookGroups} showIndex onChange={this.onChange}/>
+                {this.props.CharacterSheet.Book ? <BookLinks/> : null}
+                <Section/>
+            </ShowDetails>
         )
     }
 }
@@ -209,12 +190,6 @@ class SectionView extends Component {
 const Section = connect(mapStateToProps)(SectionView)
 
 class EnduranceView extends Component {
-
-    state = {hideDetails: true}
-
-    toggleDetails = () => {
-        this.setState({hideDetails: !this.state.hideDetails})
-    }
 
     getBonuses = (returnRawData) => {
 
@@ -317,28 +292,19 @@ class EnduranceView extends Component {
 
     render() {
         return (
-            <View>
-                <Label onClick={this.toggleDetails}>Max Endurance</Label>
-                <View hidden={this.state.hideDetails}>
-                    <Input name="MaxEndurance" type="number" />
-                    <Text>{this.getBonuses()}</Text>
-                    <Group name="Endurance" type="number" negativeNumbers/>
-                    <Button hidden={this.hideArchmasterCuring()} onClick={this.archmasterCuring} style={{marginRight: "5px", marginBottom: "5px"}} inline>Archmaster Curing: +20 (once/100 days)</Button>
-                    <Button onClick={this.toMax} style={{marginRight: "5px"}} inline>Heal to Max</Button>
-                </View>
-            </View>
+            <ShowDetails label="Max Endurance">
+                <Input name="MaxEndurance" type="number" />
+                <Text>{this.getBonuses()}</Text>
+                <Group name="Endurance" type="number" negativeNumbers/>
+                <Button hidden={this.hideArchmasterCuring()} onClick={this.archmasterCuring} style={Styles.Button} inline>Archmaster Curing: +20 (once/100 days)</Button>
+                <Button onClick={this.toMax} style={Styles.Button} inline>Heal to Max</Button>
+            </ShowDetails>
         )
     }
 }
 const Endurance = connect(mapStateToProps)(EnduranceView)
 
 class Combat extends Component {
-
-    state = {hideDetails: true}
-
-    toggleDetails = () => {
-        this.setState({hideDetails: !this.state.hideDetails})
-    }
 
     render() {
         return (
@@ -347,12 +313,11 @@ class Combat extends Component {
                 <HR/>
                 {/* endurance */}
                 {this.props.children}
-                <Label onClick={this.toggleDetails}>Enemy Combat Skill</Label>
-                <View hidden={this.state.hideDetails}>
+                <ShowDetails label="Enemy Combat Skill">
                     <EnemyCombatSkill/>
                     <EnemyEndurance/>
                     <EnemyImmunity/>
-                </View>
+                </ShowDetails>
                 <HR/>
                 <CombatRatio/>
             </View>
@@ -361,12 +326,6 @@ class Combat extends Component {
 }
 
 class CombatSkillView extends Component {
-
-    state = {hideDetails: true}
-
-    toggleDetails = () => {
-        this.setState({hideDetails: !this.state.hideDetails})
-    }
 
     getBonuses = (returnRawData) => {
 
@@ -380,7 +339,7 @@ class CombatSkillView extends Component {
                 let kaiDiscipline = CharacterSheet["Kai" + i]
                 if (kaiDiscipline !== undefined) {
                     if (kaiDiscipline.toLowerCase().indexOf("mindblast") > -1 && kaiDiscipline.toLowerCase().indexOf("mindshield") === -1 && !this.props.CharacterSheet.ImmunetoMindblast) {
-                        bonuses.push(<Text key={Math.random()}>+2&nbsp;(mindblast) </Text>)
+                        bonuses.push(<Text key="mindblast">+2&nbsp;(mindblast) </Text>)
                         bonusValues.push(2)
                     }
                     else if (kaiDiscipline.toLowerCase().indexOf("weaponskill") > -1) {
@@ -394,7 +353,7 @@ class CombatSkillView extends Component {
                                 return kai.name === kaiDiscipline && kai.weapon && weapon && weapon.toLowerCase().indexOf(kai.weapon.toLowerCase()) > -1 
                             })
                             if (weaponSkill.length > 0) {
-                                bonuses.push(<Text key={Math.random()}>+2&nbsp;(weaponskill:&nbsp;{weapon}) </Text>)
+                                bonuses.push(<Text key="weaponskill">+2&nbsp;(weaponskill:&nbsp;{weapon}) </Text>)
                                 bonusValues.push(2)
                                 break
                             }
@@ -410,11 +369,11 @@ class CombatSkillView extends Component {
                 if (kaiDiscipline !== undefined) {
                     if (kaiDiscipline.toLowerCase().indexOf("mindblast") > -1) {
                         if (this.props.CharacterSheet.UsePsiSurge) {
-                            bonuses.push(<Text key={Math.random()}>+4&nbsp;(psi-surge) </Text>)
+                            bonuses.push(<Text key="psi-surge">+4&nbsp;(psi-surge) </Text>)
                             bonusValues.push(4)
                         }
                         else if (!this.props.CharacterSheet.ImmunetoMindblast) {
-                            bonuses.push(<Text key={Math.random()}>+2&nbsp;(mindblast) </Text>)
+                            bonuses.push(<Text key="mindblast">+2&nbsp;(mindblast) </Text>)
                             bonusValues.push(2)
                         }
                     }
@@ -434,14 +393,14 @@ class CombatSkillView extends Component {
 
                                         if (CharacterSheet.MagnakaiLevel.toLowerCase().indexOf("scion-kai") > -1 || CharacterSheet.MagnakaiLevel.toLowerCase().indexOf("archmaster") > -1) {
 
-                                            bonuses.push(<Text>+4&nbsp;(weaponmastery:&nbsp;{weapon}) </Text>)
+                                            bonuses.push(<Text key="weaponmastery">+4&nbsp;(weaponmastery:&nbsp;{weapon}) </Text>)
                                             bonusValues.push(4)
                                             matchFound = true
 
                                             break
                                         }
 
-                                        bonuses.push(<Text>+3&nbsp;(weaponmastery:&nbsp;{weapon}) </Text>)
+                                        bonuses.push(<Text key="weaponmastery">+3&nbsp;(weaponmastery:&nbsp;{weapon}) </Text>)
                                         bonusValues.push(3)
                                         matchFound = true
                                         break
@@ -505,15 +464,12 @@ class CombatSkillView extends Component {
 
     render() {
         return (
-            <View>
-                <Label onClick={this.toggleDetails}>Base Combat Skill</Label>
-                <View hidden={this.state.hideDetails}>
-                    <Input name="BaseCombatSkill" type="number"/>
-                    <Button onClick={this.addBonus} style={{marginRight: "5px"}} inline>Update Combat Skill</Button>
-                    <Text>{this.getBonuses()}</Text>
-                    <Group name="Combat Skill" type="number"/>
-                </View>
-            </View>
+            <ShowDetails label="Base Combat Skill">
+                <Input name="BaseCombatSkill" type="number"/>
+                <Button onClick={this.addBonus} style={Styles.Button} inline>Update Combat Skill</Button>
+                <Text>{this.getBonuses()}</Text>
+                <Group name="Combat Skill" type="number"/>
+            </ShowDetails>
         )
     }
 }
@@ -586,11 +542,7 @@ const EnemyImmunity = connect(mapStateToProps)(EnemyImmunityView)
 
 class CombatRatioView extends Component {
 
-    state = {number: "-", damage: {}, round: 0, hideDetails: true}
-
-    toggleDetails = () => {
-        this.setState({hideDetails: !this.state.hideDetails})
-    }
+    state = {number: "-", damage: {}, round: 0}
 
     fight = () => {
         
@@ -642,75 +594,72 @@ class CombatRatioView extends Component {
     render() {
         return (
             <View>
-                <View>
-                    <Label onClick={this.toggleDetails}>Combat Ratio</Label>
-                    <View hidden={this.state.hideDetails}>
-                        <TextWithInputFont>
-                        {
-                            this.props.CharacterSheet.CombatRatio === undefined
-                            ||  this.props.CharacterSheet.CombatRatio === null
-                            || isNaN(this.props.CharacterSheet.CombatRatio)
-                            || this.props.CharacterSheet.CombatSkill === ""
-                            || this.props.CharacterSheet.EnemyCombatSkill === ""
-                                ? "-"
-                                : this.props.CharacterSheet.CombatRatio
-                        }</TextWithInputFont>
-                        <Label>Combat Results</Label>
-                        <TextWithInputFont>
-                            Enemy:{" "}
-                            {this.state.damage.enemy !== undefined
-                                ? isNaN(this.state.damage.enemy*-1)
-                                    ? this.state.damage.enemy
-                                    : this.state.damage.enemy*-1
-                                : "-"
-                            }
-                            {" "}/{" "}
-                            Lone Wolf:{" "}
-                            {this.state.damage.lonewolf !== undefined
-                                ? isNaN(this.state.damage.lonewolf*-1)
-                                    ? this.state.damage.lonewolf
-                                    : this.state.damage.lonewolf*-1
-                                : "-"
-                            }
-                            {" "}
-                            <Text hidden={!this.props.CharacterSheet.UsePsiSurge}>
-                                (-2 psi-surge)
-                            </Text>
-                        </TextWithInputFont>
-                        <Label>Round</Label>
-                        <TextWithInputFont>
-                            {this.state.round}
-                        </TextWithInputFont>
-                        <UsePsiSurge/>
-                        <Button onClick={this.fight} disabled={
-                            this.props.CharacterSheet.CombatSkill === undefined
-                            || this.props.CharacterSheet.CombatSkill === ""
-                            || this.props.CharacterSheet.EnemyCombatSkill === undefined
-                            || this.props.CharacterSheet.EnemyCombatSkill === ""
-                        }>Fight</Button>
-                        <Button onClick={this.updateEndurance} disabled={
-                            this.props.CharacterSheet.CombatSkill === undefined
-                            || this.props.CharacterSheet.CombatSkill === ""
-                            || this.props.CharacterSheet.EnemyCombatSkill === undefined
-                            || this.props.CharacterSheet.EnemyCombatSkill === ""
-                            || this.props.CharacterSheet.Endurance === undefined
-                            || this.props.CharacterSheet.Endurance === ""
-                            || this.props.CharacterSheet.EnemyEndurance === undefined
-                            || this.props.CharacterSheet.EnemyEndurance === ""
-                        }>Update Endurance</Button>
-                        <Button onClick={this.fightAndUpdateEndurance} disabled={
-                            this.props.CharacterSheet.CombatSkill === undefined
-                            || this.props.CharacterSheet.CombatSkill === ""
-                            || this.props.CharacterSheet.EnemyCombatSkill === undefined
-                            || this.props.CharacterSheet.EnemyCombatSkill === ""
-                            || this.props.CharacterSheet.Endurance === undefined
-                            || this.props.CharacterSheet.Endurance === ""
-                            || this.props.CharacterSheet.EnemyEndurance === undefined
-                            || this.props.CharacterSheet.EnemyEndurance === ""
-                        }>Fight & Update Endurance</Button>
-                        <Button onClick={this.clearEnemyStats}>Clear Enemy Stats</Button>
-                    </View>
-                </View>
+                <ShowDetails label="Combat Ratio">
+                    <TextWithInputFont>
+                    {
+                        this.props.CharacterSheet.CombatRatio === undefined
+                        ||  this.props.CharacterSheet.CombatRatio === null
+                        || isNaN(this.props.CharacterSheet.CombatRatio)
+                        || this.props.CharacterSheet.CombatSkill === ""
+                        || this.props.CharacterSheet.EnemyCombatSkill === ""
+                            ? "-"
+                            : this.props.CharacterSheet.CombatRatio
+                    }</TextWithInputFont>
+                    <Label>Combat Results</Label>
+                    <TextWithInputFont>
+                        Enemy:{" "}
+                        {this.state.damage.enemy !== undefined
+                            ? isNaN(this.state.damage.enemy*-1)
+                                ? this.state.damage.enemy
+                                : this.state.damage.enemy*-1
+                            : "-"
+                        }
+                        {" "}/{" "}
+                        Lone Wolf:{" "}
+                        {this.state.damage.lonewolf !== undefined
+                            ? isNaN(this.state.damage.lonewolf*-1)
+                                ? this.state.damage.lonewolf
+                                : this.state.damage.lonewolf*-1
+                            : "-"
+                        }
+                        {" "}
+                        <Text hidden={!this.props.CharacterSheet.UsePsiSurge}>
+                            (-2 psi-surge)
+                        </Text>
+                    </TextWithInputFont>
+                    <Label>Round</Label>
+                    <TextWithInputFont>
+                        {this.state.round}
+                    </TextWithInputFont>
+                    <UsePsiSurge/>
+                    <Button onClick={this.fight} disabled={
+                        this.props.CharacterSheet.CombatSkill === undefined
+                        || this.props.CharacterSheet.CombatSkill === ""
+                        || this.props.CharacterSheet.EnemyCombatSkill === undefined
+                        || this.props.CharacterSheet.EnemyCombatSkill === ""
+                    }>Fight</Button>
+                    <Button onClick={this.updateEndurance} disabled={
+                        this.props.CharacterSheet.CombatSkill === undefined
+                        || this.props.CharacterSheet.CombatSkill === ""
+                        || this.props.CharacterSheet.EnemyCombatSkill === undefined
+                        || this.props.CharacterSheet.EnemyCombatSkill === ""
+                        || this.props.CharacterSheet.Endurance === undefined
+                        || this.props.CharacterSheet.Endurance === ""
+                        || this.props.CharacterSheet.EnemyEndurance === undefined
+                        || this.props.CharacterSheet.EnemyEndurance === ""
+                    }>Update Endurance</Button>
+                    <Button onClick={this.fightAndUpdateEndurance} disabled={
+                        this.props.CharacterSheet.CombatSkill === undefined
+                        || this.props.CharacterSheet.CombatSkill === ""
+                        || this.props.CharacterSheet.EnemyCombatSkill === undefined
+                        || this.props.CharacterSheet.EnemyCombatSkill === ""
+                        || this.props.CharacterSheet.Endurance === undefined
+                        || this.props.CharacterSheet.Endurance === ""
+                        || this.props.CharacterSheet.EnemyEndurance === undefined
+                        || this.props.CharacterSheet.EnemyEndurance === ""
+                    }>Fight & Update Endurance</Button>
+                    <Button onClick={this.clearEnemyStats}>Clear Enemy Stats</Button>
+                </ShowDetails>
                 <HR/>
                 <Label>Random Number</Label>
                 <TextWithInputFont>{this.state.number} {this.props.CharacterSheet.WeaponmasteryBow ? "(bow weaponmastery: +3)" : null}</TextWithInputFont>
@@ -759,33 +708,18 @@ const UsePsiSurge = connect(mapStateToProps)(UsePsiSurgeView)
 
 class WeaponsView extends Component {
 
-    state = {hideDetails: true}
-
-    toggleDetails = () => {
-        this.setState({hideDetails: !this.state.hideDetails})
-    }
-
     render() {
         return (
-            <View>
-                <Label onClick={this.toggleDetails}>Weapons</Label>
-                <View hidden={this.state.hideDetails}>
-                    <Input name="Weapon1" />
-                    <Input name="Weapon2" />
-                </View>
-            </View>
+            <ShowDetails label="Weapons">
+                <Input name="Weapon1" />
+                <Input name="Weapon2" />
+            </ShowDetails>
         )
     }
 }
 const Weapons = connect(mapStateToProps)(WeaponsView)
 
 class WeaponmasteryView extends Component {
-
-    state = {hideDetails: true}
-
-    toggleDetails = () => {
-        this.setState({hideDetails: !this.state.hideDetails})
-    }
 
     hasWeaponmastery = () => {
         
@@ -813,8 +747,7 @@ class WeaponmasteryView extends Component {
     render() {
         return (
             <View hidden={!this.hasWeaponmastery()}>
-                <Label onClick={this.toggleDetails}>Weaponmastery</Label>
-                <View hidden={this.state.hideDetails}>
+                <ShowDetails label="Weaponmastery">
                     <View>
                         <Input name="WeaponmasterySpear" type="checkbox" inline/>
                         <LabelInline htmlFor="WeaponmasterySpear">Spear</LabelInline>
@@ -855,7 +788,7 @@ class WeaponmasteryView extends Component {
                         <Input name="WeaponmasteryBroadsword" type="checkbox" inline/>
                         <LabelInline htmlFor="WeaponmasteryBroadsword">Broadsword</LabelInline>
                     </View>
-                </View>
+                </ShowDetails>
                 <HR/>
             </View>
         )
@@ -879,8 +812,7 @@ class KaiView extends Component {
 
         return (
             <View>
-                <Label onClick={this.toggleDetails}>Kai Disciplines</Label>
-                <View hidden={this.state.hideDetails}>
+                <ShowDetails label="Kai Disciplines">
                     <View>
                         <Input name="Kai1" select={this.props.KaiDisciplines}/>
                     </View>
@@ -913,7 +845,7 @@ class KaiView extends Component {
                     </View>
                     {this.props.CharacterSheet.Book ? <Link target="_blank" href={this.props.CharacterSheet.Book.url + this.props.BookURLs.disciplines}>Disciplines</Link> : null}
                     <Group name="Kai Level" select={this.props.KaiLevels}/>
-                </View>
+                </ShowDetails>
                 <HR/>
             </View>
         )
@@ -923,12 +855,6 @@ const Kai = connect(mapStateToProps)(KaiView)
 
 class MagnakaiView extends Component {
 
-    state = {hideDetails: true}
-
-    toggleDetails = () => {
-        this.setState({hideDetails: !this.state.hideDetails})
-    }
-
     render() {
 
         if (!this.props.CharacterSheet.Book || (this.props.CharacterSheet.Book && this.props.CharacterSheet.Book.number < 6)) {
@@ -937,8 +863,7 @@ class MagnakaiView extends Component {
 
         return (
             <View>
-                <Label onClick={this.toggleDetails}>Magnakai Disciplines</Label>
-                <View hidden={this.state.hideDetails}>
+                <ShowDetails label="Magnakai Disciplines">
                     <View>
                         <Input name="Magnakai1" select={this.props.MagnakaiDisciplines} optGroups={this.props.LoreCircles}/>
                     </View>
@@ -972,7 +897,7 @@ class MagnakaiView extends Component {
                     {this.props.CharacterSheet.Book ? <Link target="_blank" href={this.props.CharacterSheet.Book.url + this.props.BookURLs.disciplines}>Disciplines</Link> : null}
                     <Group name="Magnakai Level" select={this.props.MagnakaiLevels}/>
                     {this.props.CharacterSheet.Book ? <Link target="_blank" href={this.props.CharacterSheet.Book.url + this.props.BookURLs.improveddisciplines}>Improved Disciplines</Link> : null}
-                </View>
+                </ShowDetails>
                 <HR/>
             </View>
         )
@@ -981,18 +906,10 @@ class MagnakaiView extends Component {
 const Magnakai = connect(mapStateToProps)(MagnakaiView)
 
 class LoreCirclesView extends Component {
-
-    state = {hideDetails: true}
-
-    toggleDetails = () => {
-        this.setState({hideDetails: !this.state.hideDetails})
-    }
-
     render() {
         return (
             <View hidden={!(this.props.CharacterSheet.Book && this.props.CharacterSheet.Book.number >= 6)}>
-                <Label onClick={this.toggleDetails}>Lore Circles</Label>
-                <View hidden={this.state.hideDetails}>
+                <ShowDetails label="Lore Circles">
                     <View hidden={
                         this.props.checkLoreCircle("Circle Of Fire")
                         || this.props.checkLoreCircle("Circle Of Light")
@@ -1014,7 +931,7 @@ class LoreCirclesView extends Component {
                         <TextWithInputFont hidden={!this.props.checkLoreCircle("Circle Of The Spirit")}>Circle of the Spirit: +3 COMBAT +3 ENDURANCE</TextWithInputFont>
                     </View>
                     {this.props.CharacterSheet.Book ? <Link target="_blank" href={this.props.CharacterSheet.Book.url + this.props.BookURLs.lorecircles}>Info</Link> : null}
-                </View>
+                </ShowDetails>
                 <HR/>
             </View>
         )
@@ -1023,21 +940,11 @@ class LoreCirclesView extends Component {
 const LoreCircles = connect(mapStateToProps)(LoreCirclesView)
 
 class BeltPouchView extends Component {
-    
-    state = {hideDetails: true}
-
-    toggleDetails = () => {
-        this.setState({hideDetails: !this.state.hideDetails})
-    }
-
     render() {
         return (
-            <View>
-                <Label onClick={this.toggleDetails}>Belt Pouch</Label>
-                <View hidden={this.state.hideDetails}>
-                    <Input name="BeltPouch" append="50 gold crowns max" type="number"/>
-                </View>
-            </View>
+            <ShowDetails label="Belt Pouch">
+                <Input name="BeltPouch" append="50 gold crowns max" type="number"/>
+            </ShowDetails>
         )
     }
 }
@@ -1055,44 +962,34 @@ class MealsView extends Component {
 const Meals = connect(mapStateToProps)(MealsView)
 
 class BackpackView extends Component {
-
-    state = {hideDetails: true}
-
-    toggleDetails = () => {
-        this.setState({hideDetails: !this.state.hideDetails})
-    }
-
     render() {
         return (
-            <View>
-                <Label onClick={this.toggleDetails}>Backpack Items</Label>
-                <View hidden={this.state.hideDetails}>
-                    <View>
-                        <Input name="BackpackItem1" />
-                    </View>
-                    <View>
-                        <Input name="BackpackItem2" />
-                    </View>
-                    <View>
-                        <Input name="BackpackItem3" />
-                    </View>
-                    <View>
-                        <Input name="BackpackItem4" />
-                    </View>
-                    <View>
-                        <Input name="BackpackItem5" />
-                    </View>
-                    <View>
-                        <Input name="BackpackItem6" />
-                    </View>
-                    <View>
-                        <Input name="BackpackItem7" />
-                    </View>
-                    <View>
-                        <Input name="BackpackItem8" />
-                    </View>
+            <ShowDetails label="Backpack Items">
+                <View>
+                    <Input name="BackpackItem1" />
                 </View>
-            </View>
+                <View>
+                    <Input name="BackpackItem2" />
+                </View>
+                <View>
+                    <Input name="BackpackItem3" />
+                </View>
+                <View>
+                    <Input name="BackpackItem4" />
+                </View>
+                <View>
+                    <Input name="BackpackItem5" />
+                </View>
+                <View>
+                    <Input name="BackpackItem6" />
+                </View>
+                <View>
+                    <Input name="BackpackItem7" />
+                </View>
+                <View>
+                    <Input name="BackpackItem8" />
+                </View>
+            </ShowDetails>
         )
     }
 }
@@ -1108,92 +1005,73 @@ class SpecialItemsView extends Component {
 
     render() {
         return (
-            <View>
-                <Label onClick={this.toggleDetails}>Special Items</Label>
-                <View hidden={this.state.hideDetails}>
-                    <View>
-                        <Input name="SpecialItem1" />
-                    </View>
-                    <View>
-                        <Input name="SpecialItem2" />
-                    </View>
-                    <View>
-                        <Input name="SpecialItem3" />
-                    </View>
-                    <View>
-                        <Input name="SpecialItem4" />
-                    </View>
-                    <View>
-                        <Input name="SpecialItem5" />
-                    </View>
-                    <View>
-                        <Input name="SpecialItem6" />
-                    </View>
-                    <View>
-                        <Input name="SpecialItem7" />
-                    </View>
-                    <View>
-                        <Input name="SpecialItem8" />
-                    </View>
-                    <View>
-                        <Input name="SpecialItem9" />
-                    </View>
-                    <View>
-                        <Input name="SpecialItem10" />
-                    </View>
-                    <View>
-                        <Input name="SpecialItem11" />
-                    </View>
-                    <View>
-                        <Input name="SpecialItem12" />
-                    </View>
-                    <View>
-                        <Input name="SpecialItem13" />
-                    </View>
-                    <View>
-                        <Input name="SpecialItem14" />
-                    </View>
-                    <View>
-                        <Input name="SpecialItem15" />
-                    </View>
-                    <View>
-                        <Input name="SpecialItem16" />
-                    </View>
+            <ShowDetails label="Special Items">
+                <View>
+                    <Input name="SpecialItem1" />
                 </View>
-            </View>
+                <View>
+                    <Input name="SpecialItem2" />
+                </View>
+                <View>
+                    <Input name="SpecialItem3" />
+                </View>
+                <View>
+                    <Input name="SpecialItem4" />
+                </View>
+                <View>
+                    <Input name="SpecialItem5" />
+                </View>
+                <View>
+                    <Input name="SpecialItem6" />
+                </View>
+                <View>
+                    <Input name="SpecialItem7" />
+                </View>
+                <View>
+                    <Input name="SpecialItem8" />
+                </View>
+                <View>
+                    <Input name="SpecialItem9" />
+                </View>
+                <View>
+                    <Input name="SpecialItem10" />
+                </View>
+                <View>
+                    <Input name="SpecialItem11" />
+                </View>
+                <View>
+                    <Input name="SpecialItem12" />
+                </View>
+                <View>
+                    <Input name="SpecialItem13" />
+                </View>
+                <View>
+                    <Input name="SpecialItem14" />
+                </View>
+                <View>
+                    <Input name="SpecialItem15" />
+                </View>
+                <View>
+                    <Input name="SpecialItem16" />
+                </View>
+            </ShowDetails>
         )
     }
 }
 const SpecialItems = connect(mapStateToProps)(SpecialItemsView)
 
 class NotesView extends Component {
-
-    state = {hideDetails: true}
-
-    toggleDetails = () => {
-        this.setState({hideDetails: !this.state.hideDetails})
-    }
-
     render() {
         return (
-            <View>
-                <Label onClick={this.toggleDetails}>Notes</Label>
-                <View hidden={this.state.hideDetails}>
-                    <Input name="Notes" box/>
-                </View>
-            </View>
+            <ShowDetails label="Notes">
+                <Input name="Notes" box/>
+            </ShowDetails>
         )
     }
 }
 const Notes = connect(mapStateToProps)(NotesView)
 
 class GameStateView extends Component {
-
-    state = {hideDetails: true}
-
-    toggleDetails = () => {
-        this.setState({hideDetails: !this.state.hideDetails})
-    }
 
     loadGame = () => {
         this.props.dispatch({type: "LOAD_GAME", value: this.props.CharacterSheet.GameState, API: this.props.API})
@@ -1210,14 +1088,11 @@ class GameStateView extends Component {
     }
     render() {
         return (
-            <View>
-                <Label onClick={this.toggleDetails}>Game State</Label>
-                <View hidden={this.state.hideDetails}>
-                    <Input name="GameState" value={this.props.CharacterSheet.GameState} onChange={this.modifyGameState} box/>
-                    <Button onClick={this.loadGame}>{this.props.CharacterSheet.GameState === "" ? <Text>Start New Game</Text> : <Text>Load Custom Game State</Text>}</Button>
-                    <Button onClick={this.clear}>Clear Custom Game State</Button>
-                </View>
-            </View>
+            <ShowDetails label="Game State">
+                <Input name="GameState" value={this.props.CharacterSheet.GameState} onChange={this.modifyGameState} box/>
+                <Button onClick={this.loadGame}>{this.props.CharacterSheet.GameState === "" ? <Text>Start New Game</Text> : <Text>Load Custom Game State</Text>}</Button>
+                <Button onClick={this.clear}>Clear Custom Game State</Button>
+            </ShowDetails>
         )
     }
 }
@@ -1225,11 +1100,6 @@ const GameState = connect(mapStateToProps)(GameStateView)
 
 class SaveAndLoadRemotelyView extends Component {
 
-    state = {hideDetails: true}
-
-    toggleDetails = () => {
-        this.setState({hideDetails: !this.state.hideDetails})
-    }
     modifyGameID = (input) => {
         this.props.dispatch({type: "UPDATE_GAME_ID_REQUEST_FEEDBACK", value: input.value})
     }
@@ -1289,226 +1159,17 @@ class SaveAndLoadRemotelyView extends Component {
     }
     render() {
         return (
-            <View>
-                <Label onClick={this.toggleDetails}>Remote Game ID</Label>
-                <View hidden={this.state.hideDetails}>
-                    <Input value={this.props.RequestFeedback.gameID} onChange={this.modifyGameID} noAutoSave/>
-                    <Label>Password</Label>
-                    <Input type="password" value={this.props.RequestFeedback.password} onChange={this.modifyPassword} noAutoSave/>
-                    <View>{this.props.RequestFeedback ? this.props.RequestFeedback.message : null}</View>
-                    <Button onClick={this.loadGameRemotely}>Load Game Remotely</Button>
-                    <Button onClick={this.saveGameRemotely}>{this.props.CharacterSheet.GameState === "" ? "Delete Game Remotely" : "Save Game Remotely"}</Button>
-                    <Input name="Autosave" type="checkbox" onChange={this.toggleAutoSave} inline/>
-                    <LabelInline htmlFor="Autosave">Auto save</LabelInline>
-                </View>
-            </View>
+            <ShowDetails label="Remote Game ID">
+                <Input value={this.props.RequestFeedback.gameID} onChange={this.modifyGameID} noAutoSave/>
+                <Label>Password</Label>
+                <Input type="password" value={this.props.RequestFeedback.password} onChange={this.modifyPassword} noAutoSave/>
+                <View>{this.props.RequestFeedback ? this.props.RequestFeedback.message : null}</View>
+                <Button onClick={this.loadGameRemotely}>Load Game Remotely</Button>
+                <Button onClick={this.saveGameRemotely}>{this.props.CharacterSheet.GameState === "" ? "Delete Game Remotely" : "Save Game Remotely"}</Button>
+                <Input name="Autosave" type="checkbox" onChange={this.toggleAutoSave} inline/>
+                <LabelInline htmlFor="Autosave">Auto save</LabelInline>
+            </ShowDetails>
         )
     }
 }
 const SaveAndLoadRemotely = connect(mapStateToProps)(SaveAndLoadRemotelyView)
-
-class Spacer extends Component {
-    render() {
-        return (
-            <View style={{height: "50px"}}/>
-        )
-    }
-}
-
-class Group extends Component {
-    render() {
-        return (
-            <View hidden={this.props.hidden}>
-                <Label hidden={this.props.type === "checkbox"}>{this.props.name}{this.props.append ? <Text> ({this.props.append})</Text> : null}</Label>
-                <Input
-                    name={this.props.name.replace(/ /g,"")}
-                    type={this.props.type}
-                    numbers={this.props.numbers}
-                    negativeNumbers={this.props.negativeNumbers}
-                    noPlusAndMinus={this.props.noPlusAndMinus}
-                    select={this.props.select}
-                    box={this.props.box}
-                    inline={this.props.type === "checkbox"}
-                />
-                <LabelInline htmlFor={this.props.name.replace(/ /g,"")} hidden={this.props.type !== "checkbox"} style={this.props.type !== "checkbox" ? null : {height: "26px", display: "inline"}}>{this.props.name}{this.props.append ? <Text> ({this.props.append})</Text> : null}</LabelInline>
-
-            </View>
-        )
-    }
-}
-
-class InputView extends Component {
-
-    onChange = (input) => {
-
-        if (this.props.onChange) {
-            return this.props.onChange(input.target)
-        }
-
-        let value = null
-
-        if (!input.target) {
-
-            if (this.props.negativeNumbers) {
-                value = (this.props.CharacterSheet[this.props.name] || 0) + Number(input)
-            }
-            else {
-                value = (this.props.CharacterSheet[this.props.name] || "") + input                
-            }
-
-
-            return this.props.dispatch({type: this.props.name, value: value, API: this.props.API, save: true})
-        }
-
-        value = input.target.value
-
-        if (this.props.type === "checkbox") {
-            value = input.target.checked
-        }
-
-        this.props.dispatch({type: this.props.name, value: value, API: this.props.API, save: this.props.type === "checkbox"})
-    }
-
-    onBlur = () => {
-        this.props.dispatch({type: "AUTO_SAVE", API: this.props.API, save: true})
-    }
-
-    increment = () => {
-        this.props.dispatch({type: "INCREMENT_" + this.props.name, API: this.props.API, save: true})
-    }
-
-    decrement = () => {
-        this.props.dispatch({type: "DECREMENT_" + this.props.name, API: this.props.API, save: true})
-    }
-
-    clear = () => {
-
-        if (!this.props.name) {
-            return this.props.onChange("")
-        }
-
-        this.props.dispatch({type: this.props.name, value: "", API: this.props.API, save: true})
-    }
-
-    generateSelectOptions = () => {
-        if (this.props.optGroups) {
-
-            let optGroups = this.props.optGroups.map((optGroup, index) => {
-                return (<PickerItemGroup key={optGroup.name} label={optGroup.name}/>)
-            })
-
-            let options = this.props.select.map((option, index) => {
-
-                
-
-                return <PickerItem key={option.name}>{this.props.showIndex ? index + " - " + option.name : option.name}</PickerItem>
-            })
-            
-            this.props.optGroups.map((optGroup, index) => {
-                options.splice(optGroup.position, 0, optGroups[index])
-                return null
-            })
-
-            return (options)
-        }
-        else {
-
-            return (
-                this.props.select.map((option, index) => {return <PickerItem key={option.name}>{this.props.showIndex ? index + " - " + option.name : option.name}</PickerItem>})
-            )
-
-        }
-    }
-
-    render() {
-        if (this.props.hidden) return null
-        if (this.props.select) {
-            return (
-                <View style={{marginBottom: "8px"}}>
-                    <Picker
-                        id={this.props.name}
-                        style={{width: "98%", padding: "2px"}}
-                        value={this.props.value || this.props.CharacterSheet[this.props.name] || ""}
-                        onChange={this.onChange}
-                    >
-                        {this.generateSelectOptions()}
-                    </Picker>
-                </View>
-            )
-        }
-        if (this.props.box) {
-            return (
-                <View style={{marginBottom: "8px"}}>
-                    <textarea
-                        id={this.props.name}
-                        style={{width: "98%", height: "200px", padding: "2px"}}
-                        value={this.props.value || this.props.CharacterSheet[this.props.name] || ""}
-                        onChange={this.onChange}
-                        onBlur={this.onBlur}
-                    />
-                </View>
-            )
-        }
-        return (
-            <View style={{marginBottom: "8px", display: (this.props.inline ? "inline-block" : null)}}>
-                <TextInput
-                    disabled={this.props.disabled}
-                    id={this.props.name}
-                    style={this.props.type === "checkbox" ? null : {width: (this.props.type === "number" && !this.props.noPlusAndMinus ? "calc(98% - 68px)" : "calc(98% - 36px)"), height: "26px", padding: "2px"}}
-                    value={this.props.value || (this.props.CharacterSheet[this.props.name] === undefined ? "" : String(this.props.CharacterSheet[this.props.name]))}
-                    checked={this.props.type === "checkbox" ? (this.props.CharacterSheet[this.props.name] || false) : null}
-                    type={this.props.type}
-                    onChange={this.onChange}
-                    onBlur={this.props.type === "checkbox" || this.props.noAutoSave ? null : this.onBlur}
-                />
-                {(this.props.type !== "number" && this.props.type !== "checkbox") || this.props.noPlusAndMinus
-                    ?
-                    <Text>
-                        <Button style={{marginLeft: "5px", width: "25px", height: "34px"}} onClick={this.clear} inline>X</Button>
-                    </Text>
-                    : null
-                }
-                {this.props.type === "number" && !this.props.noPlusAndMinus
-                    ?
-                    <Text>
-                        <Button style={{marginLeft: "5px", width: "25px", height: "34px"}} onClick={this.decrement} inline>-</Button>
-                        <Button style={{marginLeft: "5px", width: "25px", height: "34px"}} onClick={this.increment} inline>+</Button>
-                    </Text>
-                    : null
-                }
-                {this.props.numbers
-                    ? 
-                    <View>
-                        <Button addFaceValue={this.onChange} style={{marginRight: "5px", marginTop: "5px", width: "25px", height: "34px", textAlign: "center"}} inline>1</Button>
-                        <Button addFaceValue={this.onChange} style={{marginRight: "5px", marginTop: "5px", width: "25px", height: "34px", textAlign: "center"}} inline>2</Button>
-                        <Button addFaceValue={this.onChange} style={{marginRight: "5px", marginTop: "5px", width: "25px", height: "34px", textAlign: "center"}} inline>3</Button>
-                        <Button addFaceValue={this.onChange} style={{marginRight: "5px", marginTop: "5px", width: "25px", height: "34px", textAlign: "center"}} inline>4</Button>
-                        <Button addFaceValue={this.onChange} style={{marginRight: "5px", marginTop: "5px", width: "25px", height: "34px", textAlign: "center"}} inline>5</Button>
-                        <Button addFaceValue={this.onChange} style={{marginRight: "5px", marginTop: "5px", width: "25px", height: "34px", textAlign: "center"}} inline>6</Button>
-                        <Button addFaceValue={this.onChange} style={{marginRight: "5px", marginTop: "5px", width: "25px", height: "34px", textAlign: "center"}} inline>7</Button>
-                        <Button addFaceValue={this.onChange} style={{marginRight: "5px", marginTop: "5px", width: "25px", height: "34px", textAlign: "center"}} inline>8</Button>
-                        <Button addFaceValue={this.onChange} style={{marginRight: "5px", marginTop: "5px", width: "25px", height: "34px", textAlign: "center"}} inline>9</Button>
-                        <Button addFaceValue={this.onChange} style={{marginRight: "5px", marginTop: "5px", width: "25px", height: "34px", textAlign: "center"}} inline>0</Button>
-                    </View>
-                    : null
-                }
-                {this.props.negativeNumbers
-                    ? 
-                    <View>
-                        <Button addFaceValue={this.onChange} style={{marginRight: "5px", marginTop: "5px", width: "25px", height: "34px", textAlign: "center", padding: "3px"}} inline>-1</Button>
-                        <Button addFaceValue={this.onChange} style={{marginRight: "5px", marginTop: "5px", width: "25px", height: "34px", textAlign: "center", padding: "3px"}} inline>-2</Button>
-                        <Button addFaceValue={this.onChange} style={{marginRight: "5px", marginTop: "5px", width: "25px", height: "34px", textAlign: "center", padding: "3px"}} inline>-3</Button>
-                        <Button addFaceValue={this.onChange} style={{marginRight: "5px", marginTop: "5px", width: "25px", height: "34px", textAlign: "center", padding: "3px"}} inline>-4</Button>
-                        <Button addFaceValue={this.onChange} style={{marginRight: "5px", marginTop: "5px", width: "25px", height: "34px", textAlign: "center", padding: "3px"}} inline>-5</Button>
-                        <Button addFaceValue={this.onChange} style={{marginRight: "5px", marginTop: "5px", width: "25px", height: "34px", textAlign: "center", padding: "3px"}} inline>-6</Button>
-                        <Button addFaceValue={this.onChange} style={{marginRight: "5px", marginTop: "5px", width: "25px", height: "34px", textAlign: "center", padding: "3px"}} inline>-7</Button>
-                        <Button addFaceValue={this.onChange} style={{marginRight: "5px", marginTop: "5px", width: "25px", height: "34px", textAlign: "center", padding: "3px"}} inline>-8</Button>
-                        <Button addFaceValue={this.onChange} style={{marginRight: "5px", marginTop: "5px", width: "25px", height: "34px", textAlign: "center", padding: "3px"}} inline>-9</Button>
-                    </View>
-                    : null
-                }
-            </View>
-        )
-    }
-}
-const Input = connect(mapStateToProps)(InputView)
