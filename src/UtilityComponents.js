@@ -50,7 +50,7 @@ export class ShowDetails extends Component {
     render() {
         return (
             <View>
-                <Label onClick={this.toggleDetails} noColon>{this.state.hideDetails ? "⮞" : "⮟"} {this.props.label}</Label>
+                <Label onClick={this.toggleDetails} noColon><Text style={Styles.PreventSelect}>{this.state.hideDetails ? "▶" : "▼"}</Text> {this.props.label}</Label>
                 <View hidden={this.state.hideDetails}>
                     {this.props.children}
                 </View>

@@ -28,6 +28,9 @@ const Styles = {
         paddingLeft: "3px",
         paddingRight: "3px",
     },
+    PreventSelect: {
+        userSelect: "none",
+    },
     Spacer: {
         height: "50px",
     },

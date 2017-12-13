@@ -265,7 +265,7 @@ class EnduranceView extends Component {
         let hide = true
 
         if (CharacterSheet.Book && CharacterSheet.Book.number >= 6) {
-            if (CharacterSheet.MagnakaiLevel.toLowerCase().indexOf("archmaster") > -1) {
+            if (CharacterSheet.MagnakaiLevel &&CharacterSheet.MagnakaiLevel.toLowerCase().indexOf("archmaster") > -1) {
                 for (let i = 1; i <= 10; i++) {
                     let kaiDiscipline = CharacterSheet["Magnakai" + i]
                     if (kaiDiscipline !== undefined) {
@@ -391,7 +391,7 @@ class CombatSkillView extends Component {
                                 for (let t = 0; t < 10; t++) {
                                     if (String(weapon).toLowerCase().replace(/ /g,"").indexOf(weaponTypeList[t].toLowerCase()) > -1) {
 
-                                        if (CharacterSheet.MagnakaiLevel.toLowerCase().indexOf("scion-kai") > -1 || CharacterSheet.MagnakaiLevel.toLowerCase().indexOf("archmaster") > -1) {
+                                        if (CharacterSheet.MagnakaiLevel && (CharacterSheet.MagnakaiLevel.toLowerCase().indexOf("scion-kai") > -1 || CharacterSheet.MagnakaiLevel.toLowerCase().indexOf("archmaster") > -1)) {
 
                                             bonuses.push(<Text key="weaponmastery">+4&nbsp;(weaponmastery:&nbsp;{weapon}) </Text>)
                                             bonusValues.push(4)
