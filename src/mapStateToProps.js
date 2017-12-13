@@ -6,6 +6,9 @@ export const mapStateToProps = (state, ownProps) => {
     return {
         ...state,
         ...ownProps,
+        numberSequence(iterations) {
+            return Array.from(new Array(iterations),(val,index)=>index+1)
+        },
         API(request, dispatch, gameState = null) {
 
             // get payload from state (optionally, gameState can be passed as an argument)

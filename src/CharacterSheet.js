@@ -711,8 +711,7 @@ class WeaponsView extends Component {
     render() {
         return (
             <ShowDetails label="Weapons">
-                <Input name="Weapon1" />
-                <Input name="Weapon2" />
+                {this.props.numberSequence(2).map(number => <Input key={number} name={"Weapon" + number} />)}
             </ShowDetails>
         )
     }
@@ -813,36 +812,13 @@ class KaiView extends Component {
         return (
             <View>
                 <ShowDetails label="Kai Disciplines">
-                    <View>
-                        <Input name="Kai1" select={this.props.KaiDisciplines}/>
-                    </View>
-                    <View>
-                        <Input name="Kai2" select={this.props.KaiDisciplines}/>
-                    </View>
-                    <View>
-                        <Input name="Kai3" select={this.props.KaiDisciplines}/>
-                    </View>
-                    <View>
-                        <Input name="Kai4" select={this.props.KaiDisciplines}/>
-                    </View>
-                    <View>
-                        <Input name="Kai5" select={this.props.KaiDisciplines}/>
-                    </View>
-                    <View>
-                        <Input name="Kai6" select={this.props.KaiDisciplines} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number < 2}/>
-                    </View>
-                    <View>
-                        <Input name="Kai7" select={this.props.KaiDisciplines} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number < 3}/>
-                    </View>
-                    <View>
-                        <Input name="Kai8" select={this.props.KaiDisciplines} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number < 4}/>
-                    </View>
-                    <View>
-                        <Input name="Kai9" select={this.props.KaiDisciplines} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number < 5}/>
-                    </View>
-                    <View>
-                        <Input name="Kai10" select={this.props.KaiDisciplines} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number < 6}/>
-                    </View>
+                    {this.props.numberSequence(10).map(number => {
+                        return (
+                            <View>
+                                <Input name={"Kai" + number} select={this.props.KaiDisciplines} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number <= number-5}/>
+                            </View>
+                        )
+                    })}
                     {this.props.CharacterSheet.Book ? <Link target="_blank" href={this.props.CharacterSheet.Book.url + this.props.BookURLs.disciplines}>Disciplines</Link> : null}
                     <Group name="Kai Level" select={this.props.KaiLevels}/>
                 </ShowDetails>
@@ -864,36 +840,13 @@ class MagnakaiView extends Component {
         return (
             <View>
                 <ShowDetails label="Magnakai Disciplines">
-                    <View>
-                        <Input name="Magnakai1" select={this.props.MagnakaiDisciplines} optGroups={this.props.LoreCircles}/>
-                    </View>
-                    <View>
-                        <Input name="Magnakai2" select={this.props.MagnakaiDisciplines} optGroups={this.props.LoreCircles}/>
-                    </View>
-                    <View>
-                        <Input name="Magnakai3" select={this.props.MagnakaiDisciplines} optGroups={this.props.LoreCircles}/>
-                    </View>
-                    <View>
-                        <Input name="Magnakai4" select={this.props.MagnakaiDisciplines} optGroups={this.props.LoreCircles} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number < 7}/>
-                    </View>
-                    <View>
-                        <Input name="Magnakai5" select={this.props.MagnakaiDisciplines} optGroups={this.props.LoreCircles} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number < 8}/>
-                    </View>
-                    <View>
-                        <Input name="Magnakai6" select={this.props.MagnakaiDisciplines} optGroups={this.props.LoreCircles} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number < 9}/>
-                    </View>
-                    <View>
-                        <Input name="Magnakai7" select={this.props.MagnakaiDisciplines} optGroups={this.props.LoreCircles} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number < 10}/>
-                    </View>
-                    <View>
-                        <Input name="Magnakai8" select={this.props.MagnakaiDisciplines} optGroups={this.props.LoreCircles} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number < 11}/>
-                    </View>
-                    <View>
-                        <Input name="Magnakai9" select={this.props.MagnakaiDisciplines} optGroups={this.props.LoreCircles} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number < 12}/>
-                    </View>
-                    <View>
-                        <Input name="Magnakai10" select={this.props.MagnakaiDisciplines} optGroups={this.props.LoreCircles} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number < 13}/>
-                    </View>
+                    {this.props.numberSequence(10).map(number => {
+                        return (
+                            <View>
+                                <Input name={"Magnakai" + number} select={this.props.MagnakaiDisciplines} optGroups={this.props.LoreCircles} select={this.props.KaiDisciplines} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number <= number+2}/>
+                            </View>
+                        )
+                    })}
                     {this.props.CharacterSheet.Book ? <Link target="_blank" href={this.props.CharacterSheet.Book.url + this.props.BookURLs.disciplines}>Disciplines</Link> : null}
                     <Group name="Magnakai Level" select={this.props.MagnakaiLevels}/>
                     {this.props.CharacterSheet.Book ? <Link target="_blank" href={this.props.CharacterSheet.Book.url + this.props.BookURLs.improveddisciplines}>Improved Disciplines</Link> : null}
@@ -965,30 +918,13 @@ class BackpackView extends Component {
     render() {
         return (
             <ShowDetails label="Backpack Items">
-                <View>
-                    <Input name="BackpackItem1" />
-                </View>
-                <View>
-                    <Input name="BackpackItem2" />
-                </View>
-                <View>
-                    <Input name="BackpackItem3" />
-                </View>
-                <View>
-                    <Input name="BackpackItem4" />
-                </View>
-                <View>
-                    <Input name="BackpackItem5" />
-                </View>
-                <View>
-                    <Input name="BackpackItem6" />
-                </View>
-                <View>
-                    <Input name="BackpackItem7" />
-                </View>
-                <View>
-                    <Input name="BackpackItem8" />
-                </View>
+                {this.props.numberSequence(8).map(number => {
+                    return (
+                        <View>
+                            <Input name={"BackpackItem" + number} />
+                        </View>
+                    )
+                })}
             </ShowDetails>
         )
     }
@@ -1006,54 +942,13 @@ class SpecialItemsView extends Component {
     render() {
         return (
             <ShowDetails label="Special Items">
-                <View>
-                    <Input name="SpecialItem1" />
-                </View>
-                <View>
-                    <Input name="SpecialItem2" />
-                </View>
-                <View>
-                    <Input name="SpecialItem3" />
-                </View>
-                <View>
-                    <Input name="SpecialItem4" />
-                </View>
-                <View>
-                    <Input name="SpecialItem5" />
-                </View>
-                <View>
-                    <Input name="SpecialItem6" />
-                </View>
-                <View>
-                    <Input name="SpecialItem7" />
-                </View>
-                <View>
-                    <Input name="SpecialItem8" />
-                </View>
-                <View>
-                    <Input name="SpecialItem9" />
-                </View>
-                <View>
-                    <Input name="SpecialItem10" />
-                </View>
-                <View>
-                    <Input name="SpecialItem11" />
-                </View>
-                <View>
-                    <Input name="SpecialItem12" />
-                </View>
-                <View>
-                    <Input name="SpecialItem13" />
-                </View>
-                <View>
-                    <Input name="SpecialItem14" />
-                </View>
-                <View>
-                    <Input name="SpecialItem15" />
-                </View>
-                <View>
-                    <Input name="SpecialItem16" />
-                </View>
+                {this.props.numberSequence(16).map(number => {
+                    return (
+                        <View>
+                            <Input name={"SpecialItem" + number} />
+                        </View>
+                    )
+                })}
             </ShowDetails>
         )
     }
