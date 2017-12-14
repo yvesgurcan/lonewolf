@@ -6,7 +6,7 @@ import Styles from './Styles'
 export class View extends Component {
     render() {
         return (
-            <div {...this.props}/>
+            <div {...this.props} style={{...Styles.Boilerplate, ...this.props.style}}/>
         )
     }
 }
@@ -14,7 +14,7 @@ export class View extends Component {
 export class Header1 extends Component {
     render() {
         return (
-            <h1>{this.props.children}</h1>
+            <h1 style={{...Styles.Boilerplate, ...Styles.H1}}>{this.props.children}</h1>
         )
     }
 }
@@ -22,7 +22,7 @@ export class Header1 extends Component {
 export class Text extends Component {
     render() {
         return (
-            <span {...this.props}/>
+            <span {...this.props} style={{...Styles.Boilerplate, ...this.props.style}}/>
         )
     }
 }
@@ -38,7 +38,7 @@ export class Link extends Component {
 export class TextWithInputFont extends Component {
     render() {
         return (
-            <Text className="input-font" {...this.props}/>
+            <Text {...this.props} style={{...Styles.TextWithInputFont, ...this.props.style}}/>
         )
     }
 }
@@ -46,8 +46,8 @@ export class TextWithInputFont extends Component {
 export class Label extends Component {
     render() {
         return (
-            <View style={this.props.noColon ? null : Styles.Label} hidden={this.props.hidden} onClick={this.props.onClick}>
-                <label style={{fontWeight: "bold"}}>{this.props.children}{this.props.noColon ? null : ":"}</label>
+            <View style={{userSelect: "none", ...(this.props.noMargin ? null : Styles.LabelContainer)}} hidden={this.props.hidden} onClick={this.props.onClick}>
+                <label style={Styles.Label}>{this.props.children}</label>
             </View>
         )
     }
@@ -56,7 +56,7 @@ export class Label extends Component {
 export class LabelInline extends Component {
     render() {
         return (
-            <label {...this.props} style={{...this.props.style, userSelect: "none"}}>{this.props.children}.</label>
+            <label {...this.props} style={{...this.props.style}}>{this.props.children}.</label>
         )
     }
 }
@@ -64,7 +64,7 @@ export class LabelInline extends Component {
 export class TextInput extends Component {
     render() {
         return (
-            <input {...this.props}/>
+            <input {...this.props} style={{...Styles.Boilerplate, ...this.props.style}}/>
         )
     }
 }
@@ -72,7 +72,7 @@ export class TextInput extends Component {
 export class TextArea extends Component {
     render() {
         return (
-            <textarea {...this.props}/>
+            <textarea {...this.props} style={{...Styles.Boilerplate, ...this.props.style}}/>
         )
     }
 }
@@ -80,7 +80,7 @@ export class TextArea extends Component {
 export class Picker extends Component {
     render() {
         return (
-            <select {...this.props} />
+            <select {...this.props} style={{...Styles.Boilerplate, ...this.props.style}}/>
         )
     }
 }
@@ -119,7 +119,7 @@ export class Button extends Component {
         if (this.props.hidden) return null
         return (
             <View style={this.props.inline ? {display: "inline-block"} : null}>
-                <button style={{...Styles.Button, ...this.props.style}} onClick={this.onClick} disabled={this.props.disabled}>{this.props.children}</button>
+                <button style={{...Styles.Boilerplate, ...Styles.Button, ...this.props.style}} onClick={this.onClick} disabled={this.props.disabled}>{this.props.children}</button>
             </View>
         )
         

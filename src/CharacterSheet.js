@@ -684,7 +684,7 @@ class UsePsiSurgeView extends Component {
         return (
             <View hidden={!this.hasPsiSurge()}>
                 <Input name="UsePsiSurge" type="checkbox" inline />
-                <LabelInline htmlFor="UsePsiSurge">Use Psi-surge</LabelInline>
+                <LabelInline htmlFor="UsePsiSurge" style={Styles.CheckboxLabel}>Use Psi-surge</LabelInline>
             </View>
         )
     }
@@ -736,43 +736,43 @@ class WeaponmasteryView extends Component {
                 <ShowDetails label="Weaponmastery">
                     <View>
                         <Input name="WeaponmasterySpear" type="checkbox" inline/>
-                        <LabelInline htmlFor="WeaponmasterySpear">Spear</LabelInline>
+                        <LabelInline htmlFor="WeaponmasterySpear" style={Styles.CheckboxLabel}>Spear</LabelInline>
                     </View>
                     <View>
                         <Input name="WeaponmasteryDagger" type="checkbox" inline/>
-                        <LabelInline htmlFor="WeaponmasteryDagger">Dagger</LabelInline>
+                        <LabelInline htmlFor="WeaponmasteryDagger" style={Styles.CheckboxLabel}>Dagger</LabelInline>
                     </View>
                     <View>
                         <Input name="WeaponmasteryMace" type="checkbox" inline/>
-                        <LabelInline htmlFor="WeaponmasteryMace">Mace</LabelInline>
+                        <LabelInline htmlFor="WeaponmasteryMace" style={Styles.CheckboxLabel}>Mace</LabelInline>
                     </View>
                     <View>
                         <Input name="WeaponmasteryShortSword" type="checkbox" inline/>
-                        <LabelInline htmlFor="WeaponmasteryShortSword">Short Sword</LabelInline>
+                        <LabelInline htmlFor="WeaponmasteryShortSword" style={Styles.CheckboxLabel}>Short Sword</LabelInline>
                     </View>
                     <View>
                         <Input name="WeaponmasteryWarhammer" type="checkbox" inline/>
-                        <LabelInline htmlFor="WeaponmasteryWarhammer">Warhammer</LabelInline>
+                        <LabelInline htmlFor="WeaponmasteryWarhammer" style={Styles.CheckboxLabel}>Warhammer</LabelInline>
                     </View>
                     <View>
                         <Input name="WeaponmasteryBow" type="checkbox" inline/>
-                        <LabelInline htmlFor="WeaponmasteryBow">Bow</LabelInline>
+                        <LabelInline htmlFor="WeaponmasteryBow" style={Styles.CheckboxLabel}>Bow</LabelInline>
                     </View>
                     <View>
                         <Input name="WeaponmasteryAxe" type="checkbox" inline/>
-                        <LabelInline htmlFor="WeaponmasteryAxe">Axe</LabelInline>
+                        <LabelInline htmlFor="WeaponmasteryAxe" style={Styles.CheckboxLabel}>Axe</LabelInline>
                     </View>
                     <View>
                         <Input name="WeaponmasterySword" type="checkbox" inline/>
-                        <LabelInline htmlFor="WeaponmasterySword">Sword</LabelInline>
+                        <LabelInline htmlFor="WeaponmasterySword" style={Styles.CheckboxLabel}>Sword</LabelInline>
                     </View>
                     <View>
                         <Input name="WeaponmasteryQuarterstaff" type="checkbox" inline/>
-                        <LabelInline htmlFor="WeaponmasteryQuarterstaff">Quarterstaff</LabelInline>
+                        <LabelInline htmlFor="WeaponmasteryQuarterstaff" style={Styles.CheckboxLabel}>Quarterstaff</LabelInline>
                     </View>
                     <View>
                         <Input name="WeaponmasteryBroadsword" type="checkbox" inline/>
-                        <LabelInline htmlFor="WeaponmasteryBroadsword">Broadsword</LabelInline>
+                        <LabelInline htmlFor="WeaponmasteryBroadsword" style={Styles.CheckboxLabel}>Broadsword</LabelInline>
                     </View>
                 </ShowDetails>
             </View>
@@ -882,7 +882,9 @@ class MealsView extends Component {
     render() {
         return (
             <View hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number !== 1}>
-                <Group name="Meals" type="number" />
+                <ShowDetails label="Meals">
+                    <Input name="Meals" type="number" />
+                </ShowDetails>
             </View>
         )
     }
@@ -952,7 +954,7 @@ class GameStateView extends Component {
         return (
             <ShowDetails label="Game State">
                 <Input name="GameState" value={this.props.CharacterSheet.GameState} onChange={this.modifyGameState} box/>
-                <Button onClick={this.loadGame}>{this.props.CharacterSheet.GameState === "" ? <Text>Start New Game</Text> : <Text>Load Custom Game State</Text>}</Button>
+                <Button onClick={this.loadGame}>{this.props.CharacterSheet.GameState === "" ? "Start New Game" : "Load Custom Game State"}</Button>
                 <Button onClick={this.clear}>Clear Custom Game State</Button>
             </ShowDetails>
         )
@@ -1025,11 +1027,11 @@ class SaveAndLoadRemotelyView extends Component {
                 <Input value={this.props.RequestFeedback.gameID} onChange={this.modifyGameID} noAutoSave/>
                 <Label>Password</Label>
                 <Input type="password" value={this.props.RequestFeedback.password} onChange={this.modifyPassword} noAutoSave/>
-                <View>{this.props.RequestFeedback ? this.props.RequestFeedback.message : null}</View>
+                <TextWithInputFont>{this.props.RequestFeedback ? this.props.RequestFeedback.message : null}</TextWithInputFont>
                 <Button onClick={this.loadGameRemotely}>Load Game Remotely</Button>
                 <Button onClick={this.saveGameRemotely}>{this.props.CharacterSheet.GameState === "" ? "Delete Game Remotely" : "Save Game Remotely"}</Button>
                 <Input name="Autosave" type="checkbox" onChange={this.toggleAutoSave} inline/>
-                <LabelInline htmlFor="Autosave">Auto save</LabelInline>
+                <LabelInline htmlFor="Autosave" style={Styles.CheckboxLabel}>Auto save</LabelInline>
             </ShowDetails>
         )
     }

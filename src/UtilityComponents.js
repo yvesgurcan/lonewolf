@@ -41,7 +41,7 @@ import Styles from './Styles'
 
 export class ShowDetails extends Component {
 
-    state = {hideDetails: false /*!this.props.startVisible*/}
+    state = {hideDetails: !this.props.startVisible}
 
     toggleDetails = () => {
         this.setState({hideDetails: !this.state.hideDetails})
@@ -50,7 +50,7 @@ export class ShowDetails extends Component {
     render() {
         return (
             <View style={Styles.Container}>
-                <Label onClick={this.toggleDetails} noColon><Text style={Styles.Arrow}>{this.state.hideDetails ? "▶" : "▼"}</Text> {this.props.label}</Label>
+                <Label onClick={this.toggleDetails} noMargin><Text style={Styles.Arrow}>{this.state.hideDetails ? "▶" : "▼"}</Text> {this.props.label}</Label>
                 <View hidden={this.state.hideDetails}>
                     {this.props.children}
                 </View>
@@ -74,7 +74,7 @@ export class Group extends Component {
                     box={this.props.box}
                     inline={this.props.type === "checkbox"}
                 />
-                <LabelInline htmlFor={this.props.name.replace(/ /g,"")} hidden={this.props.type !== "checkbox"} style={this.props.type !== "checkbox" ? null : Styles.CheckboxLabel}>{this.props.name}{this.props.append ? <Text> ({this.props.append})</Text> : null}</LabelInline>
+                <LabelInline htmlFor={this.props.name.replace(/ /g,"")} hidden={this.props.type !== "checkbox"} style={this.props.type !== "checkbox" ? null : {...Styles.CheckboxLabel}}>{this.props.name}{this.props.append ? <Text> ({this.props.append})</Text> : null}</LabelInline>
 
             </View>
         )
@@ -97,7 +97,7 @@ class InputView extends Component {
                 value = (this.props.CharacterSheet[this.props.name] || 0) + Number(input)
             }
             else {
-                value = (this.props.CharacterSheet[this.props.name] || "") + input                
+                value = (this.props.CharacterSheet[this.props.name] || "") + String(input)
             }
 
 
@@ -168,10 +168,10 @@ class InputView extends Component {
         if (this.props.hidden) return null
         if (this.props.select) {
             return (
-                <View style={Styles.InputContainer}>
+                <View>
                     <Picker
                         id={this.props.name}
-                        style={Styles.InputBox}
+                        style={{...Styles.Input, ...Styles.InputMaxSize}}
                         value={this.props.value || this.props.CharacterSheet[this.props.name] || ""}
                         onChange={this.onChange}
                     >
@@ -182,10 +182,10 @@ class InputView extends Component {
         }
         if (this.props.box) {
             return (
-                <View style={Styles.InputContainer}>
+                <View>
                     <TextArea
                         id={this.props.name}
-                        style={{...Styles.InputBox, height: "200px"}}
+                        style={{...Styles.Input, ...Styles.InputMaxSize, height: "200px"}}
                         value={this.props.value || this.props.CharacterSheet[this.props.name] || ""}
                         onChange={this.onChange}
                         onBlur={this.onBlur}
@@ -194,11 +194,11 @@ class InputView extends Component {
             )
         }
         return (
-            <View style={{...Styles.InputContainer, display: (this.props.inline ? "inline-block" : null)}}>
+            <View style={{display: (this.props.inline ? "inline-block" : null)}}>
                 <TextInput
                     disabled={this.props.disabled}
                     id={this.props.name}
-                    style={this.props.type === "checkbox" ? null : {width: (this.props.type === "number" && !this.props.noPlusAndMinus ? "calc(98% - 68px)" : "calc(98% - 36px)"), height: "26px", padding: "2px", ...Styles.InputStyle}}
+                    style={this.props.type === "checkbox" ? null : {width: (this.props.type === "number" && !this.props.noPlusAndMinus ? "calc(98% - 68px)" : "calc(98% - 36px)"), height: "26px", padding: "2px", ...Styles.Input}}
                     value={this.props.value || (this.props.CharacterSheet[this.props.name] === undefined ? "" : String(this.props.CharacterSheet[this.props.name]))}
                     checked={this.props.type === "checkbox" ? (this.props.CharacterSheet[this.props.name] || false) : null}
                     type={this.props.type}
