@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { mapStateToProps } from './mapStateToProps'
+import Transition from 'react-transition-group/Transition'
 
 // Web Components (React)
 import {
@@ -51,9 +52,16 @@ export class ShowDetails extends Component {
         return (
             <View style={Styles.Container}>
                 <Label onClick={this.toggleDetails} noMargin><Text style={Styles.Arrow}>{this.state.hideDetails ? "▶" : "▼"}</Text> {this.props.label}</Label>
-                <View hidden={this.state.hideDetails}>
-                    {this.props.children}
-                </View>
+                <Transition
+                    in={!this.state.hideDetails}
+                    timeout={0}>
+                    {
+                        (status) =>
+                    <View hidden={this.state.hideDetails} className={status}>
+                        {this.props.children}
+                    </View>
+                    }
+                </Transition>
             </View>
         )
     }

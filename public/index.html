@@ -15,11 +15,21 @@
       body {
         margin: 0;
       }
-      select::after {
-        background: red;
-        width: 20px;
-        height: 20px;
+      .entering {
+        opacity: 0;
       }
+      .entered {
+        opacity: 1;
+        transition: 500ms;
+      }
+      .exiting {
+        opacity: 0;
+        transition: 500ms;
+      }
+      .exited {
+        opacity: 1;
+      }
+
     </style>
     <title>Character Sheet</title>
   </head>
