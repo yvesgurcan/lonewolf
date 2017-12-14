@@ -42,7 +42,7 @@ export class TextArea extends Component {
 export class Label extends Component {
     render() {
         return (
-            <View style={{marginTop: "10px"}} hidden={this.props.hidden} onClick={this.props.onClick}>
+            <View style={this.props.noColon ? null : Styles.Label} hidden={this.props.hidden} onClick={this.props.onClick}>
                 <Text style={{fontWeight: "bold"}}>{this.props.children}{this.props.noColon ? null : ":"}</Text>
             </View>
         )
@@ -67,14 +67,5 @@ export class PickerItemGroup extends Component {
 export class PickerItem extends Component  {
     render() {
         return <Picker.Item {...this.props} />
-    }
-}
-
-export class HR extends Component {
-    render() {
-        // TODO: substitute web stylesheet for a React Native stylesheet
-        return (
-            <hr style={{marginTop: "20px", marginBottom: "20px"}}/>
-        )
     }
 }

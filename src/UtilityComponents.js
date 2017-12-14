@@ -41,7 +41,7 @@ import Styles from './Styles'
 
 export class ShowDetails extends Component {
 
-    state = {hideDetails: !this.props.startVisible}
+    state = {hideDetails: false /*!this.props.startVisible*/}
 
     toggleDetails = () => {
         this.setState({hideDetails: !this.state.hideDetails})
@@ -49,8 +49,8 @@ export class ShowDetails extends Component {
 
     render() {
         return (
-            <View>
-                <Label onClick={this.toggleDetails} noColon><Text style={Styles.PreventSelect}>{this.state.hideDetails ? "▶" : "▼"}</Text> {this.props.label}</Label>
+            <View style={Styles.Container}>
+                <Label onClick={this.toggleDetails} noColon><Text style={Styles.Arrow}>{this.state.hideDetails ? "▶" : "▼"}</Text> {this.props.label}</Label>
                 <View hidden={this.state.hideDetails}>
                     {this.props.children}
                 </View>
@@ -198,7 +198,7 @@ class InputView extends Component {
                 <TextInput
                     disabled={this.props.disabled}
                     id={this.props.name}
-                    style={this.props.type === "checkbox" ? null : {width: (this.props.type === "number" && !this.props.noPlusAndMinus ? "calc(98% - 68px)" : "calc(98% - 36px)"), height: "26px", padding: "2px"}}
+                    style={this.props.type === "checkbox" ? null : {width: (this.props.type === "number" && !this.props.noPlusAndMinus ? "calc(98% - 68px)" : "calc(98% - 36px)"), height: "26px", padding: "2px", ...Styles.InputStyle}}
                     value={this.props.value || (this.props.CharacterSheet[this.props.name] === undefined ? "" : String(this.props.CharacterSheet[this.props.name]))}
                     checked={this.props.type === "checkbox" ? (this.props.CharacterSheet[this.props.name] || false) : null}
                     type={this.props.type}
@@ -207,47 +207,35 @@ class InputView extends Component {
                 />
                 {(this.props.type !== "number" && this.props.type !== "checkbox") || this.props.noPlusAndMinus
                     ?
-                    <Text>
-                        <Button style={Styles.PlusOrMinusButton} onClick={this.clear} inline>X</Button>
+                    <Text style={Styles.ButtonContainer}>
+                        <Button onClick={this.clear} inline>X</Button>
                     </Text>
                     : null
                 }
                 {this.props.type === "number" && !this.props.noPlusAndMinus
                     ?
-                    <Text>
-                        <Button style={Styles.PlusOrMinusButton} onClick={this.decrement} inline>-</Button>
-                        <Button style={Styles.PlusOrMinusButton} onClick={this.increment} inline>+</Button>
+                    <Text style={Styles.ButtonContainer}>
+                        <Button onClick={this.decrement} inline>-</Button>
+                        <Button onClick={this.increment} inline>+</Button>
                     </Text>
                     : null
                 }
                 {this.props.numbers
                     ? 
                     <View>
-                        <Button addFaceValue={this.onChange} style={Styles.NumberButton} inline>1</Button>
-                        <Button addFaceValue={this.onChange} style={Styles.NumberButton} inline>2</Button>
-                        <Button addFaceValue={this.onChange} style={Styles.NumberButton} inline>3</Button>
-                        <Button addFaceValue={this.onChange} style={Styles.NumberButton} inline>4</Button>
-                        <Button addFaceValue={this.onChange} style={Styles.NumberButton} inline>5</Button>
-                        <Button addFaceValue={this.onChange} style={Styles.NumberButton} inline>6</Button>
-                        <Button addFaceValue={this.onChange} style={Styles.NumberButton} inline>7</Button>
-                        <Button addFaceValue={this.onChange} style={Styles.NumberButton} inline>8</Button>
-                        <Button addFaceValue={this.onChange} style={Styles.NumberButton} inline>9</Button>
-                        <Button addFaceValue={this.onChange} style={Styles.NumberButton} inline>0</Button>
+                        {this.props.numberSequence(9).map(number =>
+                            <Button key={number} addFaceValue={this.onChange} inline>{number}</Button>
+                        )}
+                        <Button addFaceValue={this.onChange} inline>0</Button>
                     </View>
                     : null
                 }
                 {this.props.negativeNumbers
                     ? 
                     <View>
-                        <Button addFaceValue={this.onChange} style={Styles.NumberButton} inline>-1</Button>
-                        <Button addFaceValue={this.onChange} style={Styles.NumberButton} inline>-2</Button>
-                        <Button addFaceValue={this.onChange} style={Styles.NumberButton} inline>-3</Button>
-                        <Button addFaceValue={this.onChange} style={Styles.NumberButton} inline>-4</Button>
-                        <Button addFaceValue={this.onChange} style={Styles.NumberButton} inline>-5</Button>
-                        <Button addFaceValue={this.onChange} style={Styles.NumberButton} inline>-6</Button>
-                        <Button addFaceValue={this.onChange} style={Styles.NumberButton} inline>-7</Button>
-                        <Button addFaceValue={this.onChange} style={Styles.NumberButton} inline>-8</Button>
-                        <Button addFaceValue={this.onChange} style={Styles.NumberButton} inline>-9</Button>
+                        {this.props.numberSequence(9).map(number =>
+                            <Button key={number*-1} addFaceValue={this.onChange} inline>{number*-1}</Button>
+                        )}
                     </View>
                     : null
                 }

@@ -1,6 +1,7 @@
 /* React components that rely on web HTML tags */
 
 import React, { Component } from 'react'
+import Styles from './Styles'
 
 export class View extends Component {
     render() {
@@ -29,7 +30,7 @@ export class Text extends Component {
 export class Link extends Component {
     render() {
         return (
-            <a href={this.props.href} target={this.props.target} onClick={this.props.onClick} style={{color: "-webkit-link", cursor: "pointer", userSelect: "none"}}>{this.props.children}</a>
+            <a href={this.props.href} target={this.props.target} onClick={this.props.onClick} style={Styles.Link}>{this.props.children}</a>
         )
     }
 }
@@ -45,7 +46,7 @@ export class TextWithInputFont extends Component {
 export class Label extends Component {
     render() {
         return (
-            <View style={{marginTop: "10px"}} hidden={this.props.hidden} onClick={this.props.onClick}>
+            <View style={this.props.noColon ? null : Styles.Label} hidden={this.props.hidden} onClick={this.props.onClick}>
                 <label style={{fontWeight: "bold"}}>{this.props.children}{this.props.noColon ? null : ":"}</label>
             </View>
         )
@@ -117,18 +118,10 @@ export class Button extends Component {
 
         if (this.props.hidden) return null
         return (
-            <View style={this.props.inline ? {display: "inline-block"} : {marginTop: "10px"}}>
-                <button style={this.props.style} onClick={this.onClick} disabled={this.props.disabled}>{this.props.children}</button>
+            <View style={this.props.inline ? {display: "inline-block"} : null}>
+                <button style={{...Styles.Button, ...this.props.style}} onClick={this.onClick} disabled={this.props.disabled}>{this.props.children}</button>
             </View>
         )
         
-    }
-}
-
-export class HR extends Component {
-    render() {
-        return (
-            <hr style={{marginTop: "20px", marginBottom: "20px"}}/>
-        )
     }
 }

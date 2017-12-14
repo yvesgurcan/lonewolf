@@ -15,7 +15,6 @@ import {
     Label,
     LabelInline,
     Button, // mimicks React Native built-in component
-    HR
 } from './WebComponents'
 
 // Native Components (React Native)
@@ -32,7 +31,6 @@ import {
     TextWithInputFont,
     Label,
     LabelInline,
-    HR,
 } from './NativeComponents'
 */
 
@@ -70,36 +68,25 @@ class CharacterSheetView extends Component {
 
     render() {
         return (
-            <View>
+            <View style={Styles.Body}>
                 <Header1>Character Sheet</Header1>
                 <LinkToProject/>
-                <HR/>
                 <GameMetaData/>
-                <HR/>
                 <Book/>
-                <HR/>
                 <Combat>
                     <Endurance/>
-                    <HR/>
                 </Combat>
-                <HR/>
                 <Weapons/>
-                <HR/>
                 <Weaponmastery/>
                 <Kai/>
                 <Magnakai/>
                 <LoreCircles/>
                 <BeltPouch/>
                 <Meals/>
-                <HR/>
                 <Backpack/>
-                <HR/>
                 <SpecialItems/>
-                <HR/>
                 <Notes/>
-                <HR/>
                 <GameState/>
-                <HR/>
                 <SaveAndLoadRemotely/>
                 <Spacer/>
             </View>
@@ -296,8 +283,8 @@ class EnduranceView extends Component {
                 <Input name="MaxEndurance" type="number" />
                 <Text>{this.getBonuses()}</Text>
                 <Group name="Endurance" type="number" negativeNumbers/>
-                <Button hidden={this.hideArchmasterCuring()} onClick={this.archmasterCuring} style={Styles.Button} inline>Archmaster Curing: +20 (once/100 days)</Button>
-                <Button onClick={this.toMax} style={Styles.Button} inline>Heal to Max</Button>
+                <Button hidden={this.hideArchmasterCuring()} onClick={this.archmasterCuring} inline>Archmaster Curing: +20 (once/100 days)</Button>
+                <Button onClick={this.toMax} inline>Heal to Max</Button>
             </ShowDetails>
         )
     }
@@ -310,7 +297,6 @@ class Combat extends Component {
         return (
             <View>
                 <CombatSkill/>
-                <HR/>
                 {/* endurance */}
                 {this.props.children}
                 <ShowDetails label="Enemy Combat Skill">
@@ -318,7 +304,6 @@ class Combat extends Component {
                     <EnemyEndurance/>
                     <EnemyImmunity/>
                 </ShowDetails>
-                <HR/>
                 <CombatRatio/>
             </View>
         )
@@ -466,7 +451,7 @@ class CombatSkillView extends Component {
         return (
             <ShowDetails label="Base Combat Skill">
                 <Input name="BaseCombatSkill" type="number"/>
-                <Button onClick={this.addBonus} style={Styles.Button} inline>Update Combat Skill</Button>
+                <Button onClick={this.addBonus} inline>Update Combat Skill</Button>
                 <Text>{this.getBonuses()}</Text>
                 <Group name="Combat Skill" type="number"/>
             </ShowDetails>
@@ -660,10 +645,10 @@ class CombatRatioView extends Component {
                     }>Fight & Update Endurance</Button>
                     <Button onClick={this.clearEnemyStats}>Clear Enemy Stats</Button>
                 </ShowDetails>
-                <HR/>
-                <Label>Random Number</Label>
-                <TextWithInputFont>{this.state.number} {this.props.CharacterSheet.WeaponmasteryBow ? "(bow weaponmastery: +3)" : null}</TextWithInputFont>
-                <Button onClick={this.generateRandomNumber}>Generate Number</Button>
+                <ShowDetails label="Random Number" startVisible>
+                    <TextWithInputFont>{this.state.number} {this.props.CharacterSheet.WeaponmasteryBow ? "(bow weaponmastery: +3)" : null}</TextWithInputFont>
+                    <Button onClick={this.generateRandomNumber}>Generate Random Number</Button>
+                </ShowDetails>
             </View>
         )
     }
@@ -711,7 +696,9 @@ class WeaponsView extends Component {
     render() {
         return (
             <ShowDetails label="Weapons">
-                {this.props.numberSequence(2).map(number => <Input key={number} name={"Weapon" + number} />)}
+                {this.props.numberSequence(2).map(number =>
+                    <Input key={number} name={"Weapon" + number} />
+                )}
             </ShowDetails>
         )
     }
@@ -788,7 +775,6 @@ class WeaponmasteryView extends Component {
                         <LabelInline htmlFor="WeaponmasteryBroadsword">Broadsword</LabelInline>
                     </View>
                 </ShowDetails>
-                <HR/>
             </View>
         )
     }
@@ -812,17 +798,12 @@ class KaiView extends Component {
         return (
             <View>
                 <ShowDetails label="Kai Disciplines">
-                    {this.props.numberSequence(10).map(number => {
-                        return (
-                            <View>
-                                <Input name={"Kai" + number} select={this.props.KaiDisciplines} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number <= number-5}/>
-                            </View>
-                        )
-                    })}
+                    {this.props.numberSequence(10).map(number => 
+                        <Input key={"Kai" + number} name={"Kai" + number} select={this.props.KaiDisciplines} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number <= number-5}/>
+                    )}
                     {this.props.CharacterSheet.Book ? <Link target="_blank" href={this.props.CharacterSheet.Book.url + this.props.BookURLs.disciplines}>Disciplines</Link> : null}
                     <Group name="Kai Level" select={this.props.KaiLevels}/>
                 </ShowDetails>
-                <HR/>
             </View>
         )
     }
@@ -840,18 +821,13 @@ class MagnakaiView extends Component {
         return (
             <View>
                 <ShowDetails label="Magnakai Disciplines">
-                    {this.props.numberSequence(10).map(number => {
-                        return (
-                            <View>
-                                <Input name={"Magnakai" + number} select={this.props.MagnakaiDisciplines} optGroups={this.props.LoreCircles} select={this.props.KaiDisciplines} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number <= number+2}/>
-                            </View>
-                        )
-                    })}
+                    {this.props.numberSequence(10).map(number =>
+                        <Input key={"Magnakai" + number} name={"Magnakai" + number} select={this.props.MagnakaiDisciplines} optGroups={this.props.LoreCircles} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number <= number+2}/>
+                    )}
                     {this.props.CharacterSheet.Book ? <Link target="_blank" href={this.props.CharacterSheet.Book.url + this.props.BookURLs.disciplines}>Disciplines</Link> : null}
                     <Group name="Magnakai Level" select={this.props.MagnakaiLevels}/>
                     {this.props.CharacterSheet.Book ? <Link target="_blank" href={this.props.CharacterSheet.Book.url + this.props.BookURLs.improveddisciplines}>Improved Disciplines</Link> : null}
                 </ShowDetails>
-                <HR/>
             </View>
         )
     }
@@ -885,7 +861,6 @@ class LoreCirclesView extends Component {
                     </View>
                     {this.props.CharacterSheet.Book ? <Link target="_blank" href={this.props.CharacterSheet.Book.url + this.props.BookURLs.lorecircles}>Info</Link> : null}
                 </ShowDetails>
-                <HR/>
             </View>
         )
     }
@@ -918,13 +893,9 @@ class BackpackView extends Component {
     render() {
         return (
             <ShowDetails label="Backpack Items">
-                {this.props.numberSequence(8).map(number => {
-                    return (
-                        <View>
-                            <Input name={"BackpackItem" + number} />
-                        </View>
-                    )
-                })}
+                {this.props.numberSequence(8).map(number => 
+                    <Input key={"BackpackItem" + number} name={"BackpackItem" + number} />
+                )}
             </ShowDetails>
         )
     }
@@ -942,13 +913,9 @@ class SpecialItemsView extends Component {
     render() {
         return (
             <ShowDetails label="Special Items">
-                {this.props.numberSequence(16).map(number => {
-                    return (
-                        <View>
-                            <Input name={"SpecialItem" + number} />
-                        </View>
-                    )
-                })}
+                {this.props.numberSequence(16).map(number =>
+                    <Input key={"SpecialItem" + number} name={"SpecialItem" + number} />
+                )}
             </ShowDetails>
         )
     }
