@@ -28,9 +28,32 @@ export class Text extends Component {
 }
 
 export class Link extends Component {
+    state = {clicked: false, hovered: false}
+    onClick = () => {
+        this.setState({clicked: true})
+        setTimeout(function() {this.clickedTimeout()}.bind(this), 5000)
+    }
+    onHover = () => {
+        this.setState({hovered: true})
+    }
+    onHoverOut = () => {
+        this.setState({hovered: false})
+    }
+    clickedTimeout = () => {
+        this.setState({clicked: false, hovered: false})
+    }
     render() {
         return (
-            <a href={this.props.href} target={this.props.target} onClick={this.props.onClick} style={Styles.Link}>{this.props.children}</a>
+            <a
+                href={this.props.href}
+                target={this.props.target}
+                onClick={this.onClick}
+                onMouseEnter={this.onHover}
+                onMouseMove={this.onHover}
+                onMouseLeave={this.onHoverOut}
+                style={{...(this.state.clicked ? Styles.LinkClicked : this.state.hovered ? Styles.LinkHovered : Styles.Link)}}>
+                {this.props.children}
+            </a>
         )
     }
 }
@@ -80,7 +103,7 @@ export class TextArea extends Component {
 export class Picker extends Component {
     render() {
         return (
-            <select {...this.props} style={{...Styles.Boilerplate, ...this.props.style}}/>
+            <select {...this.props} style={{...Styles.Boilerplate, ...Styles.Select, ...this.props.style}}/>
         )
     }
 }
@@ -105,7 +128,13 @@ export class Switch extends Component  {
 }
 
 export class Button extends Component {
+    state = {clicked: false, hovered: false}
     onClick = (input) => {
+
+        this.setState({clicked: true})
+        setTimeout(function() {this.clickedTimeout()}.bind(this), 100)
+
+        console.log("yo")
 
         if (this.props.addFaceValue) {
             this.props.addFaceValue(this.props.children)
@@ -114,12 +143,29 @@ export class Button extends Component {
         if (!this.props.onClick) return false
         this.props.onClick(input.target)
     }
+    onHover = () => {
+        this.setState({hovered: true})
+    }
+    onHoverOut = () => {
+        this.setState({hovered: false})
+    }
+    clickedTimeout = () => {
+        this.setState({clicked: false, hovered: false})
+    }
     render() {
 
         if (this.props.hidden) return null
         return (
             <View style={this.props.inline ? {display: "inline-block"} : null}>
-                <button style={{...Styles.Boilerplate, ...Styles.Button, ...this.props.style}} onClick={this.onClick} disabled={this.props.disabled}>{this.props.children}</button>
+                <button
+                    style={{...Styles.Boilerplate, ...(this.state.clicked ? Styles.ButtonClicked : this.state.hovered ? Styles.ButtonHovered : Styles.Button), ...this.props.style}}
+                    onClick={this.onClick}
+                    onMouseEnter={this.onHover}
+                    onMouseMove={this.onHover}
+                    onMouseLeave={this.onHoverOut}
+                    disabled={this.props.disabled}>
+                    {this.props.children}
+                </button>
             </View>
         )
         
