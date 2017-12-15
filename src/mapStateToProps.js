@@ -461,7 +461,7 @@ export const mapStateToProps = (state, ownProps) => {
                         default:
                             break
                         
-                        case "Circle Of Fire":
+                        case "Circle of Fire":
 
                             if (magnakaiDiscipline.toLowerCase().indexOf("huntmastery") > -1) {
                                 requiredCount++
@@ -476,7 +476,7 @@ export const mapStateToProps = (state, ownProps) => {
 
                             break
 
-                        case "Circle Of Light":
+                        case "Circle of Light":
 
                             if (magnakaiDiscipline.toLowerCase().indexOf("animal control") > -1) {
                                 requiredCount++
@@ -491,7 +491,7 @@ export const mapStateToProps = (state, ownProps) => {
 
                             break
 
-                        case "Circle Of Solaris":
+                        case "Circle of Solaris":
 
                             if (magnakaiDiscipline.toLowerCase().indexOf("huntmastery") > -1) {
                                 requiredCount++
@@ -509,7 +509,7 @@ export const mapStateToProps = (state, ownProps) => {
 
                             break
 
-                        case "Circle Of The Spirit":
+                        case "Circle of the Spirit":
 
                             if (magnakaiDiscipline.toLowerCase().indexOf("psi-surge") > -1) {
                                 requiredCount++

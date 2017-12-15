@@ -5,6 +5,7 @@
 */
 
 import React, { Component } from 'react'
+import Styles from './StylesNative'
 
 export class Header1 extends Component {
     render() {

@@ -17,6 +17,7 @@ import {
     Switch, // mimicks React Native built-in component
     Button, // mimicks React Native built-in component
 } from './WebComponents'
+import Styles from './Styles'
 
 // Native Components (React Native)
 /*
@@ -24,7 +25,6 @@ import {
     View,
     Text,
     TextInput,
-    TextArea, // mimicks Web built-in component
     Picker,
     Switch,
     Button,
@@ -35,10 +35,10 @@ import {
     LabelInline,
     PickerItemGroup,
     PickerItem,
+    TextArea, // mimicks Web built-in component
 } from './NativeComponents'
+import Styles from './StylesNative'
 */
-
-import Styles from './Styles'
 
 export class ShowDetails extends Component {
 
@@ -52,16 +52,33 @@ export class ShowDetails extends Component {
         return (
             <View style={Styles.Container}>
                 <Label onClick={this.toggleDetails} noMargin><Text style={Styles.Arrow}>{this.state.hideDetails ? "▶" : "▼"}</Text> {this.props.label}</Label>
+                <Details hideDetails={this.state.hideDetails}>
+                    {this.props.children}
+                </Details>
+            </View>
+        )
+    }
+}
+
+class Details extends Component {
+    render() {
+        if (Transition) {
+            return (
                 <Transition
-                    in={!this.state.hideDetails}
+                    in={!this.props.hideDetails}
                     timeout={0}>
                     {
                         (status) =>
-                    <View hidden={this.state.hideDetails} className={status}>
+                    <View hidden={this.props.hideDetails} className={status}>
                         {this.props.children}
                     </View>
                     }
                 </Transition>
+            )
+        }
+        return (
+            <View hidden={this.props.hideDetails}>
+                {this.props.children}
             </View>
         )
     }
@@ -201,57 +218,104 @@ class InputView extends Component {
                 </View>
             )
         }
+        if (this.props.type === "checkbox") {
+            return (
+                <Switch
+                    disabled={this.props.disabled}
+                    id={this.props.name}
+                    checked={(this.props.CharacterSheet[this.props.name] || false)}
+                    onChange={this.onChange}
+                />
+            )
+        }
         return (
             <View style={{display: (this.props.inline ? "inline-block" : null)}}>
                 <TextInput
                     disabled={this.props.disabled}
                     id={this.props.name}
-                    style={this.props.type === "checkbox" ? null : {width: (this.props.type === "number" && !this.props.noPlusAndMinus ? "calc(98% - 68px)" : "calc(98% - 36px)"), height: "26px", padding: "2px", ...Styles.Input}}
+                    style={{width: (this.props.type === "number" && !this.props.noPlusAndMinus ? "calc(98% - 68px)" : "calc(98% - 36px)"), height: "26px", padding: "2px", ...Styles.Input}}
                     value={this.props.value || (this.props.CharacterSheet[this.props.name] === undefined ? "" : String(this.props.CharacterSheet[this.props.name]))}
-                    checked={this.props.type === "checkbox" ? (this.props.CharacterSheet[this.props.name] || false) : null}
                     type={this.props.type}
                     onChange={this.onChange}
-                    onBlur={this.props.type === "checkbox" || this.props.noAutoSave ? null : this.onBlur}
+                    onBlur={this.props.noAutoSave ? null : this.onBlur}
                 />
-                {(this.props.type !== "number" && this.props.type !== "checkbox") || this.props.noPlusAndMinus
-                    ?
-                    <Text style={Styles.ButtonContainer}>
-                        <Button onClick={this.clear} inline>X</Button>
-                    </Text>
-                    : null
-                }
-                {this.props.type === "number" && !this.props.noPlusAndMinus
-                    ?
-                    <Text style={Styles.ButtonContainer}>
-                        <Button onClick={this.decrement} inline>-</Button>
-                        <Button onClick={this.increment} inline>+</Button>
-                    </Text>
-                    : null
-                }
-                {this.props.numbers
-                    ? 
-                    <View>
-                        {this.props.numberSequence(9).map(number =>
-                            <Button key={number} addFaceValue={this.onChange} inline>{number}</Button>
-                        )}
-                        <Button addFaceValue={this.onChange} inline>0</Button>
-                    </View>
-                    : null
-                }
-                {this.props.negativeNumbers
-                    ? 
-                    <View>
-                        {this.props.numberSequence(9).map(number =>
-                            <Button key={number*-1} addFaceValue={this.onChange} inline>{number*-1}</Button>
-                        )}
-                    </View>
-                    : null
-                }
+                <Clear
+                    hidden={this.props.type === "number" && !this.props.noPlusAndMinus}
+                    clear={this.clear} />
+                <PlusAndMinus
+                    hidden={this.props.type !== "number" || this.props.noPlusAndMinus}
+                    type={this.props.type}
+                    noPlusAndMinus={this.props.noPlusAndMinus}
+                    decrement={this.decrement}
+                    increment={this.increment} />
+                <PositiveNumbers
+                    numbers={this.props.numbers}
+                    onChange={this.onChange} />
+                <NegativeNumbers
+                    negativeNumbers={this.props.negativeNumbers}
+                    onChange={this.onChange} />
             </View>
         )
     }
 }
 export const Input = connect(mapStateToProps)(InputView)
+
+class Clear extends Component {
+    render() {
+        return (
+            <Button hidden={this.props.hidden} style={Styles.ButtonContainer} onClick={this.props.clear} inline title="X"/>
+        )
+    }
+}
+
+class PlusAndMinusView extends Component {
+    render() {
+        return (
+            <View hidden={this.props.hidden} style={this.props.hidden ? null : {...Styles.ButtonContainer, display: "inline"}}>
+                <Button onClick={this.props.decrement} inline title="-"/>
+                <Button onClick={this.props.increment} inline title="+"/>
+            </View>
+        )
+    }
+}
+export const PlusAndMinus = connect(mapStateToProps)(PlusAndMinusView)
+
+class PositiveNumbersView extends Component {
+    render() {
+        return (
+            <View hidden={!this.props.numbers}>
+                {this.props.numberSequence(9).map(number =>
+                    <Button key={number} addFaceValue={this.props.onChange} inline title={String(number)}/>
+                )}
+                <Button addFaceValue={this.props.onChange} inline title="0"/>
+            </View>
+        )
+    }
+}
+export const PositiveNumbers = connect(mapStateToProps)(PositiveNumbersView)
+
+class NegativeNumbersView extends Component {
+    render() {
+        return (
+            <View hidden={!this.props.negativeNumbers}>
+                {this.props.numberSequence(9).map(number =>
+                    <Button key={number*-1} addFaceValue={this.props.onChange} inline title={String(number*-1)}/>
+                )}
+            </View>
+        )
+    }
+}
+export const NegativeNumbers = connect(mapStateToProps)(NegativeNumbersView)
+
+export class ButtonContainer extends Component {
+    render() {
+        return (
+            <View style={this.props.style}>
+                <Button title={this.props.title} onClick={this.props.onClick} addFaceValue={this.props.addFaceValue} />
+            </View>
+        )
+    }
+}
 
 export class Spacer extends Component {
     render() {

@@ -31,7 +31,7 @@ export class Link extends Component {
     state = {clicked: false, hovered: false}
     onClick = () => {
         this.setState({clicked: true})
-        setTimeout(function() {this.clickedTimeout()}.bind(this), 5000)
+        setTimeout(function() {this.clickedTimeout()}.bind(this), 500)
     }
     onHover = () => {
         this.setState({hovered: true})
@@ -134,10 +134,8 @@ export class Button extends Component {
         this.setState({clicked: true})
         setTimeout(function() {this.clickedTimeout()}.bind(this), 100)
 
-        console.log("yo")
-
         if (this.props.addFaceValue) {
-            this.props.addFaceValue(this.props.children)
+            this.props.addFaceValue(this.props.title)
         }
 
         if (!this.props.onClick) return false
@@ -164,7 +162,7 @@ export class Button extends Component {
                     onMouseMove={this.onHover}
                     onMouseLeave={this.onHoverOut}
                     disabled={this.props.disabled}>
-                    {this.props.children}
+                    {this.props.title}
                 </button>
             </View>
         )
