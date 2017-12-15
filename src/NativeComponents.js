@@ -5,6 +5,11 @@
 */
 
 import React, { Component } from 'react'
+import {
+    View,
+    Text,
+    Button,
+} from 'react-native'
 import Styles from './StylesNative'
 
 export class Header1 extends Component {
@@ -18,7 +23,7 @@ export class Header1 extends Component {
 export class Link extends Component {
     render() {
         return (
-            <Text href={this.props.href} target={this.props.target} onClick={this.props.onClick} style={{color: "-webkit-link", cursor: "pointer", userSelect: "none"}}>{this.props.children}</Text>
+            <Text href={this.props.href} target={this.props.target} onClick={this.props.onClick}>{this.props.children}</Text>
         )
     }
 }

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { mapStateToProps } from './mapStateToProps'
 import Transition from 'react-transition-group/Transition'
+// const Transition = null
 
 // Web Components (React)
 import {
@@ -233,7 +234,7 @@ class InputView extends Component {
                 <TextInput
                     disabled={this.props.disabled}
                     id={this.props.name}
-                    style={{width: (this.props.type === "number" && !this.props.noPlusAndMinus ? "calc(98% - 68px)" : "calc(98% - 36px)"), height: "26px", padding: "2px", ...Styles.Input}}
+                    style={{...(this.props.type === "number" && !this.props.noPlusAndMinus ? Styles.InputVariableSize1 : Styles.InputVariableSize2), ...Styles.TextInput, ...Styles.Input}}
                     value={this.props.value || (this.props.CharacterSheet[this.props.name] === undefined ? "" : String(this.props.CharacterSheet[this.props.name]))}
                     type={this.props.type}
                     onChange={this.onChange}

@@ -47,8 +47,18 @@ const Styles = {
         resize: "vertical",
         borderRadius: "5px",
     },
+    InputText: {
+        height: "26px",
+        padding: "2px",
+    },
     InputMaxSize: {
         width: "98%",
+    },
+    InputVariableSize1: {
+        width: "calc(98% - 68px)",
+    },
+    InputVariableSize2: {
+        width: "calc(98% - 36px)",
     },
     LabelContainer: {
         marginTop: "10px",

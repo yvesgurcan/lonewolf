@@ -44,12 +44,22 @@ const Styles = {
         // RN - can not be applied to Picker - fontSize: 18,
         marginBottom: 5,
         padding: 2,
-        lineHeight: null,
+        // RN - not allowed on Picker - lineHeight: null,
         // RN - not allowed - resize: "vertical",
         borderRadius: 5,
     },
+    InputText: {
+        height: 26,
+        padding: 2,
+    },
     InputMaxSize: {
         width: "98%",
+    },
+    InputVariableSize1: {
+        width: "90%",
+    },
+    InputVariableSize2: {
+        width: "90%",
     },
     LabelContainer: {
         marginTop: 10,
