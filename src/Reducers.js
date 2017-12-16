@@ -1,4 +1,5 @@
 import {combineReducers} from 'redux'
+// const localStorage = null
 
 function GenerateFormattedDate(TimeInMilliseconds) {
 return [
@@ -75,7 +76,7 @@ function CharacterSheet(State = InitState, Action) {
     // special actions
     if (Action.type === "INIT") {
 
-        if (localStorage !== undefined) {
+        if (localStorage) {
             let storedState = localStorage.getItem("GameState")
 
             if (storedState !== null) {
@@ -104,7 +105,7 @@ function CharacterSheet(State = InitState, Action) {
 
             NewState.GameState = JSON.stringify(GameState)
 
-            if (localStorage !== undefined) {
+            if (localStorage) {
 
                 localStorage.setItem("GameState", NewState.GameState)
 
@@ -135,7 +136,7 @@ function CharacterSheet(State = InitState, Action) {
         delete GameState.GameState
         NewState.GameState = JSON.stringify({CharacterSheet: GameState})
 
-        if (localStorage !== undefined) {
+        if (localStorage) {
 
             localStorage.setItem("GameState", NewState.GameState)
 
@@ -233,7 +234,7 @@ function CharacterSheet(State = InitState, Action) {
 
     if ((Action.type === "AUTO_SAVE" || Action.type.indexOf("@@") === -1) && JSON.stringify(State) !== JSON.stringify(NewState)) {
 
-        if (localStorage !== undefined) {
+        if (localStorage) {
 
             localStorage.setItem("GameState", NewState.GameState)
 

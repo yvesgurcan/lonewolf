@@ -169,3 +169,13 @@ export class Button extends Component {
         
     }
 }
+
+export class ButtonContainer extends Component {
+    render() {
+        return (
+            <View style={this.props.style}>
+                <Button title={this.props.title} onClick={this.props.onClick} addFaceValue={this.props.addFaceValue} />
+            </View>
+        )
+    }
+}

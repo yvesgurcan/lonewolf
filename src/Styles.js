@@ -51,6 +51,9 @@ const Styles = {
         height: "26px",
         padding: "2px",
     },
+    InputTextArea: {
+        height: "200px",
+    },
     InputMaxSize: {
         width: "98%",
     },

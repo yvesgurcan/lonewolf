@@ -211,7 +211,7 @@ class InputView extends Component {
                 <View>
                     <TextArea
                         id={this.props.name}
-                        style={{...Styles.Input, ...Styles.InputMaxSize, height: "200px"}}
+                        style={{...Styles.Input, ...Styles.InputMaxSize, ...Styles.InputTextArea}}
                         value={this.props.value || this.props.CharacterSheet[this.props.name] || ""}
                         onChange={this.onChange}
                         onBlur={this.onBlur}
@@ -307,16 +307,6 @@ class NegativeNumbersView extends Component {
     }
 }
 export const NegativeNumbers = connect(mapStateToProps)(NegativeNumbersView)
-
-export class ButtonContainer extends Component {
-    render() {
-        return (
-            <View style={this.props.style}>
-                <Button title={this.props.title} onClick={this.props.onClick} addFaceValue={this.props.addFaceValue} />
-            </View>
-        )
-    }
-}
 
 export class Spacer extends Component {
     render() {

@@ -14,7 +14,7 @@ import {
     TextWithInputFont,
     Label,
     LabelInline,
-    Button, // mimicks React Native built-in component
+    ButtonContainer, // mimicks React Native built-in component
 } from './WebComponents'
 import Styles from './Styles'
 
@@ -32,6 +32,7 @@ import {
     TextWithInputFont,
     Label,
     LabelInline,
+    ButtonContainer, // mimicks React Native built-in component
 } from './NativeComponents'
 import Styles from './StylesNative'
 */
@@ -42,7 +43,6 @@ import {
     Group,
     Input,
     Spacer,
-    ButtonContainer,
 } from './UtilityComponents'
 
 let APItimeout = null
@@ -284,8 +284,8 @@ class EnduranceView extends Component {
                 <Input name="MaxEndurance" type="number" />
                 <Text>{this.getBonuses()}</Text>
                 <Group name="Endurance" type="number" negativeNumbers/>
-                <Button title="Archmaster Curing: +20 (once/100 days)" hidden={this.hideArchmasterCuring()} onClick={this.archmasterCuring} inline/>
-                <Button title="Heal to Max" onClick={this.toMax} inline/>
+                <ButtonContainer title="Archmaster Curing: +20 (once/100 days)" hidden={this.hideArchmasterCuring()} onClick={this.archmasterCuring} inline/>
+                <ButtonContainer title="Heal to Max" onClick={this.toMax} inline/>
             </ShowDetails>
         )
     }

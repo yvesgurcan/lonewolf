@@ -8,6 +8,7 @@ import React, { Component } from 'react'
 import {
     View,
     Text,
+    TextInput,
     Button,
 } from 'react-native'
 import Styles from './StylesNative'
@@ -15,7 +16,7 @@ import Styles from './StylesNative'
 export class Header1 extends Component {
     render() {
         return (
-            <Text>{this.props.children}</Text>
+            <Text style={{...Styles.H1}}>{this.props.children}</Text>
         )
     }
 }
@@ -23,24 +24,15 @@ export class Header1 extends Component {
 export class Link extends Component {
     render() {
         return (
-            <Text href={this.props.href} target={this.props.target} onClick={this.props.onClick}>{this.props.children}</Text>
+            <Text href={this.props.href} target={this.props.target} onClick={this.props.onClick} style={{...Styles.Link}}>{this.props.children}</Text>
         )
     }
 }
 
 export class TextWithInputFont extends Component {
     render() {
-        // TODO: substitute className for a stylesheet
         return (
-            <Text className="input-font" {...this.props}/>
-        )
-    }
-}
-
-export class TextArea extends Component {
-    render() {
-        return (
-            <TextInput {...this.props}/>
+            <Text {...this.props} style={{...Styles.TextWithInputFont, ...this.props.style}}/>
         )
     }
 }
@@ -48,8 +40,8 @@ export class TextArea extends Component {
 export class Label extends Component {
     render() {
         return (
-            <View style={this.props.noColon ? null : Styles.Label} hidden={this.props.hidden} onClick={this.props.onClick}>
-                <Text style={{fontWeight: "bold"}}>{this.props.children}{this.props.noColon ? null : ":"}</Text>
+            <View style={{...(this.props.noMargin ? null : Styles.LabelContainer)}} hidden={this.props.hidden} onClick={this.props.onClick}>
+                <Text style={Styles.Label}>{this.props.children}</Text>
             </View>
         )
     }
@@ -58,7 +50,15 @@ export class Label extends Component {
 export class LabelInline extends Component {
     render() {
         return (
-            <Text {...this.props} style={{...this.props.style, userSelect: "none"}}>{this.props.children}.</Text>
+            <Text {...this.props} style={{...this.props.style}}>{this.props.children}.</Text>
+        )
+    }
+}
+
+export class TextArea extends Component {
+    render() {
+        return (
+            <TextInput {...this.props}/>
         )
     }
 }
@@ -73,5 +73,15 @@ export class PickerItemGroup extends Component {
 export class PickerItem extends Component  {
     render() {
         return <Picker.Item {...this.props} />
+    }
+}
+
+export class ButtonContainer extends Component {
+    render() {
+        return (
+            <View style={this.props.style}>
+                <Button title={this.props.title} onPress={this.props.onClick} addFaceValue={this.props.addFaceValue} />
+            </View>
+        )
     }
 }
