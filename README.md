@@ -80,8 +80,6 @@ Throughout the book, you are frequently asked to pick a number from a special ra
 
 Feel free to use the Notes field at your leisure. Special story events and info can be stored there.
 
-### Transition to the next  ook
-
 ## Get in touch
 
 Like this project? Have a question? Feel free to email me at gurcan.yves@gmail.com.
