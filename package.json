@@ -10,7 +10,7 @@
     "redux": "^3.7.2"
   },
   "devDependencies": {
-    "react-scripts": "1.0.17"
+    "react-scripts": "3.4.0"
   },
   "scripts": {
     "start": "react-scripts start",
