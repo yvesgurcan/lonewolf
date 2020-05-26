@@ -173,7 +173,7 @@ function CharacterSheet(State = InitState, Action) {
     else if (Action.type === "CLEAR_ENEMY_STATS") {
         NewState.EnemyEndurance = ""
         NewState.EnemyCombatSkill = ""
-        NewState.ImmunetoMindblast = false
+        NewState.ImmuneToMindblast = false
     }
     else if (Action.type === "ARCHMASTER_CURING") {
         NewState.Endurance = (NewState.Endurance || 0) + 20

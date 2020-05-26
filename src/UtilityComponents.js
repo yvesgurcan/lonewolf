@@ -161,7 +161,6 @@ function InputView(props) {
 
     const generateSelectOptions = () => {
         if (props.optGroups) {
-
             let optGroups = props.optGroups.map((optGroup, index) => {
                 return (<PickerItemGroup key={optGroup.name} label={optGroup.name}/>)
             })
@@ -179,7 +178,7 @@ function InputView(props) {
         }
         else {
             return (
-                props.select.map((option, index) => {return <PickerItem key={option.name}>{props.showIndex ? index + " - " + option.name : option.name}</PickerItem>})
+                props.select.map((option, index) => {return <PickerItem key={option.name} value={option.name}>{props.showIndex ? index + " - " + t(option.name) : t(option.name)}</PickerItem>})
             )
         }
     }

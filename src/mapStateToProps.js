@@ -190,87 +190,87 @@ export const mapStateToProps = (state, ownProps) => {
         ],
         Books: [
             {
-                name: "select_book",
+                name: "SelectBook",
                 url: null,
             },
             {
-                name: "book_01",
+                name: "Book01",
                 url: "https://www.projectaon.org/en/xhtml/lw/01fftd/",
             },
             {
-                name: "book_02",
+                name: "Book02",
                 url: "https://www.projectaon.org/en/xhtml/lw/02fotw/",
             },
             {
-                name: "book_03",
+                name: "Book03",
                 url: "https://www.projectaon.org/en/xhtml/lw/03tcok/",
             },
             {
-                name: "book_04",
+                name: "Book04",
                 url: "https://www.projectaon.org/en/xhtml/lw/04tcod/",
             },
             {
-                name: "book_05",
+                name: "Book05",
                 url: "https://www.projectaon.org/en/xhtml/lw/05sots/",
             },
             {
-                name: "book_06",
+                name: "Book06",
                 url: "https://www.projectaon.org/en/xhtml/lw/06tkot/",
             },
             {
-                name: "book_07",
+                name: "Book07",
                 url: "https://www.projectaon.org/en/xhtml/lw/07cd/",
             },
             {
-                name: "book_08",
+                name: "Book08",
                 url: "https://www.projectaon.org/en/xhtml/lw/08tjoh/",
             },
             {
-                name: "book_09",
+                name: "Book09",
                 url: "https://www.projectaon.org/en/xhtml/lw/09tcof/",
             },
             {
-                name: "book_10",
+                name: "Book10",
                 url: "https://www.projectaon.org/en/xhtml/lw/10tdot/",
             },
             {
-                name: "book_11",
+                name: "Book11",
                 url: "https://www.projectaon.org/en/xhtml/lw/11tpot/",
             },
             {
-                name: "book_12",
+                name: "Book12",
                 url: "https://www.projectaon.org/en/xhtml/lw/12tmod/",
             },
             {
-                name: "book_13",
+                name: "Book13",
                 url: "https://www.projectaon.org/en/xhtml/lw/13tplor/",
             },
             {
-                name: "book_14",
+                name: "Book14",
                 url: "https://www.projectaon.org/en/xhtml/lw/14tcok/",
             },
             {
-                name: "book_15",
+                name: "Book15",
                 url: "https://www.projectaon.org/en/xhtml/lw/15tdc/",
             },
             {
-                name: "book_16",
+                name: "Book16",
                 url: "https://www.projectaon.org/en/xhtml/lw/16tlov/",
             },
             {
-                name: "book_17",
+                name: "Book17",
                 url: "https://www.projectaon.org/en/xhtml/lw/17tdoi/",
             },
             {
-                name: "book_18",
+                name: "Book18",
                 url: "https://www.projectaon.org/en/xhtml/lw/18dotd/",
             },
             {
-                name: "book_19",
+                name: "Book19",
                 url: "https://www.projectaon.org/en/xhtml/lw/19wb/",
             },
             {
-                name: "book_20",
+                name: "Book20",
                 url: "https://www.projectaon.org/en/xhtml/lw/20tcon/",
             },
         ],
@@ -283,87 +283,105 @@ export const mapStateToProps = (state, ownProps) => {
             lorecircles: "lorecrcl.htm",
         },
         KaiLevels: [
-            {name: "Initiate"},
-            {name: "Aspirant"},
-            {name: "Guardian"},
-            {name: "Warmarn or Journeyman"},
-            {name: "Savant"},
-            {name: "Master"},
+            {
+                name: "KaiInitiate",
+                disciplines: 5
+            },
+            {
+                name: "KaiAspirant",
+                disciplines: 6
+            },
+            {
+                name: "KaiGuardian",
+                disciplines: 7
+            },
+            {
+                name: "KaiWarmarnJourneyman",
+                disciplines: 8
+            },
+            {
+                name: "KaiSavant",
+                disciplines: 9
+            },
+            {
+                name: "KaiMaster",
+                disciplines: 10
+            }
         ],
         KaiDisciplines: [
             {
                 name: "",
             },
             {
-                name: "Camouflage",
+                name: "KaiCamouflage",
             },
             {
-                name: "Hunting: no need for a Meal when instructed to eat",
+                name: "KaiHunting",
             },
             {
-                name: "Sixth Sense",
+                name: "KaiSixthSense",
             },
             {
-                name: "Tracking",
+                name: "KaiTracking",
             },
             {
-                name: "Healing: +1 ENDURANCE point for each section without combat",
+                name: "KaiHealing",
             },
             {
-                name: "Mindshield: no points lost when attacked by Mindblast",
+                name: "KaiMindshield",
             },
             {
-                name: "Mindblast: +2 COMBAT SKILL points",
+                name: "KaiMindblast",
                 CombatSkill: 2,
             },
             {
-                name: "Animal Kinship",
+                name: "KaiAnimalKinship",
             },
             {
-                name: "Mind Over Matter",
+                name: "KaiMindOverMatter",
             },
             {
-                name: "Weaponskill in Dagger +2 COMBAT SKILL points if this weapon carried",
+                name: "KaiWeaponskillDagger",
                 weapon: "Dagger",
                 CombatSkill: 2,
             },
             {
-                name: "Weaponskill in Spear +2 COMBAT SKILL points if this weapon carried",
+                name: "KaiWeaponskillSpear",
                 weapon: "Spear",
                 CombatSkill: 2,
             },
             {
-                name: "Weaponskill in Mace +2 COMBAT SKILL points if this weapon carried",
+                name: "KaiWeaponskillMace",
                 weapon: "Mace",
                 CombatSkill: 2,
             },
             {
-                name: "Weaponskill in Short Sword +2 COMBAT SKILL points if this weapon carried",
+                name: "KaiWeaponskillShortSword",
                 weapon: "Short Sword",
                 CombatSkill: 2,
             },
             {
-                name: "Weaponskill in Warhammer +2 COMBAT SKILL points if this weapon carried",
+                name: "KaiWeaponskillWarhammer",
                 weapon: "Warhammer",
                 CombatSkill: 2,
             },
             {
-                name: "Weaponskill in Sword +2 COMBAT SKILL points if this weapon carried",
+                name: "KaiWeaponskillSword",
                 weapon: "Sword",
                 CombatSkill: 2,
             },
             {
-                name: "Weaponskill in Axe +2 COMBAT SKILL points if this weapon carried",
+                name: "KaiWeaponskillAxe",
                 weapon: "Axe",
                 CombatSkill: 2,
             },
             {
-                name: "Weaponskill in Quarterstaff +2 COMBAT SKILL points if this weapon carried",
+                name: "KaiWeaponskillQuarterstaff",
                 weapon: "Quarterstaff",
                 CombatSkill: 2,
             },
             {
-                name: "Weaponskill in Broadsword +2 COMBAT SKILL points if this weapon carried",
+                name: "KaiWeaponskillBroadsword",
                 weapon: "Broadsword",
                 CombatSkill: 2,
             },
