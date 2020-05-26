@@ -190,87 +190,87 @@ export const mapStateToProps = (state, ownProps) => {
         ],
         Books: [
             {
-                name: "Select Book",
+                name: "select_book",
                 url: null,
             },
             {
-                name: "Flight from the Dark",
+                name: "book_01",
                 url: "https://www.projectaon.org/en/xhtml/lw/01fftd/",
             },
             {
-                name: "Fire on the Water",
+                name: "book_02",
                 url: "https://www.projectaon.org/en/xhtml/lw/02fotw/",
             },
             {
-                name: "The Caverns of Kalte",
+                name: "book_03",
                 url: "https://www.projectaon.org/en/xhtml/lw/03tcok/",
             },
             {
-                name: "The Chasm of Doom",
+                name: "book_04",
                 url: "https://www.projectaon.org/en/xhtml/lw/04tcod/",
             },
             {
-                name: "Shadow on the Sand",
+                name: "book_05",
                 url: "https://www.projectaon.org/en/xhtml/lw/05sots/",
             },
             {
-                name: "The Kingdoms of Terror",
+                name: "book_06",
                 url: "https://www.projectaon.org/en/xhtml/lw/06tkot/",
             },
             {
-                name: "Castle Death",
+                name: "book_07",
                 url: "https://www.projectaon.org/en/xhtml/lw/07cd/",
             },
             {
-                name: "The Jungle of Horrors",
+                name: "book_08",
                 url: "https://www.projectaon.org/en/xhtml/lw/08tjoh/",
             },
             {
-                name: "The Cauldron of Fear",
+                name: "book_09",
                 url: "https://www.projectaon.org/en/xhtml/lw/09tcof/",
             },
             {
-                name: "The Dungeons of Torgar",
+                name: "book_10",
                 url: "https://www.projectaon.org/en/xhtml/lw/10tdot/",
             },
             {
-                name: "The Prisoners of Time",
+                name: "book_11",
                 url: "https://www.projectaon.org/en/xhtml/lw/11tpot/",
             },
             {
-                name: "The Masters of Darkness",
+                name: "book_12",
                 url: "https://www.projectaon.org/en/xhtml/lw/12tmod/",
             },
             {
-                name: "The Plague Lords of Ruel",
+                name: "book_13",
                 url: "https://www.projectaon.org/en/xhtml/lw/13tplor/",
             },
             {
-                name: "The Captives of Kaag",
+                name: "book_14",
                 url: "https://www.projectaon.org/en/xhtml/lw/14tcok/",
             },
             {
-                name: "The Dark Crusade",
+                name: "book_15",
                 url: "https://www.projectaon.org/en/xhtml/lw/15tdc/",
             },
             {
-                name: "The Legacy of Vashna",
+                name: "book_16",
                 url: "https://www.projectaon.org/en/xhtml/lw/16tlov/",
             },
             {
-                name: "The Deathlord of Ixia",
+                name: "book_17",
                 url: "https://www.projectaon.org/en/xhtml/lw/17tdoi/",
             },
             {
-                name: "Dawn of the Dragons",
+                name: "book_18",
                 url: "https://www.projectaon.org/en/xhtml/lw/18dotd/",
             },
             {
-                name: "Wolf's Bane",
+                name: "book_19",
                 url: "https://www.projectaon.org/en/xhtml/lw/19wb/",
             },
             {
-                name: "The Curse of Naar",
+                name: "book_20",
                 url: "https://www.projectaon.org/en/xhtml/lw/20tcon/",
             },
         ],

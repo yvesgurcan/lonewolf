@@ -1,5 +1,6 @@
-import React, { Component } from 'react'
+import React, { Component, useState, useEffect } from 'react'
 import { Provider, connect } from 'react-redux'
+import { useTranslation } from 'react-i18next';
 
 // Redux
 import { store } from './Store'
@@ -47,87 +48,82 @@ import {
 
 let APItimeout = null
 
-export default class App extends Component {
-    render() {
-        return (
-            <Provider store={store}>
-                <CharacterSheet/>
-            </Provider>
-        )
-    }
+export default function App(props) {
+    return (
+        <Provider store={store}>
+            <CharacterSheet/>
+        </Provider>
+    )
 }
 
-class CharacterSheetView extends Component {
+function CharacterSheetView(props) {
+    const {t} = useTranslation();
 
-    componentDidMount() {
+    useEffect(() => {
         console.log("Set debugApp to true to see game state data.")
 
-        this.props.dispatch({type: "INIT"})
-        this.props.dispatch({type: "INIT_REQUEST_FEEDBACK"})
+        props.dispatch({type: "INIT"})
+        props.dispatch({type: "INIT_REQUEST_FEEDBACK"})
+    }, []);
 
-    }
-
-    render() {
-        return (
-            <View style={Styles.Body}>
-                <Header1>Character Sheet</Header1>
-                <LinkToProject/>
-                <GameMetaData/>
-                <Book/>
-                <Combat>
-                    <Endurance/>
-                </Combat>
-                <Weapons/>
-                <Weaponmastery/>
-                <Kai/>
-                <Magnakai/>
-                <LoreCircles/>
-                <BeltPouch/>
-                <Meals/>
-                <Backpack/>
-                <SpecialItems/>
-                <Notes/>
-                <GameState/>
-                <SaveAndLoadRemotely/>
-                <Spacer/>
-            </View>
-        )
-    }
+    return (
+        <View style={Styles.Body}>
+            <Header1>{t('character_sheet')}</Header1>
+            <LinkToProject/>
+            <GameMetaData/>
+            <Book/>
+            <Combat>
+                <Endurance/>
+            </Combat>
+            <Weapons/>
+            <Weaponmastery/>
+            <Kai/>
+            <Magnakai/>
+            <LoreCircles/>
+            <BeltPouch/>
+            <Meals/>
+            <Backpack/>
+            <SpecialItems/>
+            <Notes/>
+            <GameState/>
+            <SaveAndLoadRemotely/>
+            <Spacer/>
+        </View>
+    )
 }
 const CharacterSheet = connect(mapStateToProps)(CharacterSheetView)
 
-class LinkToProject extends Component {
-    render() {
-        return (
-            <View>
-                <Link href="https://www.projectaon.org/en/Main/Books" target="_blank">Project Aon</Link>
-            </View>
-        )
-    }
+function LinkToProject() {
+    return (
+        <View>
+            <Link href="https://www.projectaon.org/en/Main/Books" target="_blank">Project Aon</Link>
+        </View>
+    )
 }
 
-class GameMetaDataView extends Component {
-    render() {
-        return (
-            <ShowDetails label="Game ID" startVisible>
-                <Text>{this.props.RequestFeedback.actualGameID !== undefined ? String(this.props.RequestFeedback.actualGameID) : "-"}</Text>
-                <Label>Game Started</Label>
-                <Text>{this.props.CharacterSheet.GameStarted}</Text>
-                <Label>Game Last Saved</Label>
-                <Text>{this.props.CharacterSheet.GameSaved || "-"}</Text>
-            </ShowDetails>
-        )
-    }
+function GameMetaDataView(props) {
+    const {t} = useTranslation();
+    
+    return (
+        <ShowDetails label="game_id" startVisible>
+            <Text>{props.RequestFeedback.actualGameID !== undefined ? String(props.RequestFeedback.actualGameID) : "-"}</Text>
+            <Label>{t("game_started")}</Label>
+            <Text>{props.CharacterSheet.GameStarted}</Text>
+            <Label>{t("game_last_saved")}</Label>
+            <Text>{props.CharacterSheet.GameSaved || "-"}</Text>
+        </ShowDetails>
+    )
 }
 const GameMetaData = connect(mapStateToProps)(GameMetaDataView)
 
-class BookView extends Component {
+function BookView(props) {
+    const {t} = useTranslation();
 
-    onChange = (input) => {
+    const onChange = (input) => {
         let bookNumber = 0
-        let Book = this.props.Books.filter((book, index) => {
 
-            if (String(index) + " - " + book.name === input.value) {
+        let Book = props.Books.filter((book, index) => {
+            if (String(index) + " - " + t(book.name) === input.value) {
                 bookNumber = index
                 return true
             }
@@ -136,44 +132,41 @@ class BookView extends Component {
 
         Book = {...Book, number: bookNumber}
 
-        this.props.dispatch({type: "UPDATE_BOOK", value: Book, API: this.props.API, save: true})
+        props.dispatch({type: "UPDATE_BOOK", value: Book, API: props.API, save: true})
     }
 
-    render() {
-        return (
-            <ShowDetails label="Book">
-                <Input name="Book" value={this.props.CharacterSheet.Book ? this.props.CharacterSheet.Book.number + " - " + this.props.CharacterSheet.Book.name : null} select={this.props.Books} optGroups={this.props.BookGroups} showIndex onChange={this.onChange}/>
-                {this.props.CharacterSheet.Book ? <BookLinks/> : null}
-                <Section/>
-            </ShowDetails>
-        )
-    }
+    return (
+        <ShowDetails label="book">
+            <Input name="Book" value={props.CharacterSheet.Book ? props.CharacterSheet.Book.number + " - " + t(props.CharacterSheet.Book.name) : null} select={props.Books} optGroups={props.BookGroups} showIndex onChange={onChange}/>
+            {props.CharacterSheet.Book ? <BookLinks/> : null}
+            <Section/>
+        </ShowDetails>
+    )
 }
 const Book = connect(mapStateToProps)(BookView)
 
-class BookLinksView extends Component {
+function BookLinksView(props) {
+    const {t} = useTranslation();
 
-    render() {
-        return (
-            <View>
-                <Link target="_blank" href={this.props.CharacterSheet.Book.url + this.props.BookURLs.toc}>Table of Contents</Link>
-                {" "}|{" "}
-                <Link target="_blank" href={this.props.CharacterSheet.Book.url + this.props.BookURLs.map}>Map</Link>
-            </View>
-        )
-    }
+    return (
+        <View>
+            <Link target="_blank" href={props.CharacterSheet.Book.url + props.BookURLs.toc}>{t("table_contents")}</Link>
+            {" "}|{" "}
+            <Link target="_blank" href={props.CharacterSheet.Book.url + props.BookURLs.map}>{t("map")}</Link>
+        </View>
+    )
 }
 const BookLinks = connect(mapStateToProps)(BookLinksView)
 
-class SectionView extends Component {
-    render() {
-        return (
-            <View>
-                <Group name="Section" type="number" numbers noPlusAndMinus/>
-                {this.props.CharacterSheet.Book && this.props.CharacterSheet.Section ? <Link target="_blank" href={this.props.CharacterSheet.Book.url + this.props.BookURLs.section.prepend + this.props.CharacterSheet.Section + this.props.BookURLs.section.append}>Go to Section</Link> : null}
-            </View>
-        )
-    }
+function SectionView(props) {
+    const {t} = useTranslation();
+
+    return (
+        <View>
+            <Group name="section" type="number" numbers noPlusAndMinus/>
+            {props.CharacterSheet.Book && props.CharacterSheet.Section ? <Link target="_blank" href={props.CharacterSheet.Book.url + props.BookURLs.section.prepend + props.CharacterSheet.Section + props.BookURLs.section.append}>{t("go_to_section")}</Link> : null}
+        </View>
+    )
 }
 const Section = connect(mapStateToProps)(SectionView)
 
@@ -813,12 +806,12 @@ class MagnakaiView extends Component {
 
         return (
             <View>
-                <ShowDetails label="Magnakai Disciplines">
+                <ShowDetails label="Discipline Magnakai">
                     {this.props.numberSequence(10).map(number =>
                         <Input key={"Magnakai" + number} name={"Magnakai" + number} select={this.props.MagnakaiDisciplines} optGroups={this.props.LoreCircles} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number <= number+2}/>
                     )}
                     {this.props.CharacterSheet.Book ? <Link target="_blank" href={this.props.CharacterSheet.Book.url + this.props.BookURLs.disciplines}>Disciplines</Link> : null}
-                    <Group name="Magnakai Level" select={this.props.MagnakaiLevels}/>
+                    <Group name="Livello Magnakai" select={this.props.MagnakaiLevels}/>
                     {this.props.CharacterSheet.Book ? <Link target="_blank" href={this.props.CharacterSheet.Book.url + this.props.BookURLs.improveddisciplines}>Improved Disciplines</Link> : null}
                 </ShowDetails>
             </View>

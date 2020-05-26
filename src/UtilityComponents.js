@@ -1,7 +1,8 @@
-import React, { Component } from 'react'
+import React, { Component, useState } from 'react'
 import { connect } from 'react-redux'
 import { mapStateToProps } from './mapStateToProps'
 import Transition from 'react-transition-group/Transition'
+import { useTranslation } from 'react-i18next'
 // const Transition = null
 
 // Web Components (React)
@@ -41,24 +42,22 @@ import {
 import Styles from './StylesNative'
 */
 
-export class ShowDetails extends Component {
+export function ShowDetails(props) {
+    const {t} = useTranslation();
+    const [hideDetails, setHideDetails] = useState(!props.startVisible)
 
-    state = {hideDetails: !this.props.startVisible}
-
-    toggleDetails = () => {
-        this.setState({hideDetails: !this.state.hideDetails})
+    const toggleDetails = () => {
+        setHideDetails(!hideDetails);
     }
 
-    render() {
-        return (
-            <View style={Styles.Container}>
-                <Label onClick={this.toggleDetails} noMargin><Text style={Styles.Arrow}>{this.state.hideDetails ? "▶" : "▼"}</Text> {this.props.label}</Label>
-                <Details hideDetails={this.state.hideDetails}>
-                    {this.props.children}
-                </Details>
-            </View>
-        )
-    }
+    return (
+        <View style={Styles.Container}>
+            <Label onClick={toggleDetails} noMargin><Text style={Styles.Arrow}>{hideDetails ? "▶" : "▼"}</Text> {t(props.label)}</Label>
+            <Details hideDetails={hideDetails}>
+                {props.children}
+            </Details>
+        </View>
+    )
 }
 
 class Details extends Component {
@@ -85,96 +84,93 @@ class Details extends Component {
     }
 }
 
-export class Group extends Component {
-    render() {
-        return (
-            <View hidden={this.props.hidden}>
-                <Label hidden={this.props.type === "checkbox"}>{this.props.name}{this.props.append ? <Text> ({this.props.append})</Text> : null}</Label>
-                <Input
-                    name={this.props.name.replace(/ /g,"")}
-                    type={this.props.type}
-                    numbers={this.props.numbers}
-                    negativeNumbers={this.props.negativeNumbers}
-                    noPlusAndMinus={this.props.noPlusAndMinus}
-                    select={this.props.select}
-                    box={this.props.box}
-                    inline={this.props.type === "checkbox"}
-                />
-                <LabelInline htmlFor={this.props.name.replace(/ /g,"")} hidden={this.props.type !== "checkbox"} style={this.props.type !== "checkbox" ? null : {...Styles.CheckboxLabel}}>{this.props.name}{this.props.append ? <Text> ({this.props.append})</Text> : null}</LabelInline>
+export function Group(props) {
+    const {t} = useTranslation();
+    
+    return (
+        <View hidden={props.hidden}>
+            <Label hidden={props.type === "checkbox"}>{t(props.name)}{props.append ? <Text> ({props.append})</Text> : null}</Label>
+            <Input
+                name={props.name.replace(/ /g,"")}
+                type={props.type}
+                numbers={props.numbers}
+                negativeNumbers={props.negativeNumbers}
+                noPlusAndMinus={props.noPlusAndMinus}
+                select={props.select}
+                box={props.box}
+                inline={props.type === "checkbox"}
+            />
+            <LabelInline htmlFor={props.name.replace(/ /g,"")} hidden={props.type !== "checkbox"} style={props.type !== "checkbox" ? null : {...Styles.CheckboxLabel}}>{props.name}{props.append ? <Text> ({props.append})</Text> : null}</LabelInline>
 
-            </View>
-        )
-    }
+        </View>
+    )
 }
 
-class InputView extends Component {
+function InputView(props) {
+    const {t} = useTranslation();
 
-    onChange = (input) => {
+    const onChange = (input) => {
 
-        if (this.props.onChange) {
-            return this.props.onChange(input.target)
+        if (props.onChange) {
+            return props.onChange(input.target)
         }
 
         let value = null
 
         if (!input.target) {
 
-            if (this.props.negativeNumbers) {
-                value = (this.props.CharacterSheet[this.props.name] || 0) + Number(input)
+            if (props.negativeNumbers) {
+                value = (props.CharacterSheet[props.name] || 0) + Number(input)
             }
             else {
-                value = (this.props.CharacterSheet[this.props.name] || "") + String(input)
+                value = (props.CharacterSheet[props.name] || "") + String(input)
             }
 
-
-            return this.props.dispatch({type: this.props.name, value: value, API: this.props.API, save: true})
+            return props.dispatch({type: props.name, value: value, API: props.API, save: true})
         }
 
         value = input.target.value
 
-        if (this.props.type === "checkbox") {
+        if (props.type === "checkbox") {
             value = input.target.checked
         }
 
-        this.props.dispatch({type: this.props.name, value: value, API: this.props.API, save: this.props.type === "checkbox"})
+        props.dispatch({type: props.name, value: value, API: props.API, save: props.type === "checkbox"})
     }
 
-    onBlur = () => {
-        this.props.dispatch({type: "AUTO_SAVE", API: this.props.API, save: true})
+    const onBlur = () => {
+        props.dispatch({type: "AUTO_SAVE", API: props.API, save: true})
     }
 
-    increment = () => {
-        this.props.dispatch({type: "INCREMENT_" + this.props.name, API: this.props.API, save: true})
+    const increment = () => {
+        props.dispatch({type: "INCREMENT_" + props.name, API: props.API, save: true})
     }
 
-    decrement = () => {
-        this.props.dispatch({type: "DECREMENT_" + this.props.name, API: this.props.API, save: true})
+    const decrement = () => {
+        props.dispatch({type: "DECREMENT_" + props.name, API: props.API, save: true})
     }
 
-    clear = () => {
+    const clear = () => {
 
-        if (!this.props.name) {
-            return this.props.onChange("")
+        if (!props.name) {
+            return props.onChange("")
         }
 
-        this.props.dispatch({type: this.props.name, value: "", API: this.props.API, save: true})
+        props.dispatch({type: props.name, value: "", API: props.API, save: true})
     }
 
-    generateSelectOptions = () => {
-        if (this.props.optGroups) {
+    const generateSelectOptions = () => {
+        if (props.optGroups) {
 
-            let optGroups = this.props.optGroups.map((optGroup, index) => {
+            let optGroups = props.optGroups.map((optGroup, index) => {
                 return (<PickerItemGroup key={optGroup.name} label={optGroup.name}/>)
             })
 
-            let options = this.props.select.map((option, index) => {
-
-                
-
-                return <PickerItem key={option.name}>{this.props.showIndex ? index + " - " + option.name : option.name}</PickerItem>
+            let options = props.select.map((option, index) => {
+                return <PickerItem key={option.name}>{props.showIndex ? index + " - " + t(option.name) : t(option.name)}</PickerItem>
             })
             
-            this.props.optGroups.map((optGroup, index) => {
+            props.optGroups.map((optGroup, index) => {
                 options.splice(optGroup.position, 0, optGroups[index])
                 return null
             })
@@ -182,82 +178,78 @@ class InputView extends Component {
             return (options)
         }
         else {
-
             return (
-                this.props.select.map((option, index) => {return <PickerItem key={option.name}>{this.props.showIndex ? index + " - " + option.name : option.name}</PickerItem>})
+                props.select.map((option, index) => {return <PickerItem key={option.name}>{props.showIndex ? index + " - " + option.name : option.name}</PickerItem>})
             )
-
         }
     }
 
-    render() {
-        if (this.props.hidden) return null
-        if (this.props.select) {
-            return (
-                <View>
-                    <Picker
-                        id={this.props.name}
-                        style={{...Styles.Input, ...Styles.InputMaxSize}}
-                        value={this.props.value || this.props.CharacterSheet[this.props.name] || ""}
-                        onChange={this.onChange}
-                    >
-                        {this.generateSelectOptions()}
-                    </Picker>
-                </View>
-            )
-        }
-        if (this.props.box) {
-            return (
-                <View>
-                    <TextArea
-                        id={this.props.name}
-                        style={{...Styles.Input, ...Styles.InputMaxSize, ...Styles.InputTextArea}}
-                        value={this.props.value || this.props.CharacterSheet[this.props.name] || ""}
-                        onChange={this.onChange}
-                        onBlur={this.onBlur}
-                    />
-                </View>
-            )
-        }
-        if (this.props.type === "checkbox") {
-            return (
-                <Switch
-                    disabled={this.props.disabled}
-                    id={this.props.name}
-                    checked={(this.props.CharacterSheet[this.props.name] || false)}
-                    onChange={this.onChange}
-                />
-            )
-        }
+    if (props.hidden) return null
+    if (props.select) {
         return (
-            <View style={{display: (this.props.inline ? "inline-block" : null)}}>
-                <TextInput
-                    disabled={this.props.disabled}
-                    id={this.props.name}
-                    style={{...(this.props.type === "number" && !this.props.noPlusAndMinus ? Styles.InputVariableSize1 : Styles.InputVariableSize2), ...Styles.TextInput, ...Styles.Input}}
-                    value={this.props.value || (this.props.CharacterSheet[this.props.name] === undefined ? "" : String(this.props.CharacterSheet[this.props.name]))}
-                    type={this.props.type}
-                    onChange={this.onChange}
-                    onBlur={this.props.noAutoSave ? null : this.onBlur}
-                />
-                <Clear
-                    hidden={this.props.type === "number" && !this.props.noPlusAndMinus}
-                    clear={this.clear} />
-                <PlusAndMinus
-                    hidden={this.props.type !== "number" || this.props.noPlusAndMinus}
-                    type={this.props.type}
-                    noPlusAndMinus={this.props.noPlusAndMinus}
-                    decrement={this.decrement}
-                    increment={this.increment} />
-                <PositiveNumbers
-                    numbers={this.props.numbers}
-                    onChange={this.onChange} />
-                <NegativeNumbers
-                    negativeNumbers={this.props.negativeNumbers}
-                    onChange={this.onChange} />
+            <View>
+                <Picker
+                    id={props.name}
+                    style={{...Styles.Input, ...Styles.InputMaxSize}}
+                    value={props.value || props.CharacterSheet[props.name] || ""}
+                    onChange={onChange}
+                >
+                    {generateSelectOptions()}
+                </Picker>
             </View>
         )
     }
+    if (props.box) {
+        return (
+            <View>
+                <TextArea
+                    id={props.name}
+                    style={{...Styles.Input, ...Styles.InputMaxSize, ...Styles.InputTextArea}}
+                    value={props.value || props.CharacterSheet[props.name] || ""}
+                    onChange={onChange}
+                    onBlur={onBlur}
+                />
+            </View>
+        )
+    }
+    if (props.type === "checkbox") {
+        return (
+            <Switch
+                disabled={props.disabled}
+                id={props.name}
+                checked={(props.CharacterSheet[props.name] || false)}
+                onChange={onChange}
+            />
+        )
+    }
+    return (
+        <View style={{display: (props.inline ? "inline-block" : null)}}>
+            <TextInput
+                disabled={props.disabled}
+                id={props.name}
+                style={{...(props.type === "number" && !props.noPlusAndMinus ? Styles.InputVariableSize1 : Styles.InputVariableSize2), ...Styles.TextInput, ...Styles.Input}}
+                value={props.value || (props.CharacterSheet[props.name] === undefined ? "" : String(props.CharacterSheet[props.name]))}
+                type={props.type}
+                onChange={onChange}
+                onBlur={props.noAutoSave ? null : onBlur}
+            />
+            <Clear
+                hidden={props.type === "number" && !props.noPlusAndMinus}
+                clear={clear} />
+            <PlusAndMinus
+                hidden={props.type !== "number" || props.noPlusAndMinus}
+                type={props.type}
+                noPlusAndMinus={props.noPlusAndMinus}
+                decrement={decrement}
+                increment={increment} />
+            <PositiveNumbers
+                numbers={props.numbers}
+                onChange={onChange} />
+            <NegativeNumbers
+                negativeNumbers={props.negativeNumbers}
+                onChange={onChange} />
+        </View>
+    )
 }
 export const Input = connect(mapStateToProps)(InputView)
 
