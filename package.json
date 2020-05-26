@@ -13,13 +13,16 @@
     "redux": "^3.7.2"
   },
   "devDependencies": {
+    "gh-pages": "^2.2.0",
     "react-scripts": "1.0.17"
   },
   "scripts": {
     "start": "react-scripts start",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
-  "homepage": "."
+  "homepage": "http://vargash.github.io/lonewolf"
 }
