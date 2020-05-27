@@ -3,6 +3,9 @@
 # dependencies
 /node_modules
 
+# build folder
+/build
+
 # testing
 /coverage
 

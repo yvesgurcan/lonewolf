@@ -317,7 +317,6 @@ function CombatSkillView(props) {
                     else if (kaiDiscipline.toLowerCase().indexOf("kaiweaponskill") > -1) {
                         for (let x = 1; x <= 2; x++) {
                             let weapon = CharacterSheet["Weapon" + x]
-                            console.log(weapon);
                             let weaponSkill = KaiDisciplines.filter(function(kai) {
                                 // special case: do not consider a "short sword" as a regular sword
                                 if (weapon && (weapon.toLowerCase().indexOf("short sword") > -1) && kai.weapon && kai.weapon.toLowerCase() === "sword") {
@@ -326,7 +325,8 @@ function CombatSkillView(props) {
                                 return kai.name === kaiDiscipline && kai.weapon && weapon && weapon.toLowerCase().indexOf(t(kai.weapon).toLowerCase()) > -1 
                             })
                             if (weaponSkill.length > 0) {
-                                bonuses.push(<Text key="weaponskill">+2&nbsp;({t("Weaponskill").toLowerCase()}:&nbsp;{weapon}) </Text>)
+                                let key = `weaponskill_${weapon}`;
+                                bonuses.push(<Text key={key}>+2&nbsp;({t("Weaponskill").toLowerCase()}:&nbsp;{weapon}) </Text>)
                                 bonusValues.push(2)
                                 break
                             }
@@ -511,7 +511,7 @@ function CombatRatioView(props) {
     const {t} = useTranslation();
 
     const [sNumber, setNumber] = useState("-");
-    const [sDamage, setDamage] = useState({});
+    const [sDamage, setDamage] = useState({ enemy: 0, lonewolf: 0 });
     const [sRound, setRound] = useState(0);
 
     const fight = () => {
@@ -524,12 +524,14 @@ function CombatRatioView(props) {
         }
 
         setNumber(number);
-        setDamage(props.fight(damageNumber, props.CharacterSheet.CombatRatio));
+        let damage = props.fight(damageNumber, props.CharacterSheet.CombatRatio);
+        setDamage(damage);
         setRound(sRound + 1);
+
+        return damage;
     }
 
     const updateEndurance = (input, damage = null) => {
-
         if (damage == null && sDamage.enemy === undefined && sDamage.lonewolf === undefined) return null
 
         if (props.CharacterSheet.UsePsiSurge) {
@@ -541,15 +543,13 @@ function CombatRatioView(props) {
     }
 
     const fightAndUpdateEndurance = () => {
-        fight();
-        let damage = sDamage
-        
-        updateEndurance(null, damage)
+        let damage = fight();
+        updateEndurance(null, damage);
     }
 
     const clearEnemyStats = () => {
         props.dispatch({type: "CLEAR_ENEMY_STATS", API: props.API, save: true})
-        setDamage({});
+        setDamage({ enemy: 0, lonewolf: 0 });
         setRound(0);
     }
 
@@ -752,13 +752,11 @@ function KaiView(props) {
 
     let currentKaiLevel = null;
     if (props.CharacterSheet.KaiLevel) {
-        currentKaiLevel = props.KaiLevels.filter(kaiLevel => t(kaiLevel.name).toLowerCase() == t(props.CharacterSheet.KaiLevel).toLowerCase())[0];
+        currentKaiLevel = props.KaiLevels.filter(kaiLevel => t(kaiLevel.name).toLowerCase() === t(props.CharacterSheet.KaiLevel).toLowerCase())[0];
     } 
     else {
         currentKaiLevel = props.KaiLevels[0];
     }
-
-    console.log(props.KaiDisciplines);
 
     return (
         <View>
