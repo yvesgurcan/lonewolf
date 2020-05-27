@@ -766,5 +766,23 @@ export const mapStateToProps = (state, ownProps) => {
 
             return results[String(Math.max(-11,Math.min(CombatRatio,11))).replace("-","minus")][number]
         },
+        getMagnakaiLevel() {
+            if (!state.CharacterSheet.MagnakaiLevel) {
+                return "";
+            }
+        
+            return state.CharacterSheet.MagnakaiLevel.toLowerCase();
+        },
+        getMagnakaiDisciplines() {
+            let res = [];
+            for (let i = 1; i <= 10; i++) {
+                const discipline = state.CharacterSheet["Magnakai" + i];
+                if (discipline) {
+                    res.push(discipline);
+                }
+            }
+
+            return res;
+        }
     }
 }

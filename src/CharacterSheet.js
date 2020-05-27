@@ -244,21 +244,12 @@ function EnduranceView(props) {
         let hide = true
 
         if (CharacterSheet.Book && CharacterSheet.Book.number >= 6) {
-            if (CharacterSheet.MagnakaiLevel 
-                && (
-                    CharacterSheet.MagnakaiLevel.toLowerCase().indexOf("magnakaiarchmaster") > -1 
-                    || CharacterSheet.MagnakaiLevel.toLowerCase().indexOf("magnakaikaigrandmaster") > -1
-                )
-            ) {
-                for (let i = 1; i <= 10; i++) {
-                    let kaiDiscipline = CharacterSheet["Magnakai" + i]
-                    if (kaiDiscipline !== undefined) {
-                        if (kaiDiscipline.toLowerCase().indexOf("magnakaicuring") > -1) {
-                            if (CharacterSheet.Endurance <= 6) {
-                                hide = false
-                                break
-                            }
-                        }
+            const magnakaiLevel = props.getMagnakaiLevel();
+            if (magnakaiLevel === "magnakaiarchmaster" || magnakaiLevel === "magnakaikaigrandmaster") {
+                const magnakaiDisciplines = props.getMagnakaiDisciplines();
+                if (magnakaiDisciplines.includes("MagnakaiCuring")) {
+                    if (CharacterSheet.Endurance <= 6) {
+                        hide = false;
                     }
                 }
             }
@@ -308,6 +299,25 @@ function CombatSkillView(props) {
         let bonusValues = []
         let {CharacterSheet, KaiDisciplines} = {...props}
 
+        // fight without weapon malus
+        if (!CharacterSheet["Weapon1"] && !CharacterSheet["Weapon2"]) {
+            let weaponlessMalus = -4;
+
+            const magnakaiDisciplines = props.getMagnakaiDisciplines();
+            if (magnakaiDisciplines.includes("MagnakaiWeaponmastery")) {
+                const magnakaiLevel = props.getMagnakaiLevel();
+                if (magnakaiLevel === "magnakaitutelary" || magnakaiLevel === "magnakaiprincipalin" || magnakaiLevel === "magnakaimentora") {
+                    weaponlessMalus = -2;
+                }
+                else if (magnakaiLevel === "magnakaiscionkai" || magnakaiLevel === "magnakaiarchmaster" || magnakaiLevel === "magnakaikaigrandmaster") {
+                    weaponlessMalus = -1;
+                }
+            }
+
+            bonuses.push(<Text key="weaponless">{weaponlessMalus} ({t("Weaponless").toLowerCase()}) </Text>);
+            bonusValues.push(weaponlessMalus);
+        }
+
         if (props.CharacterSheet.Book && props.CharacterSheet.Book.number < 6) {
             // bonuses from kai disciplines
             for (let i = 1; i <= 10; i++) {
@@ -340,60 +350,54 @@ function CombatSkillView(props) {
         }
         else {
             // bonuses from magnakai disciplines
-            for (let i = 1; i <= 10; i++) {
-                let kaiDiscipline = CharacterSheet["Magnakai" + i]
-                if (kaiDiscipline !== undefined) {
-                    if (kaiDiscipline.toLowerCase().indexOf("magnakaipsisurge") > -1) {
-                        if (props.CharacterSheet.UsePsiSurge) {
-                            bonuses.push(<Text key="psi-surge">+4&nbsp;(psi-surge) </Text>)
-                            bonusValues.push(4)
-                        }
-                        else if (!props.CharacterSheet.ImmuneToMindblast) {
-                            bonuses.push(<Text key="mindblast">+2&nbsp;({t("Mindblast")}) </Text>)
-                            bonusValues.push(2)
-                        }
-                    }
-                    else if (kaiDiscipline.toLowerCase().indexOf("magnakaiweaponmastery") > -1) {
+            const magnakaiDisciplines = props.getMagnakaiDisciplines();
+            if (magnakaiDisciplines.includes("MagnakaiPsiSurge")) {
+                if (props.CharacterSheet.UsePsiSurge) {
+                    bonuses.push(<Text key="psi-surge">+4&nbsp;(psi-surge) </Text>)
+                    bonusValues.push(4)
+                }
+                else if (!props.CharacterSheet.ImmuneToMindblast) {
+                    bonuses.push(<Text key="mindblast">+2&nbsp;({t("Mindblast")}) </Text>)
+                    bonusValues.push(2)
+                }
+            }
+            if (magnakaiDisciplines.includes("MagnakaiWeaponmastery")) {
 
-                        let weaponTypeList = ["Spear","Dagger","Mace","Short Sword","Warhammer","Bow","Axe","Sword","Quarterstaff","Broadsword"]
+                let weaponTypeList = ["Spear","Dagger","Mace","Short Sword","Warhammer","Bow","Axe","Sword","Quarterstaff","Broadsword"]
 
-                        for (let x = 1; x <= 2; x++) {
-                            let weapon = CharacterSheet["Weapon" + x]
+                for (let x = 1; x <= 2; x++) {
+                    let weapon = CharacterSheet["Weapon" + x]
 
-                            if (weapon !== undefined && weapon !== "") {
+                    if (weapon !== undefined && weapon !== "") {
 
-                                let matchFound = false
+                        let matchFound = false
 
-                                for (let j = 0; j < 10; j++) {
-                                    console.log(String(weapon).toLowerCase().replace(/ /g,""));
-                                    console.log(weaponTypeList[j]);
-                                    console.log(t(weaponTypeList[j]).toLowerCase().replace(/ /g,""));
-
-                                    if (String(weapon).toLowerCase().replace(/ /g,"").indexOf(t(weaponTypeList[j]).toLowerCase().replace(/ /g,"")) > -1) {
-                                        if (CharacterSheet["Weaponmastery" + weaponTypeList[j].replace(/ /g,"")]) {
-                                            if (CharacterSheet.MagnakaiLevel && (CharacterSheet.MagnakaiLevel.toLowerCase().indexOf("magnakaiscionkai") > -1 || CharacterSheet.MagnakaiLevel.toLowerCase().indexOf("magnakaiarchmaster") > -1 || CharacterSheet.MagnakaiLevel.toLowerCase().indexOf("magnakaikaigrandmaster") > -1)) {
-                                                bonuses.push(<Text key="weaponmastery1">+4&nbsp;({t("Weaponmastery").toLowerCase()}:&nbsp;{weapon}) </Text>)
-                                                bonusValues.push(4)
-                                                matchFound = true
-                                                break
-                                            }
-                                            else {
-                                                bonuses.push(<Text key="weaponmastery2">+3&nbsp;({t("Weaponmastery").toLowerCase()}:&nbsp;{weapon}) </Text>)
-                                                bonusValues.push(3)
-                                                matchFound = true
-                                                break   
-                                            }
-                                        }
+                        for (let j = 0; j < 10; j++) {
+                            if (String(weapon).toLowerCase().replace(/ /g,"").indexOf(t(weaponTypeList[j]).toLowerCase().replace(/ /g,"")) > -1) {
+                                if (CharacterSheet["Weaponmastery" + weaponTypeList[j].replace(/ /g,"")]) {
+                                    const magnakaiLevel = props.getMagnakaiLevel();
+                                    if (magnakaiLevel === "magnakaiscionkai" || magnakaiLevel === "magnakaiarchmaster" || magnakaiLevel === "magnakaikaigrandmaster"
+                                    ) {
+                                        bonuses.push(<Text key="weaponmastery1">+4&nbsp;({t("Weaponmastery").toLowerCase()}:&nbsp;{weapon}) </Text>)
+                                        bonusValues.push(4)
+                                        matchFound = true
+                                        break
+                                    }
+                                    else {
+                                        bonuses.push(<Text key="weaponmastery2">+3&nbsp;({t("Weaponmastery").toLowerCase()}:&nbsp;{weapon}) </Text>)
+                                        bonusValues.push(3)
+                                        matchFound = true
+                                        break   
                                     }
                                 }
-
-                                if (matchFound) break
                             }
                         }
+
+                        if (matchFound) break
                     }
                 }
             }
-        
+
             if (props.checkLoreCircle("CircleFire")) {
                 bonuses.push(<Text key="circle of fire">+1&nbsp;({t("CircleFire").toLowerCase()}) </Text>)
                 bonusValues.push(1)
@@ -468,7 +472,6 @@ function EnemyEndurance() {
 function EnemyImmunityView(props) {
 
     const hasMindBlast = () => {
-
         let {CharacterSheet} = {...props}
 
         let hasMindBlast = false
@@ -482,19 +485,11 @@ function EnemyImmunityView(props) {
                     }
                 }
             }
+            return hasMindBlast
         }
         else {
-            for (let i = 1; i <= 10; i++) {
-                let kaiDiscipline = CharacterSheet["Magnakai" + i]
-                if (kaiDiscipline !== undefined) {
-                    if (kaiDiscipline.toLowerCase().indexOf("magnakaipsisurge") > -1) {
-                        hasMindBlast = true
-                    }
-                }
-            }
+            return props.getMagnakaiDisciplines().includes("MagnakaiPsiSurge");
         }
-
-        return hasMindBlast
     }
 
     return (
@@ -648,23 +643,11 @@ function UsePsiSurgeView(props) {
     const {t} = useTranslation();
 
     const hasPsiSurge = () => {
-
-        let {CharacterSheet} = {...props}
-
-        let hasPsiSurge = false
-
         if (props.CharacterSheet.Book && props.CharacterSheet.Book.number >= 6) {
-            for (let i = 1; i <= 10; i++) {
-                let kaiDiscipline = CharacterSheet["Magnakai" + i]
-                if (kaiDiscipline !== undefined) {
-                    if (kaiDiscipline.toLowerCase().indexOf("magnakaipsisurge") > -1) {
-                        hasPsiSurge = true
-                    }
-                }
-            }
+            return props.getMagnakaiDisciplines().includes("MagnakaiPsiSurge");
         }
 
-        return hasPsiSurge
+        return false;
     }
 
     return (
@@ -690,29 +673,17 @@ const Weapons = connect(mapStateToProps)(WeaponsView)
 function WeaponmasteryView(props) {
 
     const hasWeaponmastery = () => {
-        
-        let {CharacterSheet} = {...props}
-
-        let hasWeaponmastery = false
-
         if (props.CharacterSheet.Book && props.CharacterSheet.Book.number >= 6) {
-            for (let i = 1; i <= 10; i++) {
-                let kaiDiscipline = CharacterSheet["Magnakai" + i]
-                if (kaiDiscipline !== undefined) {
-                    if (kaiDiscipline.toLowerCase().indexOf("magnakaiweaponmastery") > -1) {
-                        hasWeaponmastery = true
-                    }
-                }
-            }
+            return props.getMagnakaiDisciplines().includes("MagnakaiWeaponmastery");
         }
 
-        return hasWeaponmastery
+        return false
     }
 
     return (
         <View hidden={!hasWeaponmastery()}>
             <ShowDetails label="Weaponmastery">
-                {["Spear","Dagger","Mace","Short Sword","Warhammer","Bow","Axe","Sword","Quarterstaff"].map(weapon => <WeaponMasteryCheckbox key={weapon} weapon={weapon}/>)}
+                {["Spear","Dagger","Mace","Short Sword","Warhammer","Bow","Axe","Sword","Quarterstaff","Broadsword"].map(weapon => <WeaponMasteryCheckbox key={weapon} weapon={weapon}/>)}
             </ShowDetails>
         </View>
     )
@@ -773,8 +744,9 @@ function MagnakaiView(props) {
     }
 
     let currentMagnakaiLevel = null;
-    if (props.CharacterSheet.MagnakaiLevel) {
-        currentMagnakaiLevel = props.MagnakaiLevels.filter(magnakaiLevel => t(magnakaiLevel.name).toLowerCase() === t(props.CharacterSheet.MagnakaiLevel).toLowerCase())[0];
+    const magnakaiLevel = props.getMagnakaiLevel();
+    if (magnakaiLevel) {
+        currentMagnakaiLevel = props.MagnakaiLevels.filter(level => level.name.toLowerCase() === magnakaiLevel)[0];
     } 
     else {
         currentMagnakaiLevel = props.MagnakaiLevels[0];
