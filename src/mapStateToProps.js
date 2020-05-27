@@ -184,7 +184,7 @@ export const mapStateToProps = (state, ownProps) => {
                 position: 7
             },
             {
-                name: "Grand Master",
+                name: "GrandMaster",
                 position: 15
             },
         ],
@@ -387,34 +387,58 @@ export const mapStateToProps = (state, ownProps) => {
             },
         ],
         MagnakaiLevels: [
-            {name: "Kai Master Superior"},
-            {name: "Primate"},
-            {name: "Tutelary"},
-            {name: "Principalin"},
-            {name: "Mentora"},
-            {name: "Scion-kai"},
-            {name: "Archmaster"},
-            {name: "Kai Grand Master"},
+            {
+                name: "MagnakaiKaiMasterSuperior",
+                disciplines: 3
+            },
+            {
+                name: "MagnakaiPrimate",
+                disciplines: 4
+            },
+            {
+                name: "MagnakaiTutelary",
+                disciplines: 5
+            },
+            {
+                name: "MagnakaiPrincipalin",
+                disciplines: 6
+            },
+            {
+                name: "MagnakaiMentora",
+                disciplines: 7
+            },
+            {
+                name: "MagnakaiScionKai",
+                disciplines: 8
+            },
+            {
+                name: "MagnakaiArchmaster",
+                disciplines: 9
+            },
+            {
+                name: "MagnakaiKaiGrandMaster",
+                disciplines: 10
+            },
         ],
         LoreCircles: [
             {
-                name: "Circle of Fire and Circle of Solaris",
+                name: "CircleFireSolaris",
                 position: 1,
             },
             {
-                name: "Circle of Fire",
+                name: "CircleFire",
                 position: 3,
             },
             {
-                name: "Circle of Light",
+                name: "CircleLight",
                 position: 5,
             },
             {
-                name: "Circle of Solaris",
+                name: "CircleSolaris",
                 position: 8,
             },
             {
-                name: "Circle of the Spirit",
+                name: "CircleSpirit",
                 position: 11,
             },
         ],
@@ -423,34 +447,34 @@ export const mapStateToProps = (state, ownProps) => {
                 name: "",
             },
             {
-                name: "Huntmastery",
+                name: "MagnakaiHuntmastery",
             },
             {
-                name: "Weaponmastery +3 COMBAT SKILL points",
+                name: "MagnakaiWeaponmastery",
             },
             {
-                name: "Animal Control",
+                name: "MagnakaiAnimalControl",
             },
             {
-                name: "Curing: +1 ENDURANCE point for each section without combat",
+                name: "MagnakaiCuring",
             },
             {
-                name: "Invisibility",
+                name: "MagnakaiInvisibility",
             },
             {
-                name: "Pathsmanship",
+                name: "MagnakaiPathsmanship",
             },
             {
-                name: "Psi-surge: +4 COMBAT SKILL points but −2 ENDURANCE points per round; and Mindblast: +2 COMBAT SKILL points (cannot be used simultaneously)",
+                name: "MagnakaiPsiSurge",
             },
             {
-                name: "Psi-screen: no points lost when attacked by Mindforce",
+                name: "MagnakaiPsiScreen",
             },
             {
-                name: "Nexus",
+                name: "MagnakaiNexus",
             },
             {
-                name: "Divination",
+                name: "MagnakaiDivination",
             },
         ],
         BackpackItems: [
@@ -479,27 +503,12 @@ export const mapStateToProps = (state, ownProps) => {
                         default:
                             break
                         
-                        case "Circle of Fire":
+                        case "CircleFire":
 
-                            if (magnakaiDiscipline.toLowerCase().indexOf("huntmastery") > -1) {
+                            if (magnakaiDiscipline.toLowerCase().indexOf("magnakaihuntmastery") > -1) {
                                 requiredCount++
                             }
-                            if (magnakaiDiscipline.toLowerCase().indexOf("weaponmastery") > -1) {
-                                requiredCount++
-                            }
-
-                            if (requiredCount === 2) {
-                                requirementMet = true
-                            }
-
-                            break
-
-                        case "Circle of Light":
-
-                            if (magnakaiDiscipline.toLowerCase().indexOf("animal control") > -1) {
-                                requiredCount++
-                            }
-                            if (magnakaiDiscipline.toLowerCase().indexOf("curing") > -1) {
+                            if (magnakaiDiscipline.toLowerCase().indexOf("magnakaiweaponmastery") > -1) {
                                 requiredCount++
                             }
 
@@ -509,15 +518,30 @@ export const mapStateToProps = (state, ownProps) => {
 
                             break
 
-                        case "Circle of Solaris":
+                        case "CircleLight":
 
-                            if (magnakaiDiscipline.toLowerCase().indexOf("huntmastery") > -1) {
+                            if (magnakaiDiscipline.toLowerCase().indexOf("magnakaianimalcontrol") > -1) {
                                 requiredCount++
                             }
-                            if (magnakaiDiscipline.toLowerCase().indexOf("invisibility") > -1) {
+                            if (magnakaiDiscipline.toLowerCase().indexOf("magnakaicuring") > -1) {
                                 requiredCount++
                             }
-                            if (magnakaiDiscipline.toLowerCase().indexOf("pathsmanship") > -1) {
+
+                            if (requiredCount === 2) {
+                                requirementMet = true
+                            }
+
+                            break
+
+                        case "CircleSolaris":
+
+                            if (magnakaiDiscipline.toLowerCase().indexOf("magnakaihuntmastery") > -1) {
+                                requiredCount++
+                            }
+                            if (magnakaiDiscipline.toLowerCase().indexOf("magnakaiinvisibility") > -1) {
+                                requiredCount++
+                            }
+                            if (magnakaiDiscipline.toLowerCase().indexOf("magnakaipathsmanship") > -1) {
                                 requiredCount++
                             }
 
@@ -527,18 +551,18 @@ export const mapStateToProps = (state, ownProps) => {
 
                             break
 
-                        case "Circle of the Spirit":
+                        case "CircleSpirit":
 
-                            if (magnakaiDiscipline.toLowerCase().indexOf("psi-surge") > -1) {
+                            if (magnakaiDiscipline.toLowerCase().indexOf("magnakaipsisurge") > -1) {
                                 requiredCount++
                             }
-                            if (magnakaiDiscipline.toLowerCase().indexOf("psi-screen") > -1) {
+                            if (magnakaiDiscipline.toLowerCase().indexOf("magnakaipsiscreen") > -1) {
                                 requiredCount++
                             }
-                            if (magnakaiDiscipline.toLowerCase().indexOf("nexus") > -1) {
+                            if (magnakaiDiscipline.toLowerCase().indexOf("magnakainexus") > -1) {
                                 requiredCount++
                             }
-                            if (magnakaiDiscipline.toLowerCase().indexOf("divination") > -1) {
+                            if (magnakaiDiscipline.toLowerCase().indexOf("magnakaidivination") > -1) {
                                 requiredCount++
                             }
 
@@ -547,15 +571,11 @@ export const mapStateToProps = (state, ownProps) => {
                             }
 
                             break
-
                     }
-
                 }
-
             }
 
             return requirementMet
-
         },
         generateRandomNumber() {
             let randomizer = [

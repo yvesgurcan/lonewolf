@@ -123,7 +123,7 @@ function BookView(props) {
         let bookNumber = 0
 
         let Book = props.Books.filter((book, index) => {
-            if (String(index) + " - " + t(book.name) === input.value) {
+            if (book.name === input.value) {
                 bookNumber = index
                 return true
             }
@@ -137,7 +137,7 @@ function BookView(props) {
 
     return (
         <ShowDetails label="Book">
-            <Input name="Book" value={props.CharacterSheet.Book ? props.CharacterSheet.Book.number + " - " + t(props.CharacterSheet.Book.name) : null} select={props.Books} optGroups={props.BookGroups} showIndex onChange={onChange}/>
+            <Input name="Book" value={props.CharacterSheet.Book ? props.CharacterSheet.Book.name : null} select={props.Books} optGroups={props.BookGroups} showIndex onChange={onChange}/>
             {props.CharacterSheet.Book ? <BookLinks/> : null}
             <Section/>
         </ShowDetails>
@@ -246,14 +246,14 @@ function EnduranceView(props) {
         let hide = true
 
         if (CharacterSheet.Book && CharacterSheet.Book.number >= 6) {
-            if (CharacterSheet.MagnakaiLevel && CharacterSheet.MagnakaiLevel.toLowerCase().indexOf("archmaster") > -1) {
+            if (CharacterSheet.MagnakaiLevel && CharacterSheet.MagnakaiLevel.toLowerCase().indexOf("magnakaiarchmaster") > -1 || CharacterSheet.MagnakaiLevel.toLowerCase().indexOf("magnakaikaigrandmaster") > -1) {
                 for (let i = 1; i <= 10; i++) {
                     let kaiDiscipline = CharacterSheet["Magnakai" + i]
                     if (kaiDiscipline !== undefined) {
-                        if (kaiDiscipline.toLowerCase().indexOf("curing") > -1) {
+                        if (kaiDiscipline.toLowerCase().indexOf("magnakaicuring") > -1) {
                             if (CharacterSheet.Endurance <= 6) {
                                 hide = false
-                                break                                
+                                break
                             }
                         }
                     }
@@ -340,7 +340,7 @@ function CombatSkillView(props) {
             for (let i = 1; i <= 10; i++) {
                 let kaiDiscipline = CharacterSheet["Magnakai" + i]
                 if (kaiDiscipline !== undefined) {
-                    if (kaiDiscipline.toLowerCase().indexOf("mindblast") > -1) {
+                    if (kaiDiscipline.toLowerCase().indexOf("magnakaipsisurge") > -1) {
                         if (props.CharacterSheet.UsePsiSurge) {
                             bonuses.push(<Text key="psi-surge">+4&nbsp;(psi-surge) </Text>)
                             bonusValues.push(4)
@@ -350,9 +350,9 @@ function CombatSkillView(props) {
                             bonusValues.push(2)
                         }
                     }
-                    else if (kaiDiscipline.toLowerCase().indexOf("weaponmastery") > -1) {
+                    else if (kaiDiscipline.toLowerCase().indexOf("magnakaiweaponmastery") > -1) {
 
-                        let weaponTypeList = ["Spear","Dagger","Mace","ShortSword","Warhammer","Bow","Axe","Sword","Quarterstaff","Broadsword"]
+                        let weaponTypeList = ["Spear","Dagger","Mace","Short Sword","Warhammer","Bow","Axe","Sword","Quarterstaff","Broadsword"]
 
                         for (let x = 1; x <= 2; x++) {
                             let weapon = CharacterSheet["Weapon" + x]
@@ -361,51 +361,46 @@ function CombatSkillView(props) {
 
                                 let matchFound = false
 
-                                for (let t = 0; t < 10; t++) {
+                                for (let j = 0; j < 10; j++) {
+                                    console.log(String(weapon).toLowerCase().replace(/ /g,""));
+                                    console.log(weaponTypeList[j]);
+                                    console.log(t(weaponTypeList[j]).toLowerCase().replace(/ /g,""));
 
-                                    if (String(weapon).toLowerCase().replace(/ /g,"").indexOf(weaponTypeList[t].toLowerCase()) > -1) {
-
-                                        if (CharacterSheet["Weaponmastery" + weaponTypeList[t]]) {
-
-                                            if (CharacterSheet.MagnakaiLevel && (CharacterSheet.MagnakaiLevel.toLowerCase().indexOf("scion-kai") > -1 || CharacterSheet.MagnakaiLevel.toLowerCase().indexOf("archmaster") > -1)) {
-
-                                                bonuses.push(<Text key="weaponmastery1">+4&nbsp;(weaponmastery:&nbsp;{weapon}) </Text>)
+                                    if (String(weapon).toLowerCase().replace(/ /g,"").indexOf(t(weaponTypeList[j]).toLowerCase().replace(/ /g,"")) > -1) {
+                                        if (CharacterSheet["Weaponmastery" + weaponTypeList[j].replace(/ /g,"")]) {
+                                            if (CharacterSheet.MagnakaiLevel && (CharacterSheet.MagnakaiLevel.toLowerCase().indexOf("magnakaiscionkai") > -1 || CharacterSheet.MagnakaiLevel.toLowerCase().indexOf("magnakaiarchmaster") > -1 || CharacterSheet.MagnakaiLevel.toLowerCase().indexOf("magnakaikaigrandmaster") > -1)) {
+                                                bonuses.push(<Text key="weaponmastery1">+4&nbsp;({t("Weaponmastery").toLowerCase()}:&nbsp;{weapon}) </Text>)
                                                 bonusValues.push(4)
                                                 matchFound = true
                                                 break
-
                                             }
                                             else {
-
-                                                bonuses.push(<Text key="weaponmastery2">+3&nbsp;(weaponmastery:&nbsp;{weapon}) </Text>)
+                                                bonuses.push(<Text key="weaponmastery2">+3&nbsp;({t("Weaponmastery").toLowerCase()}:&nbsp;{weapon}) </Text>)
                                                 bonusValues.push(3)
                                                 matchFound = true
                                                 break   
-
                                             }
-
                                         }
                                     }
                                 }
 
                                 if (matchFound) break
-
                             }
                         }
                     }
                 }
             }
         
-            if (props.checkLoreCircle("Circle of Fire")) {
-                bonuses.push(<Text key="circle of fire">+1&nbsp;(circle&nbsp;of&nbsp;fire) </Text>)
+            if (props.checkLoreCircle("CircleFire")) {
+                bonuses.push(<Text key="circle of fire">+1&nbsp;({t("CircleFire").toLowerCase()}) </Text>)
                 bonusValues.push(1)
             }
-            if (props.checkLoreCircle("Circle of Solaris")) {
-                bonuses.push(<Text key="circle of solaris">+1&nbsp;(circle&nbsp;of&nbsp;solaris) </Text>)
+            if (props.checkLoreCircle("CircleSolaris")) {
+                bonuses.push(<Text key="circle of solaris">+1&nbsp;({t("CircleSolaris").toLowerCase()}) </Text>)
                 bonusValues.push(1)
             }
-            if (props.checkLoreCircle("Circle of the Spirit")) {
-                bonuses.push(<Text key="circle of the spirit">+3&nbsp;(circle&nbsp;of&nbsp;the&nbsp;spirit) </Text>)
+            if (props.checkLoreCircle("CircleSpirit")) {
+                bonuses.push(<Text key="circle of the spirit">+3&nbsp;({t("CircleSpirit").toLowerCase()}) </Text>)
                 bonusValues.push(3)
             }
 
@@ -489,7 +484,7 @@ function EnemyImmunityView(props) {
             for (let i = 1; i <= 10; i++) {
                 let kaiDiscipline = CharacterSheet["Magnakai" + i]
                 if (kaiDiscipline !== undefined) {
-                    if (kaiDiscipline.toLowerCase().indexOf("mindblast") > -1 && kaiDiscipline.toLowerCase().indexOf("mindshield") === -1) {
+                    if (kaiDiscipline.toLowerCase().indexOf("magnakaipsisurge") > -1) {
                         hasMindBlast = true
                     }
                 }
@@ -659,7 +654,7 @@ function UsePsiSurgeView(props) {
             for (let i = 1; i <= 10; i++) {
                 let kaiDiscipline = CharacterSheet["Magnakai" + i]
                 if (kaiDiscipline !== undefined) {
-                    if (kaiDiscipline.toLowerCase().indexOf("psi-surge") > -1) {
+                    if (kaiDiscipline.toLowerCase().indexOf("magnakaipsisurge") > -1) {
                         hasPsiSurge = true
                     }
                 }
@@ -689,52 +684,47 @@ function WeaponsView(props) {
 }
 const Weapons = connect(mapStateToProps)(WeaponsView)
 
-class WeaponmasteryView extends Component {
+function WeaponmasteryView(props) {
 
-    hasWeaponmastery = () => {
+    const hasWeaponmastery = () => {
         
-        let {CharacterSheet} = {...this.props}
+        let {CharacterSheet} = {...props}
 
         let hasWeaponmastery = false
 
-        if (this.props.CharacterSheet.Book && this.props.CharacterSheet.Book.number >= 6) {
-
+        if (props.CharacterSheet.Book && props.CharacterSheet.Book.number >= 6) {
             for (let i = 1; i <= 10; i++) {
                 let kaiDiscipline = CharacterSheet["Magnakai" + i]
                 if (kaiDiscipline !== undefined) {
-                    if (kaiDiscipline.toLowerCase().indexOf("weaponmastery") > -1) {
+                    if (kaiDiscipline.toLowerCase().indexOf("magnakaiweaponmastery") > -1) {
                         hasWeaponmastery = true
                     }
                 }
             }
-
         }
 
         return hasWeaponmastery
-
     }
 
-    render() {
-        return (
-            <View hidden={!this.hasWeaponmastery()}>
-                <ShowDetails label="Weaponmastery">
-                    {["Spear","Dagger","Mace","Short Sword","Warhammer","Bow","Axe","Sword","Quarterstaff"].map(weapon => <WeaponMasteryCheckbox key={weapon} weapon={weapon}/>)}
-                </ShowDetails>
-            </View>
-        )
-    }
+    return (
+        <View hidden={!hasWeaponmastery()}>
+            <ShowDetails label="Weaponmastery">
+                {["Spear","Dagger","Mace","Short Sword","Warhammer","Bow","Axe","Sword","Quarterstaff"].map(weapon => <WeaponMasteryCheckbox key={weapon} weapon={weapon}/>)}
+            </ShowDetails>
+        </View>
+    )
 }
 const Weaponmastery = connect(mapStateToProps)(WeaponmasteryView)
 
-class WeaponMasteryCheckbox extends Component {
-    render() {
-        return (
-            <View>
-                <Input name={"Weaponmastery" + this.props.weapon.replace(/ /g,"")} type="checkbox" inline/>
-                <LabelInline htmlFor={"Weaponmastery" + this.props.weapon.replace(/ /g,"")} style={Styles.CheckboxLabel}>{this.props.weapon}</LabelInline>
-            </View>
-        )
-    }
+function WeaponMasteryCheckbox(props) {
+    const {t} = useTranslation();
+
+    return (
+        <View>
+            <Input name={"Weaponmastery" + props.weapon.replace(/ /g,"")} type="checkbox" inline/>
+            <LabelInline htmlFor={"Weaponmastery" + props.weapon.replace(/ /g,"")} style={Styles.CheckboxLabel}>{t(props.weapon)}</LabelInline>
+        </View>
+    )
 }
 
 function KaiView(props) {
@@ -764,7 +754,7 @@ function KaiView(props) {
                 {props.numberSequence(10).map(number => 
                     <Input key={"Kai" + number} name={"Kai" + number} select={props.KaiDisciplines} hidden={currentKaiLevel == null || number > currentKaiLevel.disciplines} />
                 )}
-                {props.CharacterSheet.Book ? <Link target="_blank" href={props.CharacterSheet.Book.url + props.BookURLs.disciplines}>Disciplines</Link> : null}
+                {props.CharacterSheet.Book ? <Link target="_blank" href={props.CharacterSheet.Book.url + props.BookURLs.disciplines}>{t("Disciplines")}</Link> : null}
                 <Group name="KaiLevel" select={props.KaiLevels}/>
             </ShowDetails>
         </View>
@@ -772,88 +762,92 @@ function KaiView(props) {
 }
 const Kai = connect(mapStateToProps)(KaiView)
 
-class MagnakaiView extends Component {
+function MagnakaiView(props) {
+    const {t} = useTranslation();
 
-    render() {
-
-        if (!this.props.CharacterSheet.Book || (this.props.CharacterSheet.Book && this.props.CharacterSheet.Book.number < 6)) {
-            return null
-        }
-
-        return (
-            <View>
-                <ShowDetails label="MagnakaiDisciplines">
-                    {this.props.numberSequence(10).map(number =>
-                        <Input key={"Magnakai" + number} name={"Magnakai" + number} select={this.props.MagnakaiDisciplines} optGroups={this.props.LoreCircles} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number <= number+2}/>
-                    )}
-                    {this.props.CharacterSheet.Book ? <Link target="_blank" href={this.props.CharacterSheet.Book.url + this.props.BookURLs.disciplines}>Disciplines</Link> : null}
-                    <Group name="MagnakaiLevel" select={this.props.MagnakaiLevels}/>
-                    {this.props.CharacterSheet.Book ? <Link target="_blank" href={this.props.CharacterSheet.Book.url + this.props.BookURLs.improveddisciplines}>Improved Disciplines</Link> : null}
-                </ShowDetails>
-            </View>
-        )
+    if (!props.CharacterSheet.Book || (props.CharacterSheet.Book && props.CharacterSheet.Book.number < 6)) {
+        return null
     }
+
+    let currentMagnakaiLevel = null;
+    if (props.CharacterSheet.MagnakaiLevel) {
+        currentMagnakaiLevel = props.MagnakaiLevels.filter(magnakaiLevel => t(magnakaiLevel.name).toLowerCase() === t(props.CharacterSheet.MagnakaiLevel).toLowerCase())[0];
+    } 
+    else {
+        currentMagnakaiLevel = props.MagnakaiLevels[0];
+    }
+
+    return (
+        <View>
+            <ShowDetails label="MagnakaiDisciplines">
+                {props.numberSequence(10).map(number =>
+                    <Input key={"Magnakai" + number} name={"Magnakai" + number} select={props.MagnakaiDisciplines} optGroups={props.LoreCircles} hidden={currentMagnakaiLevel == null || number > currentMagnakaiLevel.disciplines} />
+                )}
+                {props.CharacterSheet.Book ? <Link target="_blank" href={props.CharacterSheet.Book.url + props.BookURLs.disciplines}>{t("Disciplines")}</Link> : null}
+                <Group name="MagnakaiLevel" select={props.MagnakaiLevels}/>
+                {props.CharacterSheet.Book ? <Link target="_blank" href={props.CharacterSheet.Book.url + props.BookURLs.improveddisciplines}>{t("ImprovedDisciplines")}</Link> : null}
+            </ShowDetails>
+        </View>
+    )
 }
 const Magnakai = connect(mapStateToProps)(MagnakaiView)
 
-class LoreCirclesView extends Component {
-    render() {
-        const loreCircles = [
-            {
-                name: "Circle of Fire",
-                bonus: "+1 COMBAT +2 ENDURANCE",
-            },
-            {
-                name: "Circle of Light",
-                bonus: "+3 ENDURANCE",
-            },
-            {
-                name: "Circle of Solaris",
-                bonus: "+1 COMBAT +3 ENDURANCE",
-            },
-            {
-                name: "Circle of the Spirit",
-                bonus: "+3 COMBAT +3 ENDURANCE",
-            },
-        ]
-        return (
-            <View hidden={!(this.props.CharacterSheet.Book && this.props.CharacterSheet.Book.number >= 6)}>
-                <ShowDetails label="Lore Circles">
-                    <NoLoreCircle/>
-                    {loreCircles.map(circle => <LoreCircleDescription key={circle.name} circle={circle} />)}
-                    {this.props.CharacterSheet.Book ? <Link target="_blank" href={this.props.CharacterSheet.Book.url + this.props.BookURLs.lorecircles}>Info</Link> : null}
-                </ShowDetails>
-            </View>
-        )
-    }
+function LoreCirclesView(props) {
+    const loreCircles = [
+        {
+            name: "CircleFire",
+            bonus: "CircleFireBonus",
+        },
+        {
+            name: "CircleLight",
+            bonus: "CircleLightBonus",
+        },
+        {
+            name: "CircleSolaris",
+            bonus: "CircleSolarisBonus",
+        },
+        {
+            name: "CircleSpirit",
+            bonus: "CircleSpiritBonus",
+        },
+    ]
+    return (
+        <View hidden={!(props.CharacterSheet.Book && props.CharacterSheet.Book.number >= 6)}>
+            <ShowDetails label="LoreCircles">
+                <NoLoreCircle/>
+                {loreCircles.map(circle => <LoreCircleDescription key={circle.name} circle={circle} />)}
+                {props.CharacterSheet.Book ? <Link target="_blank" href={props.CharacterSheet.Book.url + props.BookURLs.lorecircles}>Info</Link> : null}
+            </ShowDetails>
+        </View>
+    )
 }
 const LoreCircles = connect(mapStateToProps)(LoreCirclesView)
 
-class NoLoreCircleView extends Component {
-    render() {
-        return (
-            <View hidden={
-                this.props.checkLoreCircle("Circle of Fire")
-                || this.props.checkLoreCircle("Circle of Light")
-                || this.props.checkLoreCircle("Circle of Solaris")
-                || this.props.checkLoreCircle("Circle of the Spirit")
-                }>
-                <TextWithInputFont>None</TextWithInputFont>
-            </View>    
-        )
-    }
+function NoLoreCircleView(props) {
+    const {t} = useTranslation();
+
+    return (
+        <View hidden={
+            props.checkLoreCircle("CircleFire")
+            || props.checkLoreCircle("CircleLight")
+            || props.checkLoreCircle("CircleSolaris")
+            || props.checkLoreCircle("CircleSpirit")
+            }>
+            <TextWithInputFont>{t("None")}</TextWithInputFont>
+        </View>    
+    )
 }
 const NoLoreCircle = connect(mapStateToProps)(NoLoreCircleView)
 
-class LoreCircleDescriptionView extends Component {
-    render() {
-        let circle = this.props.circle
-        return (
-            <View>
-                <TextWithInputFont hidden={!this.props.checkLoreCircle(circle.name)}>{circle.name}: {circle.bonus}</TextWithInputFont>
-            </View>
-        )
-    }
+function LoreCircleDescriptionView(props) {
+    const {t} = useTranslation();
+
+    let circle = props.circle
+    return (
+        <View>
+            <TextWithInputFont hidden={!props.checkLoreCircle(circle.name)}>{t(circle.name)}: {t(circle.bonus)}</TextWithInputFont>
+        </View>
+    )
 }
 const LoreCircleDescription = connect(mapStateToProps)(LoreCircleDescriptionView)
 

@@ -74,7 +74,7 @@ export class Label extends Component {
 export class LabelInline extends Component {
     render() {
         return (
-            <label {...this.props} style={{...this.props.style}}>{this.props.children}.</label>
+            <label {...this.props} style={{...this.props.style}}>{this.props.children}</label>
         )
     }
 }
