@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Provider, connect } from 'react-redux'
 import { useTranslation } from 'react-i18next';
 
@@ -883,105 +883,98 @@ function NotesView() {
 }
 const Notes = connect(mapStateToProps)(NotesView)
 
-class GameStateView extends Component {
+function GameStateView(props) {
 
-    loadGame = () => {
-        this.props.dispatch({type: "LOAD_GAME", value: this.props.CharacterSheet.GameState, API: this.props.API})
+    const loadGame = () => {
+        props.dispatch({type: "LOAD_GAME", value: props.CharacterSheet.GameState, API: props.API})
 
-        if (this.props.CharacterSheet.GameState === "") {
-            this.props.dispatch({type: "UPDATE_ACTUAL_GAME_ID_REQUEST_FEEDBACK"})
+        if (props.CharacterSheet.GameState === "") {
+            props.dispatch({type: "UPDATE_ACTUAL_GAME_ID_REQUEST_FEEDBACK"})
         }
     }
-    modifyGameState = (input) => {
-        this.props.dispatch({type: "MODIFY_GAME_STATE", value: input.value, API: this.props.API})
+    const modifyGameState = (input) => {
+        props.dispatch({type: "MODIFY_GAME_STATE", value: input.value, API: props.API})
     }
-    clear = () => {
-        this.props.dispatch({type: "CLEAR_GAME_STATE", API: this.props.API})
+    const clear = () => {
+        props.dispatch({type: "CLEAR_GAME_STATE", API: props.API})
     }
-    render() {
-        return (
-            <ShowDetails label="Game State">
-                <Input name="GameState" value={this.props.CharacterSheet.GameState} onChange={this.modifyGameState} box/>
-                <ButtonContainer title={this.props.CharacterSheet.GameState === "" ? "Start New Game" : "Load Custom Game State"} onClick={this.loadGame}/>
-                <ButtonContainer title="Clear Custom Game State" onClick={this.clear}/>
-            </ShowDetails>
-        )
-    }
+
+    return (
+        <ShowDetails label="GameState">
+            <Input name="GameState" value={props.CharacterSheet.GameState} onChange={modifyGameState} box/>
+            <ButtonContainer title={props.CharacterSheet.GameState === "" ? "StartNewGame" : "LoadCustomGameState"} onClick={loadGame}/>
+            <ButtonContainer title="ClearCustomGameState" onClick={clear}/>
+        </ShowDetails>
+    )
 }
 const GameState = connect(mapStateToProps)(GameStateView)
 
-class SaveAndLoadRemotelyView extends Component {
+function SaveAndLoadRemotelyView(props) {
+    const {t} = useTranslation();
 
-    modifyGameID = (input) => {
-        this.props.dispatch({type: "UPDATE_GAME_ID_REQUEST_FEEDBACK", value: input.value})
+    const modifyGameID = (input) => {
+        props.dispatch({type: "UPDATE_GAME_ID_REQUEST_FEEDBACK", value: input.value})
     }
-    modifyPassword = (input) => {
-        this.props.dispatch({type: "UPDATE_PASSWORD_REQUEST_FEEDBACK", value: input.value})
+    const modifyPassword = (input) => {
+        props.dispatch({type: "UPDATE_PASSWORD_REQUEST_FEEDBACK", value: input.value})
     }
-    loadGameRemotely = () => {
-
+    const loadGameRemotely = () => {
         clearTimeout(APItimeout)
 
-        if (this.props.RequestFeedback.gameID === undefined || this.props.RequestFeedback.gameID === "") {
-            return this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Please enter the ID of the game."})
+        if (props.RequestFeedback.gameID === undefined || props.RequestFeedback.gameID === "") {
+            return props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Please enter the ID of the game."})
         } 
 
-        if (this.props.RequestFeedback.password === undefined || this.props.RequestFeedback.password === "") {
-            return this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Please enter the password."})
+        if (props.RequestFeedback.password === undefined || props.RequestFeedback.password === "") {
+            return props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Please enter the password."})
         }
-        if (this.props.RequestFeedback.password.length < 8) {
-            return this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "This password is too short."})
+        if (props.RequestFeedback.password.length < 8) {
+            return props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "This password is too short."})
         }
 
-        this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Loading..."})
+        props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Loading..."})
         
-        this.props.API("loadgame", true)
-
+        props.API("loadgame", true)
     }
-    saveGameRemotely = () => {
-
+    const saveGameRemotely = () => {
         clearTimeout(APItimeout)
 
-        if (this.props.CharacterSheet.GameState === "" && (this.props.RequestFeedback.gameID === undefined || this.props.RequestFeedback.gameID === "")) {
-            return this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Please enter the ID of the game you wish to delete."})
+        if (props.CharacterSheet.GameState === "" && (props.RequestFeedback.gameID === undefined || props.RequestFeedback.gameID === "")) {
+            return props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Please enter the ID of the game you wish to delete."})
         }
 
-        if (this.props.RequestFeedback.password === undefined || this.props.RequestFeedback.password === "") {
-            return this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Please enter the password."})
+        if (props.RequestFeedback.password === undefined || props.RequestFeedback.password === "") {
+            return props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Please enter the password."})
         }
-        if (this.props.RequestFeedback.password.length < 8) {
-            return this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "This password is too short."})
+        if (props.RequestFeedback.password.length < 8) {
+            return props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "This password is too short."})
         }
         
-        this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Saving..."})
+        props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Saving..."})
 
-        this.props.API("savegame", true)
-
+        props.API("savegame", true)
     }
-    toggleAutoSave = (input) => {
-
-        if (this.props.RequestFeedback.gameID === undefined || this.props.RequestFeedback.gameID === "") {
-            this.props.dispatch({type: "Autosave", value: false})
-            return this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Please enter a game ID before enabling autosaving."})
+    const toggleAutoSave = (input) => {
+        if (props.RequestFeedback.gameID === undefined || props.RequestFeedback.gameID === "") {
+            props.dispatch({type: "Autosave", value: false})
+            return props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Please enter a game ID before enabling autosaving."})
         }
 
-        this.props.dispatch({type: "Autosave", value: input.checked, API: this.props.API, save: true})
-        this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: null})
+        props.dispatch({type: "Autosave", value: input.checked, API: props.API, save: true})
+        props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: null})
+    }
 
-    }
-    render() {
-        return (
-            <ShowDetails label="Remote Game ID">
-                <Input value={this.props.RequestFeedback.gameID} onChange={this.modifyGameID} noAutoSave/>
-                <Label>Password</Label>
-                <Input type="password" value={this.props.RequestFeedback.password} onChange={this.modifyPassword} noAutoSave/>
-                <TextWithInputFont>{this.props.RequestFeedback ? this.props.RequestFeedback.message : null}</TextWithInputFont>
-                <ButtonContainer title="Load Game Remotely" onClick={this.loadGameRemotely}/>
-                <ButtonContainer title={this.props.CharacterSheet.GameState === "" ? "Delete Game Remotely" : "Save Game Remotely"} onClick={this.saveGameRemotely}/>
-                <Input name="Autosave" type="checkbox" onChange={this.toggleAutoSave} inline/>
-                <LabelInline htmlFor="Autosave" style={Styles.CheckboxLabel}>Auto save</LabelInline>
-            </ShowDetails>
-        )
-    }
+    return (
+        <ShowDetails label="RemoteGameID">
+            <Input value={props.RequestFeedback.gameID} onChange={modifyGameID} noAutoSave/>
+            <Label>Password</Label>
+            <Input type="password" value={props.RequestFeedback.password} onChange={modifyPassword} noAutoSave/>
+            <TextWithInputFont>{props.RequestFeedback ? props.RequestFeedback.message : null}</TextWithInputFont>
+            <ButtonContainer title="LoadGameRemotely" onClick={loadGameRemotely}/>
+            <ButtonContainer title={props.CharacterSheet.GameState === "" ? "DeleteGameRemotely" : "SaveGameRemotely"} onClick={saveGameRemotely}/>
+            <Input name="Autosave" type="checkbox" onChange={toggleAutoSave} inline/>
+            <LabelInline htmlFor="Autosave" style={Styles.CheckboxLabel}>{t("Autosave")}</LabelInline>
+        </ShowDetails>
+    )
 }
 const SaveAndLoadRemotely = connect(mapStateToProps)(SaveAndLoadRemotelyView)

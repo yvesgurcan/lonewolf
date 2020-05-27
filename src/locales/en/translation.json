@@ -136,5 +136,14 @@
     "BackpackItems": "Backpack Items",
     "SpecialItems": "Special Items",
     "SpecialItem": "Special Item",
-    "Notes": "Notes"
+    "Notes": "Notes",
+    "GameState": "Game State",
+    "StartNewGame": "Start New Game",
+    "LoadCustomGameState": "Load Custom Game State",
+    "ClearCustomGameState": "Clear Custom Game State",
+    "RemoteGameID": "Remote Game ID",
+    "LoadGameRemotely": "Load Game Remotely",
+    "DeleteGameRemotely": "Delete Game Remotely",
+    "SaveGameRemotely": "Save Game Remotely",
+    "Autosave": "Auto save"
 }

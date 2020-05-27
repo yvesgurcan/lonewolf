@@ -136,5 +136,14 @@
     "BackpackItems": "Zaino",
     "SpecialItems": "Oggetti Speciali",
     "SpecialItem": "Oggetto Speciale",
-    "Notes": "Note"
+    "Notes": "Note",
+    "GameState": "Stato Partita",
+    "StartNewGame": "Inizia Nuova Partita",
+    "LoadCustomGameState": "Carica Stato Partita Personalizzata",
+    "ClearCustomGameState": "Pulisci Stato Partita Personalizzata",
+    "RemoteGameID": "ID Partita Remota",
+    "LoadGameRemotely": "Carica Partita Remota",
+    "DeleteGameRemotely": "Elimina Partita Remota",
+    "SaveGameRemotely": "Salva Partita Remota",
+    "Autosave": "Salvataggio automatico"
 }
