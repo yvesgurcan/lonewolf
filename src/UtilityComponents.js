@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { mapStateToProps } from './mapStateToProps'
 import Transition from 'react-transition-group/Transition'
@@ -60,28 +60,27 @@ export function ShowDetails(props) {
     )
 }
 
-class Details extends Component {
-    render() {
-        if (Transition) {
-            return (
-                <Transition
-                    in={!this.props.hideDetails}
-                    timeout={0}>
-                    {
-                        (status) =>
-                    <View hidden={this.props.hideDetails} className={status}>
-                        {this.props.children}
-                    </View>
-                    }
-                </Transition>
-            )
-        }
+function Details(props) {
+    if (Transition) {
         return (
-            <View hidden={this.props.hideDetails}>
-                {this.props.children}
-            </View>
+            <Transition
+                in={!props.hideDetails}
+                timeout={0}>
+                {
+                    (status) =>
+                <View hidden={props.hideDetails} className={status}>
+                    {props.children}
+                </View>
+                }
+            </Transition>
         )
     }
+
+    return (
+        <View hidden={props.hideDetails}>
+            {props.children}
+        </View>
+    )
 }
 
 export function Group(props) {
@@ -252,57 +251,47 @@ function InputView(props) {
 }
 export const Input = connect(mapStateToProps)(InputView)
 
-class Clear extends Component {
-    render() {
-        return (
-            <Button hidden={this.props.hidden} style={Styles.ButtonContainer} onClick={this.props.clear} inline title="X"/>
-        )
-    }
+function Clear(props) {
+    return (
+        <Button hidden={props.hidden} style={Styles.ButtonContainer} onClick={props.clear} inline title="X"/>
+    )
 }
 
-class PlusAndMinusView extends Component {
-    render() {
-        return (
-            <View hidden={this.props.hidden} style={this.props.hidden ? null : {...Styles.ButtonContainer, display: "inline"}}>
-                <Button onClick={this.props.decrement} inline title="-"/>
-                <Button onClick={this.props.increment} inline title="+"/>
-            </View>
-        )
-    }
+function PlusAndMinusView(props) {
+    return (
+        <View hidden={props.hidden} style={props.hidden ? null : {...Styles.ButtonContainer, display: "inline"}}>
+            <Button onClick={props.decrement} inline title="-"/>
+            <Button onClick={props.increment} inline title="+"/>
+        </View>
+    )
 }
 export const PlusAndMinus = connect(mapStateToProps)(PlusAndMinusView)
 
-class PositiveNumbersView extends Component {
-    render() {
-        return (
-            <View hidden={!this.props.numbers}>
-                {this.props.numberSequence(9).map(number =>
-                    <Button key={number} addFaceValue={this.props.onChange} inline title={String(number)}/>
-                )}
-                <Button addFaceValue={this.props.onChange} inline title="0"/>
-            </View>
-        )
-    }
+function PositiveNumbersView(props) {
+    return (
+        <View hidden={!props.numbers}>
+            {props.numberSequence(9).map(number =>
+                <Button key={number} addFaceValue={props.onChange} inline title={String(number)}/>
+            )}
+            <Button addFaceValue={props.onChange} inline title="0"/>
+        </View>
+    )
 }
 export const PositiveNumbers = connect(mapStateToProps)(PositiveNumbersView)
 
-class NegativeNumbersView extends Component {
-    render() {
-        return (
-            <View hidden={!this.props.negativeNumbers}>
-                {this.props.numberSequence(9).map(number =>
-                    <Button key={number*-1} addFaceValue={this.props.onChange} inline title={String(number*-1)}/>
-                )}
-            </View>
-        )
-    }
+function NegativeNumbersView(props) {
+    return (
+        <View hidden={!props.negativeNumbers}>
+            {props.numberSequence(9).map(number =>
+                <Button key={number*-1} addFaceValue={props.onChange} inline title={String(number*-1)}/>
+            )}
+        </View>
+    )
 }
 export const NegativeNumbers = connect(mapStateToProps)(NegativeNumbersView)
 
-export class Spacer extends Component {
-    render() {
-        return (
-            <View style={Styles.Spacer}/>
-        )
-    }
+export function Spacer() {
+    return (
+        <View style={Styles.Spacer}/>
+    )
 }
