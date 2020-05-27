@@ -2,7 +2,7 @@
 
 import React, { Component, useState } from 'react'
 import Styles from './Styles'
-import { useTranslation, composeInitialProps } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 
 export function View(props) {
     return (
@@ -120,7 +120,7 @@ export function Button(props) {
 
     const onClick = (input) => {
         setClicked(true);
-        setTimeout(function() {clickedTimeout()}.bind(this), 100)
+        setTimeout(function() {clickedTimeout()}, 100)
 
         if (props.addFaceValue) {
             props.addFaceValue(props.title)

@@ -117,8 +117,6 @@ function GameMetaDataView(props) {
 const GameMetaData = connect(mapStateToProps)(GameMetaDataView)
 
 function BookView(props) {
-    const {t} = useTranslation();
-
     const onChange = (input) => {
         let bookNumber = 0
 
@@ -221,12 +219,12 @@ function EnduranceView(props) {
         return bonuses.map(bonus => {return bonus})
     }
 
-    const addBonus = () => {
+    // const addBonus = () => {
 
-        let bonuses = getBonuses(true)
+    //     let bonuses = getBonuses(true)
 
-        props.dispatch({type: "MaxEndurance", value: (props.CharacterSheet.MaxEndurance || 0) + (bonuses.length > 0 ? bonuses.reduce((sum, value) => {return sum+value}) : 0), API: props.API, save: true})
-    }
+    //     props.dispatch({type: "MaxEndurance", value: (props.CharacterSheet.MaxEndurance || 0) + (bonuses.length > 0 ? bonuses.reduce((sum, value) => {return sum+value}) : 0), API: props.API, save: true})
+    // }
 
     const toMax = () => {
         if (props.CharacterSheet.MaxEndurance === "" || props.CharacterSheet.MaxEndurance === undefined) {
@@ -246,7 +244,12 @@ function EnduranceView(props) {
         let hide = true
 
         if (CharacterSheet.Book && CharacterSheet.Book.number >= 6) {
-            if (CharacterSheet.MagnakaiLevel && CharacterSheet.MagnakaiLevel.toLowerCase().indexOf("magnakaiarchmaster") > -1 || CharacterSheet.MagnakaiLevel.toLowerCase().indexOf("magnakaikaigrandmaster") > -1) {
+            if (CharacterSheet.MagnakaiLevel 
+                && (
+                    CharacterSheet.MagnakaiLevel.toLowerCase().indexOf("magnakaiarchmaster") > -1 
+                    || CharacterSheet.MagnakaiLevel.toLowerCase().indexOf("magnakaikaigrandmaster") > -1
+                )
+            ) {
                 for (let i = 1; i <= 10; i++) {
                     let kaiDiscipline = CharacterSheet["Magnakai" + i]
                     if (kaiDiscipline !== undefined) {
@@ -730,11 +733,11 @@ function WeaponMasteryCheckbox(props) {
 function KaiView(props) {
     const {t} = useTranslation();
 
-    const [hideDetails, setHideDetails] = useState(true);
+    // const [hideDetails, setHideDetails] = useState(true);
 
-    const toggleDetails = () => {
-        setHideDetails(!hideDetails);
-    }
+    // const toggleDetails = () => {
+    //     setHideDetails(!hideDetails);
+    // }
 
     if (!props.CharacterSheet.Book || (props.CharacterSheet.Book && props.CharacterSheet.Book.number >= 6)) {
         return null
@@ -883,11 +886,11 @@ function BackpackView(props) {
 const Backpack = connect(mapStateToProps)(BackpackView)
 
 function SpecialItemsView(props) {
-    const [hideDetails, setHideDetails] = useState(true);
+    // const [hideDetails, setHideDetails] = useState(true);
 
-    const toggleDetails = () => {
-        setHideDetails(!hideDetails);
-    }
+    // const toggleDetails = () => {
+    //     setHideDetails(!hideDetails);
+    // }
 
     return (
         <ShowDetails label="SpecialItems">
