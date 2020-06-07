@@ -1,30 +1,25 @@
 /* React components that rely on web HTML tags */
 
-import React, { Component } from 'react'
+import React, { Component, useState } from 'react'
 import Styles from './Styles'
+import { useTranslation } from 'react-i18next'
 
-export class View extends Component {
-    render() {
-        return (
-            <div {...this.props} style={{...Styles.Boilerplate, ...this.props.style}}/>
-        )
-    }
+export function View(props) {
+    return (
+        <div {...props} style={{...Styles.Boilerplate, ...props.style}}/>
+    )
 }
 
-export class Header1 extends Component {
-    render() {
-        return (
-            <h1 style={{...Styles.Boilerplate, ...Styles.H1}}>{this.props.children}</h1>
-        )
-    }
+export function Header1(props) {
+    return (
+        <h1 style={{...Styles.Boilerplate, ...Styles.H1}}>{props.children}</h1>
+    )
 }
 
-export class Text extends Component {
-    render() {
-        return (
-            <span {...this.props} style={{...Styles.Boilerplate, ...this.props.style}}/>
-        )
-    }
+export function Text(props) {
+    return (
+        <span {...props} style={{...Styles.Boilerplate, ...props.style}}/>
+    )
 }
 
 export class Link extends Component {
@@ -79,7 +74,7 @@ export class Label extends Component {
 export class LabelInline extends Component {
     render() {
         return (
-            <label {...this.props} style={{...this.props.style}}>{this.props.children}.</label>
+            <label {...this.props} style={{...this.props.style}}>{this.props.children}</label>
         )
     }
 }
@@ -100,82 +95,79 @@ export class TextArea extends Component {
     }
 }
 
-export class Picker extends Component {
-    render() {
-        return (
-            <select {...this.props} style={{...Styles.Boilerplate, ...Styles.Select, ...this.props.style}}/>
-        )
-    }
+export function Picker(props) {
+    return (
+        <select {...props} style={{...Styles.Boilerplate, ...Styles.Select, ...props.style}}/>
+    )
 }
 
-export class PickerItemGroup extends Component {
-    render() {
-        return <optgroup {...this.props} />
-    }
+export function PickerItemGroup(props) {
+    return <optgroup {...props} />
 }
 
-export class PickerItem extends Component  {
-    render() {
-        return <option {...this.props} />
-    }
+export function PickerItem(props) {
+    return <option {...props} />
 }
 
-export class Switch extends Component  {
-    render() {
-        // TODO: Actually implement this component to the main script
-        return <input {...this.props} type="checkbox" />
-    }
+export function Switch(props)  {
+    // TODO: Actually implement this component to the main script
+    return <input {...props} type="checkbox" />
 }
 
-export class Button extends Component {
-    state = {clicked: false, hovered: false}
-    onClick = (input) => {
+export function Button(props) {
+    const [clicked, setClicked] = useState(false);
+    const [hovered, setHovered] = useState(false);
 
-        this.setState({clicked: true})
-        setTimeout(function() {this.clickedTimeout()}.bind(this), 100)
+    const onClick = (input) => {
+        setClicked(true);
+        setTimeout(function() {clickedTimeout()}, 100)
 
-        if (this.props.addFaceValue) {
-            this.props.addFaceValue(this.props.title)
+        if (props.addFaceValue) {
+            props.addFaceValue(props.title)
         }
 
-        if (!this.props.onClick) return false
-        this.props.onClick(input.target)
+        if (!props.onClick) return false
+        props.onClick(input.target)
     }
-    onHover = () => {
-        this.setState({hovered: true})
+    const onHover = () => {
+        setHovered(true);
     }
-    onHoverOut = () => {
-        this.setState({hovered: false})
+    const onHoverOut = () => {
+        setHovered(false);
     }
-    clickedTimeout = () => {
-        this.setState({clicked: false, hovered: false})
+    const clickedTimeout = () => {
+        setClicked(false);
+        setHovered(false);
     }
-    render() {
 
-        if (this.props.hidden) return null
-        return (
-            <View style={this.props.inline ? {display: "inline-block"} : null}>
-                <button
-                    style={{...Styles.Boilerplate, ...(this.state.clicked ? Styles.ButtonClicked : this.state.hovered ? Styles.ButtonHovered : Styles.Button), ...this.props.style}}
-                    onClick={this.onClick}
-                    onMouseEnter={this.onHover}
-                    onMouseMove={this.onHover}
-                    onMouseLeave={this.onHoverOut}
-                    disabled={this.props.disabled}>
-                    {this.props.title}
-                </button>
-            </View>
-        )
-        
-    }
+    if (props.hidden) return null
+    return (
+        <View style={props.inline ? {display: "inline-block"} : null}>
+            <button
+                style={{...Styles.Boilerplate, ...(clicked ? Styles.ButtonClicked : hovered ? Styles.ButtonHovered : Styles.Button), ...props.style}}
+                onClick={onClick}
+                onMouseEnter={onHover}
+                onMouseMove={onHover}
+                onMouseLeave={onHoverOut}
+                disabled={props.disabled}>
+                {props.title}
+            </button>
+        </View>
+    )
 }
 
-export class ButtonContainer extends Component {
-    render() {
-        return (
-            <View style={this.props.style}>
-                <Button title={this.props.title} onClick={this.props.onClick} addFaceValue={this.props.addFaceValue} />
-            </View>
-        )
-    }
+export function ButtonContainer(props) {
+    const {t} = useTranslation();
+
+    return (
+        <View style={props.style}>
+            <Button 
+                title={t(props.title)} 
+                disabled={props.disabled}
+                hidden={props.hidden}
+                onClick={props.onClick} 
+                addFaceValue={props.addFaceValue} 
+            />
+        </View>
+    )
 }

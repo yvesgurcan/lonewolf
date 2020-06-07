@@ -1,4 +1,5 @@
 import {combineReducers} from 'redux'
+import i18next from 'i18next';
 // const localStorage = null
 
 function GenerateFormattedDate(TimeInMilliseconds) {
@@ -75,12 +76,10 @@ function CharacterSheet(State = InitState, Action) {
 
     // special actions
     if (Action.type === "INIT") {
-
         if (localStorage) {
             let storedState = localStorage.getItem("GameState")
 
             if (storedState !== null) {
-
                 if (window && window.debugApp) {
                     console.log(
                         ["Game loaded locally.\n",
@@ -90,10 +89,9 @@ function CharacterSheet(State = InitState, Action) {
 
                 NewState = JSON.parse(storedState).CharacterSheet
 
+                i18next.changeLanguage(NewState.Language);
             }
-            
         }
-
     }
     else if (Action.type === "LOAD_GAME" || Action.type === "LOAD_GAME_FROM_API") {
 
@@ -173,7 +171,7 @@ function CharacterSheet(State = InitState, Action) {
     else if (Action.type === "CLEAR_ENEMY_STATS") {
         NewState.EnemyEndurance = ""
         NewState.EnemyCombatSkill = ""
-        NewState.ImmunetoMindblast = false
+        NewState.ImmuneToMindblast = false
     }
     else if (Action.type === "ARCHMASTER_CURING") {
         NewState.Endurance = (NewState.Endurance || 0) + 20
@@ -185,6 +183,9 @@ function CharacterSheet(State = InitState, Action) {
     else if (Action.type.indexOf("DECREMENT") > -1) {
         let property = Action.type.replace("DECREMENT_", "")
         NewState[property] = NewState[property] ? Math.floor(Math.max(0,--NewState[property])) : 0
+    }
+    else if (Action.type === "CHANGE_LANG") {
+        NewState.Language = Action.value
     }
     // default action
     else {
@@ -254,8 +255,7 @@ function CharacterSheet(State = InitState, Action) {
 
     }
 
-    return NewState
-
+    return NewState;
 }
 
 export default combineReducers({

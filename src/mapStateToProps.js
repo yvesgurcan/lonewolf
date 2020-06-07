@@ -184,93 +184,93 @@ export const mapStateToProps = (state, ownProps) => {
                 position: 7
             },
             {
-                name: "Grand Master",
+                name: "GrandMaster",
                 position: 15
             },
         ],
         Books: [
             {
-                name: "Select Book",
+                name: "SelectBook",
                 url: null,
             },
             {
-                name: "Flight from the Dark",
+                name: "Book01",
                 url: "https://www.projectaon.org/en/xhtml/lw/01fftd/",
             },
             {
-                name: "Fire on the Water",
+                name: "Book02",
                 url: "https://www.projectaon.org/en/xhtml/lw/02fotw/",
             },
             {
-                name: "The Caverns of Kalte",
+                name: "Book03",
                 url: "https://www.projectaon.org/en/xhtml/lw/03tcok/",
             },
             {
-                name: "The Chasm of Doom",
+                name: "Book04",
                 url: "https://www.projectaon.org/en/xhtml/lw/04tcod/",
             },
             {
-                name: "Shadow on the Sand",
+                name: "Book05",
                 url: "https://www.projectaon.org/en/xhtml/lw/05sots/",
             },
             {
-                name: "The Kingdoms of Terror",
+                name: "Book06",
                 url: "https://www.projectaon.org/en/xhtml/lw/06tkot/",
             },
             {
-                name: "Castle Death",
+                name: "Book07",
                 url: "https://www.projectaon.org/en/xhtml/lw/07cd/",
             },
             {
-                name: "The Jungle of Horrors",
+                name: "Book08",
                 url: "https://www.projectaon.org/en/xhtml/lw/08tjoh/",
             },
             {
-                name: "The Cauldron of Fear",
+                name: "Book09",
                 url: "https://www.projectaon.org/en/xhtml/lw/09tcof/",
             },
             {
-                name: "The Dungeons of Torgar",
+                name: "Book10",
                 url: "https://www.projectaon.org/en/xhtml/lw/10tdot/",
             },
             {
-                name: "The Prisoners of Time",
+                name: "Book11",
                 url: "https://www.projectaon.org/en/xhtml/lw/11tpot/",
             },
             {
-                name: "The Masters of Darkness",
+                name: "Book12",
                 url: "https://www.projectaon.org/en/xhtml/lw/12tmod/",
             },
             {
-                name: "The Plague Lords of Ruel",
+                name: "Book13",
                 url: "https://www.projectaon.org/en/xhtml/lw/13tplor/",
             },
             {
-                name: "The Captives of Kaag",
+                name: "Book14",
                 url: "https://www.projectaon.org/en/xhtml/lw/14tcok/",
             },
             {
-                name: "The Dark Crusade",
+                name: "Book15",
                 url: "https://www.projectaon.org/en/xhtml/lw/15tdc/",
             },
             {
-                name: "The Legacy of Vashna",
+                name: "Book16",
                 url: "https://www.projectaon.org/en/xhtml/lw/16tlov/",
             },
             {
-                name: "The Deathlord of Ixia",
+                name: "Book17",
                 url: "https://www.projectaon.org/en/xhtml/lw/17tdoi/",
             },
             {
-                name: "Dawn of the Dragons",
+                name: "Book18",
                 url: "https://www.projectaon.org/en/xhtml/lw/18dotd/",
             },
             {
-                name: "Wolf's Bane",
+                name: "Book19",
                 url: "https://www.projectaon.org/en/xhtml/lw/19wb/",
             },
             {
-                name: "The Curse of Naar",
+                name: "Book20",
                 url: "https://www.projectaon.org/en/xhtml/lw/20tcon/",
             },
         ],
@@ -283,120 +283,162 @@ export const mapStateToProps = (state, ownProps) => {
             lorecircles: "lorecrcl.htm",
         },
         KaiLevels: [
-            {name: "Initiate"},
-            {name: "Aspirant"},
-            {name: "Guardian"},
-            {name: "Warmarn or Journeyman"},
-            {name: "Savant"},
-            {name: "Master"},
+            {
+                name: "KaiInitiate",
+                disciplines: 5
+            },
+            {
+                name: "KaiAspirant",
+                disciplines: 6
+            },
+            {
+                name: "KaiGuardian",
+                disciplines: 7
+            },
+            {
+                name: "KaiWarmarnJourneyman",
+                disciplines: 8
+            },
+            {
+                name: "KaiSavant",
+                disciplines: 9
+            },
+            {
+                name: "KaiMaster",
+                disciplines: 10
+            }
         ],
         KaiDisciplines: [
             {
                 name: "",
             },
             {
-                name: "Camouflage",
+                name: "KaiCamouflage",
             },
             {
-                name: "Hunting: no need for a Meal when instructed to eat",
+                name: "KaiHunting",
             },
             {
-                name: "Sixth Sense",
+                name: "KaiSixthSense",
             },
             {
-                name: "Tracking",
+                name: "KaiTracking",
             },
             {
-                name: "Healing: +1 ENDURANCE point for each section without combat",
+                name: "KaiHealing",
             },
             {
-                name: "Mindshield: no points lost when attacked by Mindblast",
+                name: "KaiMindshield",
             },
             {
-                name: "Mindblast: +2 COMBAT SKILL points",
+                name: "KaiMindblast",
                 CombatSkill: 2,
             },
             {
-                name: "Animal Kinship",
+                name: "KaiAnimalKinship",
             },
             {
-                name: "Mind Over Matter",
+                name: "KaiMindOverMatter",
             },
             {
-                name: "Weaponskill in Dagger +2 COMBAT SKILL points if this weapon carried",
+                name: "KaiWeaponskillDagger",
                 weapon: "Dagger",
                 CombatSkill: 2,
             },
             {
-                name: "Weaponskill in Spear +2 COMBAT SKILL points if this weapon carried",
+                name: "KaiWeaponskillSpear",
                 weapon: "Spear",
                 CombatSkill: 2,
             },
             {
-                name: "Weaponskill in Mace +2 COMBAT SKILL points if this weapon carried",
+                name: "KaiWeaponskillMace",
                 weapon: "Mace",
                 CombatSkill: 2,
             },
             {
-                name: "Weaponskill in Short Sword +2 COMBAT SKILL points if this weapon carried",
+                name: "KaiWeaponskillShortSword",
                 weapon: "Short Sword",
                 CombatSkill: 2,
             },
             {
-                name: "Weaponskill in Warhammer +2 COMBAT SKILL points if this weapon carried",
+                name: "KaiWeaponskillWarhammer",
                 weapon: "Warhammer",
                 CombatSkill: 2,
             },
             {
-                name: "Weaponskill in Sword +2 COMBAT SKILL points if this weapon carried",
+                name: "KaiWeaponskillSword",
                 weapon: "Sword",
                 CombatSkill: 2,
             },
             {
-                name: "Weaponskill in Axe +2 COMBAT SKILL points if this weapon carried",
+                name: "KaiWeaponskillAxe",
                 weapon: "Axe",
                 CombatSkill: 2,
             },
             {
-                name: "Weaponskill in Quarterstaff +2 COMBAT SKILL points if this weapon carried",
+                name: "KaiWeaponskillQuarterstaff",
                 weapon: "Quarterstaff",
                 CombatSkill: 2,
             },
             {
-                name: "Weaponskill in Broadsword +2 COMBAT SKILL points if this weapon carried",
+                name: "KaiWeaponskillBroadsword",
                 weapon: "Broadsword",
                 CombatSkill: 2,
             },
         ],
         MagnakaiLevels: [
-            {name: "Kai Master Superior"},
-            {name: "Primate"},
-            {name: "Tutelary"},
-            {name: "Principalin"},
-            {name: "Mentora"},
-            {name: "Scion-kai"},
-            {name: "Archmaster"},
-            {name: "Kai Grand Master"},
+            {
+                name: "MagnakaiKaiMasterSuperior",
+                disciplines: 3
+            },
+            {
+                name: "MagnakaiPrimate",
+                disciplines: 4
+            },
+            {
+                name: "MagnakaiTutelary",
+                disciplines: 5
+            },
+            {
+                name: "MagnakaiPrincipalin",
+                disciplines: 6
+            },
+            {
+                name: "MagnakaiMentora",
+                disciplines: 7
+            },
+            {
+                name: "MagnakaiScionKai",
+                disciplines: 8
+            },
+            {
+                name: "MagnakaiArchmaster",
+                disciplines: 9
+            },
+            {
+                name: "MagnakaiKaiGrandMaster",
+                disciplines: 10
+            },
         ],
         LoreCircles: [
             {
-                name: "Circle of Fire and Circle of Solaris",
+                name: "CircleFireSolaris",
                 position: 1,
             },
             {
-                name: "Circle of Fire",
+                name: "CircleFire",
                 position: 3,
             },
             {
-                name: "Circle of Light",
+                name: "CircleLight",
                 position: 5,
             },
             {
-                name: "Circle of Solaris",
+                name: "CircleSolaris",
                 position: 8,
             },
             {
-                name: "Circle of the Spirit",
+                name: "CircleSpirit",
                 position: 11,
             },
         ],
@@ -405,34 +447,34 @@ export const mapStateToProps = (state, ownProps) => {
                 name: "",
             },
             {
-                name: "Huntmastery",
+                name: "MagnakaiHuntmastery",
             },
             {
-                name: "Weaponmastery +3 COMBAT SKILL points",
+                name: "MagnakaiWeaponmastery",
             },
             {
-                name: "Animal Control",
+                name: "MagnakaiAnimalControl",
             },
             {
-                name: "Curing: +1 ENDURANCE point for each section without combat",
+                name: "MagnakaiCuring",
             },
             {
-                name: "Invisibility",
+                name: "MagnakaiInvisibility",
             },
             {
-                name: "Pathsmanship",
+                name: "MagnakaiPathsmanship",
             },
             {
-                name: "Psi-surge: +4 COMBAT SKILL points but −2 ENDURANCE points per round; and Mindblast: +2 COMBAT SKILL points (cannot be used simultaneously)",
+                name: "MagnakaiPsiSurge",
             },
             {
-                name: "Psi-screen: no points lost when attacked by Mindforce",
+                name: "MagnakaiPsiScreen",
             },
             {
-                name: "Nexus",
+                name: "MagnakaiNexus",
             },
             {
-                name: "Divination",
+                name: "MagnakaiDivination",
             },
         ],
         BackpackItems: [
@@ -461,27 +503,12 @@ export const mapStateToProps = (state, ownProps) => {
                         default:
                             break
                         
-                        case "Circle of Fire":
+                        case "CircleFire":
 
-                            if (magnakaiDiscipline.toLowerCase().indexOf("huntmastery") > -1) {
+                            if (magnakaiDiscipline.toLowerCase().indexOf("magnakaihuntmastery") > -1) {
                                 requiredCount++
                             }
-                            if (magnakaiDiscipline.toLowerCase().indexOf("weaponmastery") > -1) {
-                                requiredCount++
-                            }
-
-                            if (requiredCount === 2) {
-                                requirementMet = true
-                            }
-
-                            break
-
-                        case "Circle of Light":
-
-                            if (magnakaiDiscipline.toLowerCase().indexOf("animal control") > -1) {
-                                requiredCount++
-                            }
-                            if (magnakaiDiscipline.toLowerCase().indexOf("curing") > -1) {
+                            if (magnakaiDiscipline.toLowerCase().indexOf("magnakaiweaponmastery") > -1) {
                                 requiredCount++
                             }
 
@@ -491,15 +518,30 @@ export const mapStateToProps = (state, ownProps) => {
 
                             break
 
-                        case "Circle of Solaris":
+                        case "CircleLight":
 
-                            if (magnakaiDiscipline.toLowerCase().indexOf("huntmastery") > -1) {
+                            if (magnakaiDiscipline.toLowerCase().indexOf("magnakaianimalcontrol") > -1) {
                                 requiredCount++
                             }
-                            if (magnakaiDiscipline.toLowerCase().indexOf("invisibility") > -1) {
+                            if (magnakaiDiscipline.toLowerCase().indexOf("magnakaicuring") > -1) {
                                 requiredCount++
                             }
-                            if (magnakaiDiscipline.toLowerCase().indexOf("pathsmanship") > -1) {
+
+                            if (requiredCount === 2) {
+                                requirementMet = true
+                            }
+
+                            break
+
+                        case "CircleSolaris":
+
+                            if (magnakaiDiscipline.toLowerCase().indexOf("magnakaihuntmastery") > -1) {
+                                requiredCount++
+                            }
+                            if (magnakaiDiscipline.toLowerCase().indexOf("magnakaiinvisibility") > -1) {
+                                requiredCount++
+                            }
+                            if (magnakaiDiscipline.toLowerCase().indexOf("magnakaipathsmanship") > -1) {
                                 requiredCount++
                             }
 
@@ -509,18 +551,18 @@ export const mapStateToProps = (state, ownProps) => {
 
                             break
 
-                        case "Circle of the Spirit":
+                        case "CircleSpirit":
 
-                            if (magnakaiDiscipline.toLowerCase().indexOf("psi-surge") > -1) {
+                            if (magnakaiDiscipline.toLowerCase().indexOf("magnakaipsisurge") > -1) {
                                 requiredCount++
                             }
-                            if (magnakaiDiscipline.toLowerCase().indexOf("psi-screen") > -1) {
+                            if (magnakaiDiscipline.toLowerCase().indexOf("magnakaipsiscreen") > -1) {
                                 requiredCount++
                             }
-                            if (magnakaiDiscipline.toLowerCase().indexOf("nexus") > -1) {
+                            if (magnakaiDiscipline.toLowerCase().indexOf("magnakainexus") > -1) {
                                 requiredCount++
                             }
-                            if (magnakaiDiscipline.toLowerCase().indexOf("divination") > -1) {
+                            if (magnakaiDiscipline.toLowerCase().indexOf("magnakaidivination") > -1) {
                                 requiredCount++
                             }
 
@@ -529,15 +571,11 @@ export const mapStateToProps = (state, ownProps) => {
                             }
 
                             break
-
                     }
-
                 }
-
             }
 
             return requirementMet
-
         },
         generateRandomNumber() {
             let randomizer = [
@@ -728,5 +766,23 @@ export const mapStateToProps = (state, ownProps) => {
 
             return results[String(Math.max(-11,Math.min(CombatRatio,11))).replace("-","minus")][number]
         },
+        getMagnakaiLevel() {
+            if (!state.CharacterSheet.MagnakaiLevel) {
+                return "";
+            }
+        
+            return state.CharacterSheet.MagnakaiLevel.toLowerCase();
+        },
+        getMagnakaiDisciplines() {
+            let res = [];
+            for (let i = 1; i <= 10; i++) {
+                const discipline = state.CharacterSheet["Magnakai" + i];
+                if (discipline) {
+                    res.push(discipline);
+                }
+            }
+
+            return res;
+        }
     }
 }

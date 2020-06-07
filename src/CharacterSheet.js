@@ -1,5 +1,6 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Provider, connect } from 'react-redux'
+import { useTranslation } from 'react-i18next';
 
 // Redux
 import { store } from './Store'
@@ -44,90 +45,96 @@ import {
     Input,
     Spacer,
 } from './UtilityComponents'
+import i18next from 'i18next';
 
 let APItimeout = null
 
-export default class App extends Component {
-    render() {
-        return (
-            <Provider store={store}>
-                <CharacterSheet/>
-            </Provider>
-        )
-    }
+export default function App(props) {
+    return (
+        <Provider store={store}>
+            <CharacterSheet/>
+        </Provider>
+    )
 }
 
-class CharacterSheetView extends Component {
+function CharacterSheetView(props) {
+    const {t} = useTranslation();
 
-    componentDidMount() {
-        console.log("Set debugApp to true to see game state data.")
+    useEffect(() => {
+        console.log("Set debugApp to true to see game state data.");
 
-        this.props.dispatch({type: "INIT"})
-        this.props.dispatch({type: "INIT_REQUEST_FEEDBACK"})
+        props.dispatch({type: "INIT"});
+        props.dispatch({type: "INIT_REQUEST_FEEDBACK"});
+    }, []);
 
-    }
-
-    render() {
-        return (
-            <View style={Styles.Body}>
-                <Header1>Character Sheet</Header1>
-                <LinkToProject/>
-                <GameMetaData/>
-                <Book/>
-                <Combat>
-                    <Endurance/>
-                </Combat>
-                <Weapons/>
-                <Weaponmastery/>
-                <Kai/>
-                <Magnakai/>
-                <LoreCircles/>
-                <BeltPouch/>
-                <Meals/>
-                <Backpack/>
-                <SpecialItems/>
-                <Notes/>
-                <GameState/>
-                <SaveAndLoadRemotely/>
-                <Spacer/>
-            </View>
-        )
-    }
+    return (
+        <View style={Styles.Body}>
+            <Header1>{t('CharacterSheet')}</Header1>
+            <LinkToProject/>
+            <GameMetaData/>
+            <Book/>
+            <Combat>
+                <Endurance/>
+            </Combat>
+            <Weapons/>
+            <Weaponmastery/>
+            <Kai/>
+            <Magnakai/>
+            <LoreCircles/>
+            <BeltPouch/>
+            <Meals/>
+            <Backpack/>
+            <SpecialItems/>
+            <Notes/>
+            <GameState/>
+            <SaveAndLoadRemotely/>
+            <Spacer/>
+        </View>
+    )
 }
 const CharacterSheet = connect(mapStateToProps)(CharacterSheetView)
 
-class LinkToProject extends Component {
-    render() {
-        return (
-            <View>
-                <Link href="https://www.projectaon.org/en/Main/Books" target="_blank">Project Aon</Link>
-            </View>
-        )
-    }
+function LinkToProject() {
+    return (
+        <View>
+            <Link href="https://www.projectaon.org/en/Main/Books" target="_blank">Project Aon</Link>
+        </View>
+    )
 }
 
-class GameMetaDataView extends Component {
-    render() {
-        return (
-            <ShowDetails label="Game ID" startVisible>
-                <Text>{this.props.RequestFeedback.actualGameID !== undefined ? String(this.props.RequestFeedback.actualGameID) : "-"}</Text>
-                <Label>Game Started</Label>
-                <Text>{this.props.CharacterSheet.GameStarted}</Text>
-                <Label>Game Last Saved</Label>
-                <Text>{this.props.CharacterSheet.GameSaved || "-"}</Text>
-            </ShowDetails>
-        )
-    }
+function GameMetaDataView(props) {
+    const {t} = useTranslation();
+
+    const langs = [
+        { name: 'en' },
+        { name: 'it' }
+    ];
+
+    const onChange = (input) => {
+        props.dispatch({type: "CHANGE_LANG", value: input.value, API: props.API, save: true});
+        i18next.changeLanguage(input.value);
+    };
+    
+    return (
+        <ShowDetails label="GameId" startVisible>
+            <Text>{props.RequestFeedback.actualGameID !== undefined ? String(props.RequestFeedback.actualGameID) : "-"}</Text>
+            <Label>{t("GameStarted")}</Label>
+            <Text>{props.CharacterSheet.GameStarted}</Text>
+            <Label>{t("GameLastSaved")}</Label>
+            <Text>{props.CharacterSheet.GameSaved || "-"}</Text>
+            <Label>{t("Language")}</Label>
+            <Input key="Language" name="Language" select={langs} onChange={onChange} />
+        </ShowDetails>
+    )
 }
 const GameMetaData = connect(mapStateToProps)(GameMetaDataView)
 
-class BookView extends Component {
-
-    onChange = (input) => {
+function BookView(props) {
+    const onChange = (input) => {
         let bookNumber = 0
-        let Book = this.props.Books.filter((book, index) => {
 
-            if (String(index) + " - " + book.name === input.value) {
+        let Book = props.Books.filter((book, index) => {
+            if (book.name === input.value) {
                 bookNumber = index
                 return true
             }
@@ -136,66 +143,63 @@ class BookView extends Component {
 
         Book = {...Book, number: bookNumber}
 
-        this.props.dispatch({type: "UPDATE_BOOK", value: Book, API: this.props.API, save: true})
+        props.dispatch({type: "UPDATE_BOOK", value: Book, API: props.API, save: true})
     }
 
-    render() {
-        return (
-            <ShowDetails label="Book">
-                <Input name="Book" value={this.props.CharacterSheet.Book ? this.props.CharacterSheet.Book.number + " - " + this.props.CharacterSheet.Book.name : null} select={this.props.Books} optGroups={this.props.BookGroups} showIndex onChange={this.onChange}/>
-                {this.props.CharacterSheet.Book ? <BookLinks/> : null}
-                <Section/>
-            </ShowDetails>
-        )
-    }
+    return (
+        <ShowDetails label="Book">
+            <Input name="Book" value={props.CharacterSheet.Book ? props.CharacterSheet.Book.name : null} select={props.Books} optGroups={props.BookGroups} showIndex onChange={onChange}/>
+            {props.CharacterSheet.Book ? <BookLinks/> : null}
+            <Section/>
+        </ShowDetails>
+    )
 }
 const Book = connect(mapStateToProps)(BookView)
 
-class BookLinksView extends Component {
+function BookLinksView(props) {
+    const {t} = useTranslation();
 
-    render() {
-        return (
-            <View>
-                <Link target="_blank" href={this.props.CharacterSheet.Book.url + this.props.BookURLs.toc}>Table of Contents</Link>
-                {" "}|{" "}
-                <Link target="_blank" href={this.props.CharacterSheet.Book.url + this.props.BookURLs.map}>Map</Link>
-            </View>
-        )
-    }
+    return (
+        <View>
+            <Link target="_blank" href={props.CharacterSheet.Book.url + props.BookURLs.toc}>{t("TableContents")}</Link>
+            {" "}|{" "}
+            <Link target="_blank" href={props.CharacterSheet.Book.url + props.BookURLs.map}>{t("Map")}</Link>
+        </View>
+    )
 }
 const BookLinks = connect(mapStateToProps)(BookLinksView)
 
-class SectionView extends Component {
-    render() {
-        return (
-            <View>
-                <Group name="Section" type="number" numbers noPlusAndMinus/>
-                {this.props.CharacterSheet.Book && this.props.CharacterSheet.Section ? <Link target="_blank" href={this.props.CharacterSheet.Book.url + this.props.BookURLs.section.prepend + this.props.CharacterSheet.Section + this.props.BookURLs.section.append}>Go to Section</Link> : null}
-            </View>
-        )
-    }
+function SectionView(props) {
+    const {t} = useTranslation();
+
+    return (
+        <View>
+            <Group name="Section" type="number" numbers noPlusAndMinus/>
+            {props.CharacterSheet.Book && props.CharacterSheet.Section ? <Link target="_blank" href={props.CharacterSheet.Book.url + props.BookURLs.section.prepend + props.CharacterSheet.Section + props.BookURLs.section.append}>{t("GoToSection")}</Link> : null}
+        </View>
+    )
 }
 const Section = connect(mapStateToProps)(SectionView)
 
-class EnduranceView extends Component {
+function EnduranceView(props) {
+    const {t} = useTranslation();
 
-    getBonuses = (returnRawData) => {
-
+    const getBonuses = (returnRawData) => {
         let bonuses = []
         let bonusValues = []
-        let {CharacterSheet} = {...this.props}
+        let {CharacterSheet} = {...props}
 
         // bonuses from special items
         for (let i = 1; i <= 16; i++) {
             let item = CharacterSheet["SpecialItem" + i]
             if (item !== undefined && item.length > 0) {
-                let bonusTextIndex = item.toLowerCase().indexOf("endurance")
+                let bonusTextIndex = item.toLowerCase().indexOf(t("Endurance").toLowerCase())
                 if (bonusTextIndex > -1) {
                     let bonusValueIndex = item.substring(Math.min(bonusTextIndex-5, bonusTextIndex),item.length).indexOf("+")
                     if (bonusValueIndex > -1) {
                         let bonusValueAbsoluteIndex = bonusTextIndex-Math.min(5, bonusTextIndex)+bonusValueIndex
                         let bonusValue = item.substring(bonusValueAbsoluteIndex,bonusValueAbsoluteIndex+3)
-                        bonuses.push(<Text key={Math.random()}>+{Number(Math.floor(bonusValue))}&nbsp;(special&nbsp;item) </Text>)
+                        bonuses.push(<Text key={Math.random()}>+{Number(Math.floor(bonusValue))}&nbsp;({t("SpecialItem").toLowerCase()}) </Text>)
                         bonusValues.push(Number(Math.floor(bonusValue)))
                     }
                 }
@@ -203,19 +207,19 @@ class EnduranceView extends Component {
         }
         
         if (CharacterSheet.Book && CharacterSheet.Book.number >= 6) {
-            if (this.props.checkLoreCircle("Circle of Fire")) {
+            if (props.checkLoreCircle("Circle of Fire")) {
                 bonuses.push(<Text key="circle of fire">+2&nbsp;(circle&nbsp;of&nbsp;fire) </Text>)
                 bonusValues.push(2)
             }
-            if (this.props.checkLoreCircle("Circle of Light")) {
+            if (props.checkLoreCircle("Circle of Light")) {
                 bonuses.push(<Text key="circle of light">+3&nbsp;(circle&nbsp;of&nbsp;light) </Text>)
                 bonusValues.push(3)
             }
-            if (this.props.checkLoreCircle("Circle of Solaris")) {
+            if (props.checkLoreCircle("Circle of Solaris")) {
                 bonuses.push(<Text key="circle of solaris">+3&nbsp;(circle&nbsp;of&nbsp;solaris) </Text>)
                 bonusValues.push(3)
             }
-            if (this.props.checkLoreCircle("Circle of the Spirit")) {
+            if (props.checkLoreCircle("Circle of the Spirit")) {
                 bonuses.push(<Text key="circle of the spirit">+3&nbsp;(circle&nbsp;of&nbsp;the&nbsp;spirit) </Text>)
                 bonusValues.push(3)
             }
@@ -228,107 +232,115 @@ class EnduranceView extends Component {
         return bonuses.map(bonus => {return bonus})
     }
 
-    addBonus = () => {
-        
-         let bonuses = this.getBonuses(true)
- 
-         this.props.dispatch({type: "MaxEndurance", value: (this.props.CharacterSheet.MaxEndurance || 0) + (bonuses.length > 0 ? bonuses.reduce((sum, value) => {return sum+value}) : 0), API: this.props.API, save: true})
- 
-     }
+    // const addBonus = () => {
 
-     toMax = () => {
+    //     let bonuses = getBonuses(true)
 
-        this.props.dispatch({type: "Endurance", value: this.props.CharacterSheet.MaxEndurance || 0, API: this.props.API, save: true})
+    //     props.dispatch({type: "MaxEndurance", value: (props.CharacterSheet.MaxEndurance || 0) + (bonuses.length > 0 ? bonuses.reduce((sum, value) => {return sum+value}) : 0), API: props.API, save: true})
+    // }
 
-        if (this.props.CharacterSheet.MaxEndurance === "" || this.props.CharacterSheet.MaxEndurance === undefined) {
-            this.props.dispatch({type: "MaxEndurance", value: 0})
+    const toMax = () => {
+        if (props.CharacterSheet.MaxEndurance === "" || props.CharacterSheet.MaxEndurance === undefined) {
+            props.dispatch({type: "MaxEndurance", value: 0})
         }
-        
-     }
+        else {
+            // TODO: vedere cosa fa getBonuses()
+            let totalMax = props.CharacterSheet.MaxEndurance;
+            props.dispatch({type: "Endurance", value: totalMax || 0, API: props.API, save: true})
+        }
+    }
 
-     hideArchmasterCuring = () => {
+    const hideArchmasterCuring = () => {
 
-        let {CharacterSheet} = {...this.props}
+        let {CharacterSheet} = {...props}
 
         let hide = true
 
         if (CharacterSheet.Book && CharacterSheet.Book.number >= 6) {
-            if (CharacterSheet.MagnakaiLevel &&CharacterSheet.MagnakaiLevel.toLowerCase().indexOf("archmaster") > -1) {
-                for (let i = 1; i <= 10; i++) {
-                    let kaiDiscipline = CharacterSheet["Magnakai" + i]
-                    if (kaiDiscipline !== undefined) {
-                        if (kaiDiscipline.toLowerCase().indexOf("curing") > -1) {
-                            if (CharacterSheet.Endurance <= 6) {
-                                hide = false
-                                break                                
-                            }
-                        }
+            const magnakaiLevel = props.getMagnakaiLevel();
+            if (magnakaiLevel === "magnakaiarchmaster" || magnakaiLevel === "magnakaikaigrandmaster") {
+                const magnakaiDisciplines = props.getMagnakaiDisciplines();
+                if (magnakaiDisciplines.includes("MagnakaiCuring")) {
+                    if (CharacterSheet.Endurance <= 6) {
+                        hide = false;
                     }
                 }
             }
         }
 
         return hide
-
-     }
-
-     archmasterCuring = () => {
-
-        this.props.dispatch({type: "ARCHMASTER_CURING", API: this.props.API, save: true})
-
-     }
-
-    render() {
-        return (
-            <ShowDetails label="Max Endurance">
-                <Input name="MaxEndurance" type="number" />
-                <Text>{this.getBonuses()}</Text>
-                <Group name="Endurance" type="number" negativeNumbers/>
-                <ButtonContainer title="Archmaster Curing: +20 (once/100 days)" hidden={this.hideArchmasterCuring()} onClick={this.archmasterCuring} inline/>
-                <ButtonContainer title="Heal to Max" onClick={this.toMax} inline/>
-            </ShowDetails>
-        )
     }
+
+    const archmasterCuring = () => {
+        props.dispatch({type: "ARCHMASTER_CURING", API: props.API, save: true})
+    }
+
+    return (
+        <ShowDetails label="MaxEndurance">
+            <Input name="MaxEndurance" type="number" />
+            <Text>{getBonuses()}</Text>
+            <Group name="Endurance" type="number" negativeNumbers/>
+            <ButtonContainer title="ArchmasterCuring" hidden={hideArchmasterCuring()} onClick={archmasterCuring} inline/>
+            <ButtonContainer title="HealToMax" onClick={toMax} inline/>
+        </ShowDetails>
+    )
 }
 const Endurance = connect(mapStateToProps)(EnduranceView)
 
-class Combat extends Component {
+function Combat(props) {
 
-    render() {
-        return (
-            <View>
-                <CombatSkill/>
-                {/* endurance */}
-                {this.props.children}
-                <ShowDetails label="Enemy Combat Skill">
-                    <EnemyCombatSkill/>
-                    <EnemyEndurance/>
-                    <EnemyImmunity/>
-                </ShowDetails>
-                <CombatRatio/>
-            </View>
-        )
-    }
+    return (
+        <View>
+            <CombatSkill/>
+            {/* endurance */}
+            {props.children}
+            <ShowDetails label="EnemyCombatSkill">
+                <EnemyCombatSkill/>
+                <EnemyEndurance/>
+                <EnemyImmunity/>
+            </ShowDetails>
+            <CombatRatio/>
+        </View>
+    )
 }
 
-class CombatSkillView extends Component {
+function CombatSkillView(props) {
+    const {t} = useTranslation();
 
-    getBonuses = (returnRawData) => {
-
+    const getBonuses = (returnRawData) => {
         let bonuses = []
         let bonusValues = []
-        let {CharacterSheet, KaiDisciplines} = {...this.props}
+        let {CharacterSheet, KaiDisciplines} = {...props}
 
-        if (this.props.CharacterSheet.Book && this.props.CharacterSheet.Book.number < 6) {
+        // fight without weapon malus
+        if (!CharacterSheet["Weapon1"] && !CharacterSheet["Weapon2"]) {
+            let weaponlessMalus = -4;
+
+            const magnakaiDisciplines = props.getMagnakaiDisciplines();
+            if (magnakaiDisciplines.includes("MagnakaiWeaponmastery")) {
+                const magnakaiLevel = props.getMagnakaiLevel();
+                if (magnakaiLevel === "magnakaitutelary" || magnakaiLevel === "magnakaiprincipalin" || magnakaiLevel === "magnakaimentora") {
+                    weaponlessMalus = -2;
+                }
+                else if (magnakaiLevel === "magnakaiscionkai" || magnakaiLevel === "magnakaiarchmaster" || magnakaiLevel === "magnakaikaigrandmaster") {
+                    weaponlessMalus = -1;
+                }
+            }
+
+            bonuses.push(<Text key="weaponless">{weaponlessMalus} ({t("Weaponless").toLowerCase()}) </Text>);
+            bonusValues.push(weaponlessMalus);
+        }
+
+        if (props.CharacterSheet.Book && props.CharacterSheet.Book.number < 6) {
             // bonuses from kai disciplines
             for (let i = 1; i <= 10; i++) {
                 let kaiDiscipline = CharacterSheet["Kai" + i]
                 if (kaiDiscipline !== undefined) {
-                    if (kaiDiscipline.toLowerCase().indexOf("mindblast") > -1 && kaiDiscipline.toLowerCase().indexOf("mindshield") === -1 && !this.props.CharacterSheet.ImmunetoMindblast) {
-                        bonuses.push(<Text key="mindblast">+2&nbsp;(mindblast) </Text>)
+                    if (kaiDiscipline.toLowerCase().indexOf("kaimindblast") > -1 && !props.CharacterSheet.ImmuneToMindblast) {
+                        bonuses.push(<Text key="mindblast">+2&nbsp;({t("Mindblast")}) </Text>)
                         bonusValues.push(2)
                     }
-                    else if (kaiDiscipline.toLowerCase().indexOf("weaponskill") > -1) {
+                    else if (kaiDiscipline.toLowerCase().indexOf("kaiweaponskill") > -1) {
                         for (let x = 1; x <= 2; x++) {
                             let weapon = CharacterSheet["Weapon" + x]
                             let weaponSkill = KaiDisciplines.filter(function(kai) {
@@ -336,10 +348,11 @@ class CombatSkillView extends Component {
                                 if (weapon && (weapon.toLowerCase().indexOf("short sword") > -1) && kai.weapon && kai.weapon.toLowerCase() === "sword") {
                                     return false
                                 }
-                                return kai.name === kaiDiscipline && kai.weapon && weapon && weapon.toLowerCase().indexOf(kai.weapon.toLowerCase()) > -1 
+                                return kai.name === kaiDiscipline && kai.weapon && weapon && weapon.toLowerCase().indexOf(t(kai.weapon).toLowerCase()) > -1 
                             })
                             if (weaponSkill.length > 0) {
-                                bonuses.push(<Text key="weaponskill">+2&nbsp;(weaponskill:&nbsp;{weapon}) </Text>)
+                                let key = `weaponskill_${weapon}`;
+                                bonuses.push(<Text key={key}>+2&nbsp;({t("Weaponskill").toLowerCase()}:&nbsp;{weapon}) </Text>)
                                 bonusValues.push(2)
                                 break
                             }
@@ -350,75 +363,64 @@ class CombatSkillView extends Component {
         }
         else {
             // bonuses from magnakai disciplines
-            for (let i = 1; i <= 10; i++) {
-                let kaiDiscipline = CharacterSheet["Magnakai" + i]
-                if (kaiDiscipline !== undefined) {
-                    if (kaiDiscipline.toLowerCase().indexOf("mindblast") > -1) {
-                        if (this.props.CharacterSheet.UsePsiSurge) {
-                            bonuses.push(<Text key="psi-surge">+4&nbsp;(psi-surge) </Text>)
-                            bonusValues.push(4)
-                        }
-                        else if (!this.props.CharacterSheet.ImmunetoMindblast) {
-                            bonuses.push(<Text key="mindblast">+2&nbsp;(mindblast) </Text>)
-                            bonusValues.push(2)
-                        }
-                    }
-                    else if (kaiDiscipline.toLowerCase().indexOf("weaponmastery") > -1) {
+            const magnakaiDisciplines = props.getMagnakaiDisciplines();
+            if (magnakaiDisciplines.includes("MagnakaiPsiSurge")) {
+                if (props.CharacterSheet.UsePsiSurge) {
+                    bonuses.push(<Text key="psi-surge">+4&nbsp;(psi-surge) </Text>)
+                    bonusValues.push(4)
+                }
+                else if (!props.CharacterSheet.ImmuneToMindblast) {
+                    bonuses.push(<Text key="mindblast">+2&nbsp;({t("Mindblast")}) </Text>)
+                    bonusValues.push(2)
+                }
+            }
+            if (magnakaiDisciplines.includes("MagnakaiWeaponmastery")) {
 
-                        let weaponTypeList = ["Spear","Dagger","Mace","ShortSword","Warhammer","Bow","Axe","Sword","Quarterstaff","Broadsword"]
+                let weaponTypeList = ["Spear","Dagger","Mace","Short Sword","Warhammer","Bow","Axe","Sword","Quarterstaff","Broadsword"]
 
-                        for (let x = 1; x <= 2; x++) {
-                            let weapon = CharacterSheet["Weapon" + x]
+                for (let x = 1; x <= 2; x++) {
+                    let weapon = CharacterSheet["Weapon" + x]
 
-                            if (weapon !== undefined && weapon !== "") {
+                    if (weapon !== undefined && weapon !== "") {
 
-                                let matchFound = false
+                        let matchFound = false
 
-                                for (let t = 0; t < 10; t++) {
-
-                                    if (String(weapon).toLowerCase().replace(/ /g,"").indexOf(weaponTypeList[t].toLowerCase()) > -1) {
-
-                                        if (CharacterSheet["Weaponmastery" + weaponTypeList[t]]) {
-
-                                            if (CharacterSheet.MagnakaiLevel && (CharacterSheet.MagnakaiLevel.toLowerCase().indexOf("scion-kai") > -1 || CharacterSheet.MagnakaiLevel.toLowerCase().indexOf("archmaster") > -1)) {
-
-                                                bonuses.push(<Text key="weaponmastery1">+4&nbsp;(weaponmastery:&nbsp;{weapon}) </Text>)
-                                                bonusValues.push(4)
-                                                matchFound = true
-                                                break
-
-                                            }
-                                            else {
-
-                                                bonuses.push(<Text key="weaponmastery2">+3&nbsp;(weaponmastery:&nbsp;{weapon}) </Text>)
-                                                bonusValues.push(3)
-                                                matchFound = true
-                                                break   
-
-                                            }
-
-                                        }
+                        for (let j = 0; j < 10; j++) {
+                            if (String(weapon).toLowerCase().replace(/ /g,"").indexOf(t(weaponTypeList[j]).toLowerCase().replace(/ /g,"")) > -1) {
+                                if (CharacterSheet["Weaponmastery" + weaponTypeList[j].replace(/ /g,"")]) {
+                                    const magnakaiLevel = props.getMagnakaiLevel();
+                                    if (magnakaiLevel === "magnakaiscionkai" || magnakaiLevel === "magnakaiarchmaster" || magnakaiLevel === "magnakaikaigrandmaster"
+                                    ) {
+                                        bonuses.push(<Text key="weaponmastery1">+4&nbsp;({t("Weaponmastery").toLowerCase()}:&nbsp;{weapon}) </Text>)
+                                        bonusValues.push(4)
+                                        matchFound = true
+                                        break
+                                    }
+                                    else {
+                                        bonuses.push(<Text key="weaponmastery2">+3&nbsp;({t("Weaponmastery").toLowerCase()}:&nbsp;{weapon}) </Text>)
+                                        bonusValues.push(3)
+                                        matchFound = true
+                                        break   
                                     }
                                 }
-
-                                if (matchFound) break
-
                             }
                         }
+
+                        if (matchFound) break
                     }
                 }
             }
-        
-            if (this.props.checkLoreCircle("Circle of Fire")) {
-                bonuses.push(<Text key="circle of fire">+1&nbsp;(circle&nbsp;of&nbsp;fire) </Text>)
+
+            if (props.checkLoreCircle("CircleFire")) {
+                bonuses.push(<Text key="circle of fire">+1&nbsp;({t("CircleFire").toLowerCase()}) </Text>)
                 bonusValues.push(1)
             }
-            if (this.props.checkLoreCircle("Circle of Solaris")) {
-                bonuses.push(<Text key="circle of solaris">+1&nbsp;(circle&nbsp;of&nbsp;solaris) </Text>)
+            if (props.checkLoreCircle("CircleSolaris")) {
+                bonuses.push(<Text key="circle of solaris">+1&nbsp;({t("CircleSolaris").toLowerCase()}) </Text>)
                 bonusValues.push(1)
             }
-            if (this.props.checkLoreCircle("Circle of the Spirit")) {
-                bonuses.push(<Text key="circle of the spirit">+3&nbsp;(circle&nbsp;of&nbsp;the&nbsp;spirit) </Text>)
+            if (props.checkLoreCircle("CircleSpirit")) {
+                bonuses.push(<Text key="circle of the spirit">+3&nbsp;({t("CircleSpirit").toLowerCase()}) </Text>)
                 bonusValues.push(3)
             }
 
@@ -428,13 +430,13 @@ class CombatSkillView extends Component {
         for (let i = 1; i <= 16; i++) {
             let item = CharacterSheet["SpecialItem" + i]
             if (item !== undefined && item.length > 0) {
-                let bonusTextIndex = item.toLowerCase().indexOf("combat skill")
+                let bonusTextIndex = item.toLowerCase().indexOf(t("CombatSkill").toLowerCase())
                 if (bonusTextIndex > -1) {
                     let bonusValueIndex = item.substring(Math.min(bonusTextIndex-5, bonusTextIndex),item.length).indexOf("+")
                     if (bonusValueIndex > -1) {
                         let bonusValueAbsoluteIndex = bonusTextIndex-Math.min(5, bonusTextIndex)+bonusValueIndex
                         let bonusValue = item.substring(bonusValueAbsoluteIndex,bonusValueAbsoluteIndex+3)
-                        bonuses.push(<Text key={Math.random()}>+{Number(Math.floor(bonusValue))}&nbsp;(special&nbsp;item) </Text>)
+                        bonuses.push(<Text key={Math.random()}>+{Number(Math.floor(bonusValue))}&nbsp;({t("SpecialItem").toLowerCase()}) </Text>)
                         bonusValues.push(Number(Math.floor(bonusValue)))
                     }
                 }
@@ -448,613 +450,544 @@ class CombatSkillView extends Component {
         return bonuses.map(bonus => {return bonus})
     }
 
-    addBonus = () => {
-       
-        let bonuses = this.getBonuses(true)
+    const addBonus = () => {
+        let bonuses = getBonuses(true)
 
-        this.props.dispatch({type: "CombatSkill", value: (this.props.CharacterSheet.BaseCombatSkill || 0) + (bonuses.length > 0 ? bonuses.reduce((sum, value) => {return sum+value}) : 0), API: this.props.API, save: true})
-
+        props.dispatch({type: "CombatSkill", value: (props.CharacterSheet.BaseCombatSkill || 0) + (bonuses.length > 0 ? bonuses.reduce((sum, value) => {return sum+value}) : 0), API: props.API, save: true})
     }
 
-    render() {
-        return (
-            <ShowDetails label="Base Combat Skill">
-                <Input name="BaseCombatSkill" type="number"/>
-                <ButtonContainer title="Update Combat Skill" onClick={this.addBonus} inline/>
-                <Text>{this.getBonuses()}</Text>
-                <Group name="Combat Skill" type="number"/>
-            </ShowDetails>
-        )
-    }
+    return (
+        <ShowDetails label="BaseCombatSkill">
+            <Input name="BaseCombatSkill" type="number"/>
+            <ButtonContainer title="UpdateCombatSkill" onClick={addBonus} inline/>
+            <Text>{getBonuses()}</Text>
+            <Group name="CombatSkill" type="number"/>
+        </ShowDetails>
+    )
 }
 const CombatSkill = connect(mapStateToProps)(CombatSkillView)
 
-class EnemyCombatSkill extends Component {
-    render() {
-        return (
-            <View>
-                <Input name="EnemyCombatSkill"  type="number"/>
-            </View>
-        )
-    }
+function EnemyCombatSkill() {
+    return (
+        <View>
+            <Input name="EnemyCombatSkill"  type="number"/>
+        </View>
+    )
 }
 
-class EnemyEndurance extends Component {
-    render() {
-        return (
-            <View>
-                <Group name="Enemy Endurance" type="number" />
-            </View>
-        )
-    }
+function EnemyEndurance() {
+    return (
+        <View>
+            <Group name="EnemyEndurance" type="number" />
+        </View>
+    )
 }
-class EnemyImmunityView extends Component {
+function EnemyImmunityView(props) {
 
-    hasMindBlast = () => {
-
-        let {CharacterSheet} = {...this.props}
+    const hasMindBlast = () => {
+        let {CharacterSheet} = {...props}
 
         let hasMindBlast = false
 
-        if (this.props.CharacterSheet.Book && this.props.CharacterSheet.Book.number < 6) {
-
+        if (props.CharacterSheet.Book && props.CharacterSheet.Book.number < 6) {
             for (let i = 1; i <= 10; i++) {
                 let kaiDiscipline = CharacterSheet["Kai" + i]
                 if (kaiDiscipline !== undefined) {
-                    if (kaiDiscipline.toLowerCase().indexOf("mindblast") > -1 && kaiDiscipline.toLowerCase().indexOf("mindshield") === -1) {
+                    if (kaiDiscipline.toLowerCase().indexOf("kaimindblast") > -1) {
                         hasMindBlast = true
                     }
                 }
             }
-
+            return hasMindBlast
         }
         else {
-
-            for (let i = 1; i <= 10; i++) {
-                let kaiDiscipline = CharacterSheet["Magnakai" + i]
-                if (kaiDiscipline !== undefined) {
-                    if (kaiDiscipline.toLowerCase().indexOf("mindblast") > -1 && kaiDiscipline.toLowerCase().indexOf("mindshield") === -1) {
-                        hasMindBlast = true
-                    }
-                }
-            }
-
+            return props.getMagnakaiDisciplines().includes("MagnakaiPsiSurge");
         }
-
-        return hasMindBlast
     }
 
-    render() {
-        return (
-            <View hidden={!this.hasMindBlast()}>
-                <Group name="Immune to Mindblast" type="checkbox" />
-            </View>
-        )
-    }
+    return (
+        <View hidden={!hasMindBlast()}>
+            <Group name="ImmuneToMindblast" type="checkbox" />
+        </View>
+    )
 }
 const EnemyImmunity = connect(mapStateToProps)(EnemyImmunityView)
 
-class CombatRatioView extends Component {
+function CombatRatioView(props) {
+    const {t} = useTranslation();
 
-    state = {number: "-", damage: {}, round: 0}
+    const [sNumber, setNumber] = useState("-");
+    const [sDamage, setDamage] = useState({ enemy: 0, lonewolf: 0 });
+    const [sRound, setRound] = useState(0);
 
-    fight = () => {
+    const fight = () => {
         
-        let number = this.props.generateRandomNumber()
+        let number = props.generateRandomNumber()
         let damageNumber = number
         
-        if (this.props.CharacterSheet.WeaponmasteryBow) {
+        if (props.CharacterSheet.WeaponmasteryBow) {
             damageNumber += 3
         }
 
-        let state = {
-            number: number,
-            damage: this.props.fight(damageNumber, this.props.CharacterSheet.CombatRatio),
-            round: this.state.round + 1,
-        }
+        setNumber(number);
+        let damage = props.fight(damageNumber, props.CharacterSheet.CombatRatio);
+        setDamage(damage);
+        setRound(sRound + 1);
 
-        this.setState(state)
-
-        return state
+        return damage;
     }
 
-    updateEndurance = (input, damage = null) => {
+    const updateEndurance = (input, damage = null) => {
+        if (damage == null && sDamage.enemy === undefined && sDamage.lonewolf === undefined) return null
 
-        if (damage == null && this.state.damage.enemy === undefined && this.state.damage.lonewolf === undefined) return null
-
-        if (this.props.CharacterSheet.UsePsiSurge) {
-            damage = {...(damage || this.state.damage)}
+        if (props.CharacterSheet.UsePsiSurge) {
+            damage = {...(damage || sDamage)}
             damage.lonewolf = damage.lonewolf + 2
         }
 
-        this.props.dispatch({type: "UPDATE_ENDURANCE", value: (damage || this.state.damage), API: this.props.API, save: true})
+        props.dispatch({type: "UPDATE_ENDURANCE", value: (damage || sDamage), API: props.API, save: true})
     }
 
-    fightAndUpdateEndurance = () => {
-        let damage = this.fight().damage
-        
-        this.updateEndurance(null, damage)
+    const fightAndUpdateEndurance = () => {
+        let damage = fight();
+        updateEndurance(null, damage);
     }
 
-    clearEnemyStats = () => {
-        this.props.dispatch({type: "CLEAR_ENEMY_STATS", API: this.props.API, save: true})
-        this.setState({damage: {}, round: 0})
+    const clearEnemyStats = () => {
+        props.dispatch({type: "CLEAR_ENEMY_STATS", API: props.API, save: true})
+        setDamage({ enemy: 0, lonewolf: 0 });
+        setRound(0);
     }
 
-    generateRandomNumber = () => {
-        this.setState({number: this.props.generateRandomNumber()})
+    const generateRandomNumber = () => {
+        setNumber(props.generateRandomNumber());
     }
 
-    render() {
-        return (
-            <View>
-                <ShowDetails label="Combat Ratio">
-                    <TextWithInputFont>
-                    {
-                        this.props.CharacterSheet.CombatRatio === undefined
-                        ||  this.props.CharacterSheet.CombatRatio === null
-                        || isNaN(this.props.CharacterSheet.CombatRatio)
-                        || this.props.CharacterSheet.CombatSkill === ""
-                        || this.props.CharacterSheet.EnemyCombatSkill === ""
-                            ? "-"
-                            : this.props.CharacterSheet.CombatRatio
-                    }</TextWithInputFont>
-                    <Label>Combat Results</Label>
-                    <TextWithInputFont>
-                        Enemy:{" "}
-                        {this.state.damage.enemy !== undefined
-                            ? isNaN(this.state.damage.enemy*-1)
-                                ? this.state.damage.enemy
-                                : this.state.damage.enemy*-1
-                            : "-"
-                        }
-                        {" "}/{" "}
-                        Lone Wolf:{" "}
-                        {this.state.damage.lonewolf !== undefined
-                            ? isNaN(this.state.damage.lonewolf*-1)
-                                ? this.state.damage.lonewolf
-                                : this.state.damage.lonewolf*-1
-                            : "-"
-                        }
-                        {" "}
-                        <Text hidden={!this.props.CharacterSheet.UsePsiSurge}>
-                            (-2 psi-surge)
-                        </Text>
-                    </TextWithInputFont>
-                    <Label>Round</Label>
-                    <TextWithInputFont>
-                        {this.state.round}
-                    </TextWithInputFont>
-                    <UsePsiSurge/>
-                    <ButtonContainer
-                        title="Fight"
-                        onClick={this.fight}
-                        disabled={
-                            this.props.CharacterSheet.CombatSkill === undefined
-                            || this.props.CharacterSheet.CombatSkill === ""
-                            || this.props.CharacterSheet.EnemyCombatSkill === undefined
-                            || this.props.CharacterSheet.EnemyCombatSkill === ""
-                        }
-                    />
-                    <ButtonContainer
-                        title="Update Endurance"
-                        onClick={this.updateEndurance}
-                        disabled={
-                            this.props.CharacterSheet.CombatSkill === undefined
-                            || this.props.CharacterSheet.CombatSkill === ""
-                            || this.props.CharacterSheet.EnemyCombatSkill === undefined
-                            || this.props.CharacterSheet.EnemyCombatSkill === ""
-                            || this.props.CharacterSheet.Endurance === undefined
-                            || this.props.CharacterSheet.Endurance === ""
-                            || this.props.CharacterSheet.EnemyEndurance === undefined
-                            || this.props.CharacterSheet.EnemyEndurance === ""
-                        }
-                    />
-                    <ButtonContainer
-                        title="Fight & Update Endurance"
-                        onClick={this.fightAndUpdateEndurance}
-                        disabled={
-                            this.props.CharacterSheet.CombatSkill === undefined
-                            || this.props.CharacterSheet.CombatSkill === ""
-                            || this.props.CharacterSheet.EnemyCombatSkill === undefined
-                            || this.props.CharacterSheet.EnemyCombatSkill === ""
-                            || this.props.CharacterSheet.Endurance === undefined
-                            || this.props.CharacterSheet.Endurance === ""
-                            || this.props.CharacterSheet.EnemyEndurance === undefined
-                            || this.props.CharacterSheet.EnemyEndurance === ""
-                        }
-                    />
-                    <ButtonContainer title="Clear Enemy Stats" onClick={this.clearEnemyStats}/>
-                </ShowDetails>
-                <ShowDetails label="Random Number" startVisible>
-                    <TextWithInputFont>{this.state.number} {this.props.CharacterSheet.WeaponmasteryBow ? "(bow weaponmastery: +3)" : null}</TextWithInputFont>
-                    <ButtonContainer title="Generate Random Number" onClick={this.generateRandomNumber}/>
-                </ShowDetails>
-            </View>
-        )
-    }
+    return (
+        <View>
+            <ShowDetails label="CombatRatio">
+                <TextWithInputFont>
+                {
+                    props.CharacterSheet.CombatRatio === undefined
+                    ||  props.CharacterSheet.CombatRatio === null
+                    || isNaN(props.CharacterSheet.CombatRatio)
+                    || props.CharacterSheet.CombatSkill === ""
+                    || props.CharacterSheet.EnemyCombatSkill === ""
+                        ? "-"
+                        : props.CharacterSheet.CombatRatio
+                }</TextWithInputFont>
+                <Label>{t("CombatResults")}</Label>
+                <TextWithInputFont>
+                    {t("Enemy")}:{" "}
+                    {sDamage.enemy !== undefined
+                        ? isNaN(sDamage.enemy*-1)
+                            ? t(sDamage.enemy)
+                            : sDamage.enemy*-1
+                        : "-"
+                    }
+                    {" "}/{" "}
+                    {t("LoneWolf")}:{" "}
+                    {sDamage.lonewolf !== undefined
+                        ? isNaN(sDamage.lonewolf*-1)
+                            ? t(sDamage.lonewolf)
+                            : sDamage.lonewolf*-1
+                        : "-"
+                    }
+                    {" "}
+                    <Text hidden={!props.CharacterSheet.UsePsiSurge}>
+                        (-2 psi-surge)
+                    </Text>
+                </TextWithInputFont>
+                <Label>{t("Round")}</Label>
+                <TextWithInputFont>
+                    {sRound}
+                </TextWithInputFont>
+                <UsePsiSurge/>
+                <ButtonContainer
+                    title="Fight"
+                    onClick={fight}
+                    disabled={
+                        props.CharacterSheet.CombatSkill === undefined
+                        || props.CharacterSheet.CombatSkill === ""
+                        || props.CharacterSheet.EnemyCombatSkill === undefined
+                        || props.CharacterSheet.EnemyCombatSkill === ""
+                    }
+                />
+                <ButtonContainer
+                    title="UpdateEndurance"
+                    onClick={updateEndurance}
+                    disabled={
+                        props.CharacterSheet.CombatSkill === undefined
+                        || props.CharacterSheet.CombatSkill === ""
+                        || props.CharacterSheet.EnemyCombatSkill === undefined
+                        || props.CharacterSheet.EnemyCombatSkill === ""
+                        || props.CharacterSheet.Endurance === undefined
+                        || props.CharacterSheet.Endurance === ""
+                        || props.CharacterSheet.EnemyEndurance === undefined
+                        || props.CharacterSheet.EnemyEndurance === ""
+                    }
+                />
+                <ButtonContainer
+                    title="FightUpdateEndurance"
+                    onClick={fightAndUpdateEndurance}
+                    disabled={
+                        props.CharacterSheet.CombatSkill === undefined
+                        || props.CharacterSheet.CombatSkill === ""
+                        || props.CharacterSheet.EnemyCombatSkill === undefined
+                        || props.CharacterSheet.EnemyCombatSkill === ""
+                        || props.CharacterSheet.Endurance === undefined
+                        || props.CharacterSheet.Endurance === ""
+                        || props.CharacterSheet.EnemyEndurance === undefined
+                        || props.CharacterSheet.EnemyEndurance === ""
+                    }
+                />
+                <ButtonContainer title="ClearEnemyStats" onClick={clearEnemyStats}/>
+            </ShowDetails>
+            <ShowDetails label="RandomNumber" startVisible>
+                <TextWithInputFont>{sNumber} {props.CharacterSheet.WeaponmasteryBow ? t("RandomBowmasteryBonus") : null}</TextWithInputFont>
+                <ButtonContainer title="GenerateRandomNumber" onClick={generateRandomNumber}/>
+            </ShowDetails>
+        </View>
+    )
 }
 const CombatRatio = connect(mapStateToProps)(CombatRatioView)
 
-class UsePsiSurgeView extends Component {
+function UsePsiSurgeView(props) {
+    const {t} = useTranslation();
 
-    hasPsiSurge = () => {
-
-        let {CharacterSheet} = {...this.props}
-
-        let hasPsiSurge = false
-
-        if (this.props.CharacterSheet.Book && this.props.CharacterSheet.Book.number >= 6) {
-
-            for (let i = 1; i <= 10; i++) {
-                let kaiDiscipline = CharacterSheet["Magnakai" + i]
-                if (kaiDiscipline !== undefined) {
-                    if (kaiDiscipline.toLowerCase().indexOf("psi-surge") > -1) {
-                        hasPsiSurge = true
-                    }
-                }
-            }
-
+    const hasPsiSurge = () => {
+        if (props.CharacterSheet.Book && props.CharacterSheet.Book.number >= 6) {
+            return props.getMagnakaiDisciplines().includes("MagnakaiPsiSurge");
         }
 
-        return hasPsiSurge
-
+        return false;
     }
 
-    render() {
-        return (
-            <View hidden={!this.hasPsiSurge()}>
-                <Input name="UsePsiSurge" type="checkbox" inline />
-                <LabelInline htmlFor="UsePsiSurge" style={Styles.CheckboxLabel}>Use Psi-surge</LabelInline>
-            </View>
-        )
-    }
+    return (
+        <View hidden={!hasPsiSurge()}>
+            <Input name="UsePsiSurge" type="checkbox" inline />
+        <LabelInline htmlFor="UsePsiSurge" style={Styles.CheckboxLabel}>{t("UsePsiSurge")}</LabelInline>
+        </View>
+    )
 }
 const UsePsiSurge = connect(mapStateToProps)(UsePsiSurgeView)
 
-class WeaponsView extends Component {
-
-    render() {
-        return (
-            <ShowDetails label="Weapons">
-                {this.props.numberSequence(2).map(number =>
-                    <Input key={number} name={"Weapon" + number} />
-                )}
-            </ShowDetails>
-        )
-    }
+function WeaponsView(props) {
+    return (
+        <ShowDetails label="Weapons">
+            {props.numberSequence(2).map(number =>
+                <Input key={number} name={"Weapon" + number} />
+            )}
+        </ShowDetails>
+    )
 }
 const Weapons = connect(mapStateToProps)(WeaponsView)
 
-class WeaponmasteryView extends Component {
+function WeaponmasteryView(props) {
 
-    hasWeaponmastery = () => {
-        
-        let {CharacterSheet} = {...this.props}
-
-        let hasWeaponmastery = false
-
-        if (this.props.CharacterSheet.Book && this.props.CharacterSheet.Book.number >= 6) {
-
-            for (let i = 1; i <= 10; i++) {
-                let kaiDiscipline = CharacterSheet["Magnakai" + i]
-                if (kaiDiscipline !== undefined) {
-                    if (kaiDiscipline.toLowerCase().indexOf("weaponmastery") > -1) {
-                        hasWeaponmastery = true
-                    }
-                }
-            }
-
+    const hasWeaponmastery = () => {
+        if (props.CharacterSheet.Book && props.CharacterSheet.Book.number >= 6) {
+            return props.getMagnakaiDisciplines().includes("MagnakaiWeaponmastery");
         }
 
-        return hasWeaponmastery
-
+        return false
     }
 
-    render() {
-        return (
-            <View hidden={!this.hasWeaponmastery()}>
-                <ShowDetails label="Weaponmastery">
-                    {["Spear","Dagger","Mace","Short Sword","Warhammer","Bow","Axe","Sword","Quarterstaff"].map(weapon => <WeaponMasteryCheckbox key={weapon} weapon={weapon}/>)}
-                </ShowDetails>
-            </View>
-        )
-    }
+    return (
+        <View hidden={!hasWeaponmastery()}>
+            <ShowDetails label="Weaponmastery">
+                {["Spear","Dagger","Mace","Short Sword","Warhammer","Bow","Axe","Sword","Quarterstaff","Broadsword"].map(weapon => <WeaponMasteryCheckbox key={weapon} weapon={weapon}/>)}
+            </ShowDetails>
+        </View>
+    )
 }
 const Weaponmastery = connect(mapStateToProps)(WeaponmasteryView)
 
-class WeaponMasteryCheckbox extends Component {
-    render() {
-        return (
-            <View>
-                <Input name={"Weaponmastery" + this.props.weapon.replace(/ /g,"")} type="checkbox" inline/>
-                <LabelInline htmlFor={"Weaponmastery" + this.props.weapon.replace(/ /g,"")} style={Styles.CheckboxLabel}>{this.props.weapon}</LabelInline>
-            </View>
-        )
-    }
+function WeaponMasteryCheckbox(props) {
+    const {t} = useTranslation();
+
+    return (
+        <View>
+            <Input name={"Weaponmastery" + props.weapon.replace(/ /g,"")} type="checkbox" inline/>
+            <LabelInline htmlFor={"Weaponmastery" + props.weapon.replace(/ /g,"")} style={Styles.CheckboxLabel}>{t(props.weapon)}</LabelInline>
+        </View>
+    )
 }
 
-class KaiView extends Component {
+function KaiView(props) {
+    const {t} = useTranslation();
 
-    state = {hideDetails: true}
+    // const [hideDetails, setHideDetails] = useState(true);
 
-    toggleDetails = () => {
-        this.setState({hideDetails: !this.state.hideDetails})
+    // const toggleDetails = () => {
+    //     setHideDetails(!hideDetails);
+    // }
+
+    if (!props.CharacterSheet.Book || (props.CharacterSheet.Book && props.CharacterSheet.Book.number >= 6)) {
+        return null
     }
 
-    render() {
-
-        if (!this.props.CharacterSheet.Book || (this.props.CharacterSheet.Book && this.props.CharacterSheet.Book.number >= 6)) {
-            return null
-        }
-
-        return (
-            <View>
-                <ShowDetails label="Kai Disciplines">
-                    {this.props.numberSequence(10).map(number => 
-                        <Input key={"Kai" + number} name={"Kai" + number} select={this.props.KaiDisciplines} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number <= number-5}/>
-                    )}
-                    {this.props.CharacterSheet.Book ? <Link target="_blank" href={this.props.CharacterSheet.Book.url + this.props.BookURLs.disciplines}>Disciplines</Link> : null}
-                    <Group name="Kai Level" select={this.props.KaiLevels}/>
-                </ShowDetails>
-            </View>
-        )
+    let currentKaiLevel = null;
+    if (props.CharacterSheet.KaiLevel) {
+        currentKaiLevel = props.KaiLevels.filter(kaiLevel => t(kaiLevel.name).toLowerCase() === t(props.CharacterSheet.KaiLevel).toLowerCase())[0];
+    } 
+    else {
+        currentKaiLevel = props.KaiLevels[0];
     }
+
+    return (
+        <View>
+            <ShowDetails label="KaiDisciplines">
+                {props.numberSequence(10).map(number => 
+                    <Input key={"Kai" + number} name={"Kai" + number} select={props.KaiDisciplines} hidden={currentKaiLevel == null || number > currentKaiLevel.disciplines} />
+                )}
+                {props.CharacterSheet.Book ? <Link target="_blank" href={props.CharacterSheet.Book.url + props.BookURLs.disciplines}>{t("Disciplines")}</Link> : null}
+                <Group name="KaiLevel" select={props.KaiLevels}/>
+            </ShowDetails>
+        </View>
+    )
 }
 const Kai = connect(mapStateToProps)(KaiView)
 
-class MagnakaiView extends Component {
+function MagnakaiView(props) {
+    const {t} = useTranslation();
 
-    render() {
-
-        if (!this.props.CharacterSheet.Book || (this.props.CharacterSheet.Book && this.props.CharacterSheet.Book.number < 6)) {
-            return null
-        }
-
-        return (
-            <View>
-                <ShowDetails label="Magnakai Disciplines">
-                    {this.props.numberSequence(10).map(number =>
-                        <Input key={"Magnakai" + number} name={"Magnakai" + number} select={this.props.MagnakaiDisciplines} optGroups={this.props.LoreCircles} hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number <= number+2}/>
-                    )}
-                    {this.props.CharacterSheet.Book ? <Link target="_blank" href={this.props.CharacterSheet.Book.url + this.props.BookURLs.disciplines}>Disciplines</Link> : null}
-                    <Group name="Magnakai Level" select={this.props.MagnakaiLevels}/>
-                    {this.props.CharacterSheet.Book ? <Link target="_blank" href={this.props.CharacterSheet.Book.url + this.props.BookURLs.improveddisciplines}>Improved Disciplines</Link> : null}
-                </ShowDetails>
-            </View>
-        )
+    if (!props.CharacterSheet.Book || (props.CharacterSheet.Book && props.CharacterSheet.Book.number < 6)) {
+        return null
     }
+
+    let currentMagnakaiLevel = null;
+    const magnakaiLevel = props.getMagnakaiLevel();
+    if (magnakaiLevel) {
+        currentMagnakaiLevel = props.MagnakaiLevels.filter(level => level.name.toLowerCase() === magnakaiLevel)[0];
+    } 
+    else {
+        currentMagnakaiLevel = props.MagnakaiLevels[0];
+    }
+
+    return (
+        <View>
+            <ShowDetails label="MagnakaiDisciplines">
+                {props.numberSequence(10).map(number =>
+                    <Input key={"Magnakai" + number} name={"Magnakai" + number} select={props.MagnakaiDisciplines} optGroups={props.LoreCircles} hidden={currentMagnakaiLevel == null || number > currentMagnakaiLevel.disciplines} />
+                )}
+                {props.CharacterSheet.Book ? <Link target="_blank" href={props.CharacterSheet.Book.url + props.BookURLs.disciplines}>{t("Disciplines")}</Link> : null}
+                <Group name="MagnakaiLevel" select={props.MagnakaiLevels}/>
+                {props.CharacterSheet.Book ? <Link target="_blank" href={props.CharacterSheet.Book.url + props.BookURLs.improveddisciplines}>{t("ImprovedDisciplines")}</Link> : null}
+            </ShowDetails>
+        </View>
+    )
 }
 const Magnakai = connect(mapStateToProps)(MagnakaiView)
 
-class LoreCirclesView extends Component {
-    render() {
-        const loreCircles = [
-            {
-                name: "Circle of Fire",
-                bonus: "+1 COMBAT +2 ENDURANCE",
-            },
-            {
-                name: "Circle of Light",
-                bonus: "+3 ENDURANCE",
-            },
-            {
-                name: "Circle of Solaris",
-                bonus: "+1 COMBAT +3 ENDURANCE",
-            },
-            {
-                name: "Circle of the Spirit",
-                bonus: "+3 COMBAT +3 ENDURANCE",
-            },
-        ]
-        return (
-            <View hidden={!(this.props.CharacterSheet.Book && this.props.CharacterSheet.Book.number >= 6)}>
-                <ShowDetails label="Lore Circles">
-                    <NoLoreCircle/>
-                    {loreCircles.map(circle => <LoreCircleDescription key={circle.name} circle={circle} />)}
-                    {this.props.CharacterSheet.Book ? <Link target="_blank" href={this.props.CharacterSheet.Book.url + this.props.BookURLs.lorecircles}>Info</Link> : null}
-                </ShowDetails>
-            </View>
-        )
-    }
+function LoreCirclesView(props) {
+    const loreCircles = [
+        {
+            name: "CircleFire",
+            bonus: "CircleFireBonus",
+        },
+        {
+            name: "CircleLight",
+            bonus: "CircleLightBonus",
+        },
+        {
+            name: "CircleSolaris",
+            bonus: "CircleSolarisBonus",
+        },
+        {
+            name: "CircleSpirit",
+            bonus: "CircleSpiritBonus",
+        },
+    ]
+    return (
+        <View hidden={!(props.CharacterSheet.Book && props.CharacterSheet.Book.number >= 6)}>
+            <ShowDetails label="LoreCircles">
+                <NoLoreCircle/>
+                {loreCircles.map(circle => <LoreCircleDescription key={circle.name} circle={circle} />)}
+                {props.CharacterSheet.Book ? <Link target="_blank" href={props.CharacterSheet.Book.url + props.BookURLs.lorecircles}>Info</Link> : null}
+            </ShowDetails>
+        </View>
+    )
 }
 const LoreCircles = connect(mapStateToProps)(LoreCirclesView)
 
-class NoLoreCircleView extends Component {
-    render() {
-        return (
-            <View hidden={
-                this.props.checkLoreCircle("Circle of Fire")
-                || this.props.checkLoreCircle("Circle of Light")
-                || this.props.checkLoreCircle("Circle of Solaris")
-                || this.props.checkLoreCircle("Circle of the Spirit")
-                }>
-                <TextWithInputFont>None</TextWithInputFont>
-            </View>    
-        )
-    }
+function NoLoreCircleView(props) {
+    const {t} = useTranslation();
+
+    return (
+        <View hidden={
+            props.checkLoreCircle("CircleFire")
+            || props.checkLoreCircle("CircleLight")
+            || props.checkLoreCircle("CircleSolaris")
+            || props.checkLoreCircle("CircleSpirit")
+            }>
+            <TextWithInputFont>{t("None")}</TextWithInputFont>
+        </View>    
+    )
 }
 const NoLoreCircle = connect(mapStateToProps)(NoLoreCircleView)
 
-class LoreCircleDescriptionView extends Component {
-    render() {
-        let circle = this.props.circle
-        return (
-            <View>
-                <TextWithInputFont hidden={!this.props.checkLoreCircle(circle.name)}>{circle.name}: {circle.bonus}</TextWithInputFont>
-            </View>
-        )
-    }
+function LoreCircleDescriptionView(props) {
+    const {t} = useTranslation();
+
+    let circle = props.circle
+    return (
+        <View>
+            <TextWithInputFont hidden={!props.checkLoreCircle(circle.name)}>{t(circle.name)}: {t(circle.bonus)}</TextWithInputFont>
+        </View>
+    )
 }
 const LoreCircleDescription = connect(mapStateToProps)(LoreCircleDescriptionView)
 
-class BeltPouchView extends Component {
-    render() {
-        return (
-            <ShowDetails label="Belt Pouch">
-                <Input name="BeltPouch" append="50 gold crowns max" type="number"/>
-            </ShowDetails>
-        )
-    }
+function BeltPouchView() {
+    return (
+        <ShowDetails label="BeltPouch">
+            <Input name="BeltPouch" append="BeltPouchDescription" type="number"/>
+        </ShowDetails>
+    )
 }
 const BeltPouch = connect(mapStateToProps)(BeltPouchView)
 
-class MealsView extends Component {
-    render() {
-        return (
-            <View hidden={!this.props.CharacterSheet.Book || this.props.CharacterSheet.Book.number !== 1}>
-                <ShowDetails label="Meals">
-                    <Input name="Meals" type="number" />
-                </ShowDetails>
-            </View>
-        )
-    }
+function MealsView(props) {
+    return (
+        <View hidden={!props.CharacterSheet.Book || props.CharacterSheet.Book.number !== 1}>
+            <ShowDetails label="Meals">
+                <Input name="Meals" type="number" />
+            </ShowDetails>
+        </View>
+    )
 }
 const Meals = connect(mapStateToProps)(MealsView)
 
-class BackpackView extends Component {
-    render() {
-        return (
-            <ShowDetails label="Backpack Items">
-                {this.props.numberSequence(8).map(number => 
-                    <Input key={"BackpackItem" + number} name={"BackpackItem" + number} />
-                )}
-            </ShowDetails>
-        )
-    }
+function BackpackView(props) {
+    return (
+        <ShowDetails label="BackpackItems">
+            {props.numberSequence(8).map(number => 
+                <Input key={"BackpackItem" + number} name={"BackpackItem" + number} />
+            )}
+        </ShowDetails>
+    )
 }
 const Backpack = connect(mapStateToProps)(BackpackView)
 
-class SpecialItemsView extends Component {
+function SpecialItemsView(props) {
+    // const [hideDetails, setHideDetails] = useState(true);
 
-    state = {hideDetails: true}
+    // const toggleDetails = () => {
+    //     setHideDetails(!hideDetails);
+    // }
 
-    toggleDetails = () => {
-        this.setState({hideDetails: !this.state.hideDetails})
-    }
-
-    render() {
-        return (
-            <ShowDetails label="Special Items">
-                {this.props.numberSequence(16).map(number =>
-                    <Input key={"SpecialItem" + number} name={"SpecialItem" + number} />
-                )}
-            </ShowDetails>
-        )
-    }
+    return (
+        <ShowDetails label="SpecialItems">
+            {props.numberSequence(16).map(number =>
+                <Input key={"SpecialItem" + number} name={"SpecialItem" + number} />
+            )}
+        </ShowDetails>
+    )
 }
 const SpecialItems = connect(mapStateToProps)(SpecialItemsView)
 
-class NotesView extends Component {
-    render() {
-        return (
-            <ShowDetails label="Notes">
-                <Input name="Notes" box/>
-            </ShowDetails>
-        )
-    }
+function NotesView() {
+    return (
+        <ShowDetails label="Notes">
+            <Input name="Notes" box/>
+        </ShowDetails>
+    )
 }
 const Notes = connect(mapStateToProps)(NotesView)
 
-class GameStateView extends Component {
+function GameStateView(props) {
 
-    loadGame = () => {
-        this.props.dispatch({type: "LOAD_GAME", value: this.props.CharacterSheet.GameState, API: this.props.API})
+    const loadGame = () => {
+        props.dispatch({type: "LOAD_GAME", value: props.CharacterSheet.GameState, API: props.API})
 
-        if (this.props.CharacterSheet.GameState === "") {
-            this.props.dispatch({type: "UPDATE_ACTUAL_GAME_ID_REQUEST_FEEDBACK"})
+        if (props.CharacterSheet.GameState === "") {
+            props.dispatch({type: "UPDATE_ACTUAL_GAME_ID_REQUEST_FEEDBACK"})
         }
     }
-    modifyGameState = (input) => {
-        this.props.dispatch({type: "MODIFY_GAME_STATE", value: input.value, API: this.props.API})
+    const modifyGameState = (input) => {
+        props.dispatch({type: "MODIFY_GAME_STATE", value: input.value, API: props.API})
     }
-    clear = () => {
-        this.props.dispatch({type: "CLEAR_GAME_STATE", API: this.props.API})
+    const clear = () => {
+        props.dispatch({type: "CLEAR_GAME_STATE", API: props.API})
     }
-    render() {
-        return (
-            <ShowDetails label="Game State">
-                <Input name="GameState" value={this.props.CharacterSheet.GameState} onChange={this.modifyGameState} box/>
-                <ButtonContainer title={this.props.CharacterSheet.GameState === "" ? "Start New Game" : "Load Custom Game State"} onClick={this.loadGame}/>
-                <ButtonContainer title="Clear Custom Game State" onClick={this.clear}/>
-            </ShowDetails>
-        )
-    }
+
+    return (
+        <ShowDetails label="GameState">
+            <Input name="GameState" value={props.CharacterSheet.GameState} onChange={modifyGameState} box/>
+            <ButtonContainer title={props.CharacterSheet.GameState === "" ? "StartNewGame" : "LoadCustomGameState"} onClick={loadGame}/>
+            <ButtonContainer title="ClearCustomGameState" onClick={clear}/>
+        </ShowDetails>
+    )
 }
 const GameState = connect(mapStateToProps)(GameStateView)
 
-class SaveAndLoadRemotelyView extends Component {
+function SaveAndLoadRemotelyView(props) {
+    const {t} = useTranslation();
 
-    modifyGameID = (input) => {
-        this.props.dispatch({type: "UPDATE_GAME_ID_REQUEST_FEEDBACK", value: input.value})
+    const modifyGameID = (input) => {
+        props.dispatch({type: "UPDATE_GAME_ID_REQUEST_FEEDBACK", value: input.value})
     }
-    modifyPassword = (input) => {
-        this.props.dispatch({type: "UPDATE_PASSWORD_REQUEST_FEEDBACK", value: input.value})
+    const modifyPassword = (input) => {
+        props.dispatch({type: "UPDATE_PASSWORD_REQUEST_FEEDBACK", value: input.value})
     }
-    loadGameRemotely = () => {
-
+    const loadGameRemotely = () => {
         clearTimeout(APItimeout)
 
-        if (this.props.RequestFeedback.gameID === undefined || this.props.RequestFeedback.gameID === "") {
-            return this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Please enter the ID of the game."})
+        if (props.RequestFeedback.gameID === undefined || props.RequestFeedback.gameID === "") {
+            return props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Please enter the ID of the game."})
         } 
 
-        if (this.props.RequestFeedback.password === undefined || this.props.RequestFeedback.password === "") {
-            return this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Please enter the password."})
+        if (props.RequestFeedback.password === undefined || props.RequestFeedback.password === "") {
+            return props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Please enter the password."})
         }
-        if (this.props.RequestFeedback.password.length < 8) {
-            return this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "This password is too short."})
+        if (props.RequestFeedback.password.length < 8) {
+            return props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "This password is too short."})
         }
 
-        this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Loading..."})
+        props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Loading..."})
         
-        this.props.API("loadgame", true)
-
+        props.API("loadgame", true)
     }
-    saveGameRemotely = () => {
-
+    const saveGameRemotely = () => {
         clearTimeout(APItimeout)
 
-        if (this.props.CharacterSheet.GameState === "" && (this.props.RequestFeedback.gameID === undefined || this.props.RequestFeedback.gameID === "")) {
-            return this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Please enter the ID of the game you wish to delete."})
+        if (props.CharacterSheet.GameState === "" && (props.RequestFeedback.gameID === undefined || props.RequestFeedback.gameID === "")) {
+            return props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Please enter the ID of the game you wish to delete."})
         }
 
-        if (this.props.RequestFeedback.password === undefined || this.props.RequestFeedback.password === "") {
-            return this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Please enter the password."})
+        if (props.RequestFeedback.password === undefined || props.RequestFeedback.password === "") {
+            return props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Please enter the password."})
         }
-        if (this.props.RequestFeedback.password.length < 8) {
-            return this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "This password is too short."})
+        if (props.RequestFeedback.password.length < 8) {
+            return props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "This password is too short."})
         }
         
-        this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Saving..."})
+        props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Saving..."})
 
-        this.props.API("savegame", true)
-
+        props.API("savegame", true)
     }
-    toggleAutoSave = (input) => {
-
-        if (this.props.RequestFeedback.gameID === undefined || this.props.RequestFeedback.gameID === "") {
-            this.props.dispatch({type: "Autosave", value: false})
-            return this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Please enter a game ID before enabling autosaving."})
+    const toggleAutoSave = (input) => {
+        if (props.RequestFeedback.gameID === undefined || props.RequestFeedback.gameID === "") {
+            props.dispatch({type: "Autosave", value: false})
+            return props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: "Please enter a game ID before enabling autosaving."})
         }
 
-        this.props.dispatch({type: "Autosave", value: input.checked, API: this.props.API, save: true})
-        this.props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: null})
+        props.dispatch({type: "Autosave", value: input.checked, API: props.API, save: true})
+        props.dispatch({type: "UPDATE_VALIDATION_REQUEST_FEEDBACK", value: null})
+    }
 
-    }
-    render() {
-        return (
-            <ShowDetails label="Remote Game ID">
-                <Input value={this.props.RequestFeedback.gameID} onChange={this.modifyGameID} noAutoSave/>
-                <Label>Password</Label>
-                <Input type="password" value={this.props.RequestFeedback.password} onChange={this.modifyPassword} noAutoSave/>
-                <TextWithInputFont>{this.props.RequestFeedback ? this.props.RequestFeedback.message : null}</TextWithInputFont>
-                <ButtonContainer title="Load Game Remotely" onClick={this.loadGameRemotely}/>
-                <ButtonContainer title={this.props.CharacterSheet.GameState === "" ? "Delete Game Remotely" : "Save Game Remotely"} onClick={this.saveGameRemotely}/>
-                <Input name="Autosave" type="checkbox" onChange={this.toggleAutoSave} inline/>
-                <LabelInline htmlFor="Autosave" style={Styles.CheckboxLabel}>Auto save</LabelInline>
-            </ShowDetails>
-        )
-    }
+    return (
+        <ShowDetails label="RemoteGameID">
+            <Input value={props.RequestFeedback.gameID} onChange={modifyGameID} noAutoSave/>
+            <Label>Password</Label>
+            <Input type="password" value={props.RequestFeedback.password} onChange={modifyPassword} noAutoSave/>
+            <TextWithInputFont>{props.RequestFeedback ? props.RequestFeedback.message : null}</TextWithInputFont>
+            <ButtonContainer title="LoadGameRemotely" onClick={loadGameRemotely}/>
+            <ButtonContainer title={props.CharacterSheet.GameState === "" ? "DeleteGameRemotely" : "SaveGameRemotely"} onClick={saveGameRemotely}/>
+            <Input name="Autosave" type="checkbox" onChange={toggleAutoSave} inline/>
+            <LabelInline htmlFor="Autosave" style={Styles.CheckboxLabel}>{t("Autosave")}</LabelInline>
+        </ShowDetails>
+    )
 }
 const SaveAndLoadRemotely = connect(mapStateToProps)(SaveAndLoadRemotelyView)
