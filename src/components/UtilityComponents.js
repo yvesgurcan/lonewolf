@@ -60,7 +60,7 @@ export function Group(props) {
         <View hidden={props.hidden}>
             <Label hidden={props.type === 'checkbox'}>
                 {t(props.name)}
-                {props.append ? <Text> ({props.append})</Text> : null}
+                {props.append ? <Text> ({t(props.append)})</Text> : null}
             </Label>
             <Input
                 name={props.name.replace(/ /g, '')}
@@ -81,8 +81,8 @@ export function Group(props) {
                         : { ...Styles.CheckboxLabel }
                 }
             >
-                {props.name}
-                {props.append ? <Text> ({props.append})</Text> : null}
+                {t(props.name)}
+                {props.append ? <Text> ({t(props.append)})</Text> : null}
             </LabelInline>
         </View>
     );

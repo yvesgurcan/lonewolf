@@ -1,5 +1,3 @@
-import i18next from 'i18next';
-
 function GenerateFormattedDate(TimeInMilliseconds) {
     return [
         [
@@ -51,8 +49,6 @@ export default (State = InitState, Action) => {
                 }
 
                 NewState = JSON.parse(storedState).CharacterSheet;
-
-                i18next.changeLanguage(NewState.Language);
             }
         }
     } else if (
