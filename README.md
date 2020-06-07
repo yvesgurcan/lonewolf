@@ -1,4 +1,5 @@
 # lonewolf
+
 A simple character sheet to play the Choose Your Own Adventure books of the Lone Wolf series
 
 ## TL;DR
@@ -63,12 +64,13 @@ If applicable, enter the name of the items you chose on your Backpack and/or Spe
 
 You are set for your adventure. Click on Go to Section to start your journey.
 
-Whenever you must fight against an enemy, enter their Combat Skill and Endurance Points in the Enemy section of the character sheet. You can check the mindblast immunity and/or the psi-surge boxes if applicable (you must have the appropriate Kai/Magnakai Disciplines for these options to show). Do not forget to click on Update Combat Skill. 
+Whenever you must fight against an enemy, enter their Combat Skill and Endurance Points in the Enemy section of the character sheet. You can check the mindblast immunity and/or the psi-surge boxes if applicable (you must have the appropriate Kai/Magnakai Disciplines for these options to show). Do not forget to click on Update Combat Skill.
 
 By now, you should see a number by the Combat Ratio label. You have 3 options to help with combats:
-- Clicking on Fight will generate a random number and show the damage to inflict to both parties.
-- Clicking on Update Endurance will apply the current damage to both parties.
-- Clicking on Fight & Update Endurance will perform both actions above at once.
+
+-   Clicking on Fight will generate a random number and show the damage to inflict to both parties.
+-   Clicking on Update Endurance will apply the current damage to both parties.
+-   Clicking on Fight & Update Endurance will perform both actions above at once.
 
 The number of rounds is updated automatically as you Fight. Click on Clear Enemy Stats to reset this figure to zero and empty the Enemy Combat Skill and Enemy Ensurance fields.
 
