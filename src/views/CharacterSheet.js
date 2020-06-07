@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Provider, connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { store } from './Store';
-import { mapStateToProps } from './mapStateToProps';
+import { store } from '../store/store';
+import { mapStateToProps } from '../lib/mapStateToProps';
 import {
     View,
     Header1,
@@ -12,9 +12,9 @@ import {
     Label,
     LabelInline,
     ButtonContainer,
-} from './WebComponents';
-import Styles from './Styles';
-import { ShowDetails, Group, Input, Spacer } from './UtilityComponents';
+} from '../components/WebComponents';
+import Styles from '../styles';
+import { ShowDetails, Group, Input, Spacer } from '../components/UtilityComponents';
 import i18next from 'i18next';
 
 let APItimeout = null;

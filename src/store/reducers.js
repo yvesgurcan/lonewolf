@@ -1,6 +1,5 @@
 import { combineReducers } from 'redux';
 import i18next from 'i18next';
-// const localStorage = null
 
 function GenerateFormattedDate(TimeInMilliseconds) {
     return [

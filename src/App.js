@@ -1,7 +1,7 @@
 import React, { Suspense, lazy } from 'react';
 import { useTranslation } from 'react-i18next';
 
-const CharacterSheet = lazy(() => import('./CharacterSheet'));
+const CharacterSheet = lazy(() => import('./views/CharacterSheet'));
 
 export default () => {
     const { t } = useTranslation();
