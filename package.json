@@ -12,7 +12,7 @@
         "react-i18next": "^11.5.0",
         "react-redux": "^5.0.6",
         "react-transition-group": "^2.2.1",
-        "redux": "^3.7.2"
+        "redux": "^4.0.5"
     },
     "devDependencies": {
         "gh-pages": "^2.2.0",
