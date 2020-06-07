@@ -1,5 +1,5 @@
 {
-    "Loading...": "Loading...",
+    "Loading": "Loading...",
     "Kai": "Kai",
     "Magnakai": "Magnakai",
     "GrandMaster": "Grand Master",
@@ -9,6 +9,7 @@
     "GameLastSaved": "Game Last Saved",
     "Language": "Language",
     "en": "English",
+    "fr": "French",
     "it": "Italian",
     "Book": "Book",
     "TableContents": "Table of Contents",
@@ -42,7 +43,7 @@
     "Weaponless": "Weaponless",
     "MaxEndurance": "Max Endurance",
     "Endurance": "Endurance",
-    "ArchmasterCuring": "Archmaster Curing: +20 (once/100 days)",
+    "ArchmasterCuring": "Archmaster Curing: +20 (once/100 days) if ENDURANCE below 6",
     "HealToMax": "Heal to Max",
     "EnemyCombatSkill": "Enemy Combat Skill",
     "EnemyEndurance": "Enemy Endurance",
@@ -73,11 +74,11 @@
     "KaiSavant": "Savant",
     "KaiMaster": "Master",
     "KaiCamouflage": "Camouflage",
-    "KaiHunting": "Hunting: no need for a Meal when instructed to eat",
+    "KaiHunting": "Hunting: no need for a meal when instructed to eat (except in desert)",
     "KaiSixthSense": "Sixth Sense",
     "KaiTracking": "Tracking",
     "KaiHealing": "Healing: +1 ENDURANCE point for each section without combat",
-    "KaiMindshield": "Mindshield: no points lost when attacked by Mindblast",
+    "KaiMindshield": "Mindshield: no points lost when attacked by Mindblast (especially foes in hell)",
     "KaiMindblast": "Mindblast: +2 COMBAT SKILL points",
     "Mindblast": "Mindblast",
     "KaiAnimalKinship": "Animal Kinship",
@@ -135,7 +136,6 @@
     "CircleSpirit": "Circle of the Spirit",
     "CircleSpiritBonus": "+3 COMBAT +3 ENDURANCE",
     "BeltPouch": "Belt Pouch",
-    "BeltPouchDescription": "50 gold crowns max",
     "Meals": "Meals",
     "BackpackItems": "Backpack Items",
     "SpecialItems": "Special Items",
@@ -149,5 +149,6 @@
     "LoadGameRemotely": "Load Game Remotely",
     "DeleteGameRemotely": "Delete Game Remotely",
     "SaveGameRemotely": "Save Game Remotely",
-    "Autosave": "Auto save"
+    "Autosave": "Auto save",
+    "Password": "Password"
 }
