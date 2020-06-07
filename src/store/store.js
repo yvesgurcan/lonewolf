@@ -1,5 +1,12 @@
 import { createStore } from 'redux';
-import reducers from './reducers';
+import { combineReducers } from 'redux';
+import RequestFeedback from './RequestFeedback';
+import CharacterSheet from './CharacterSheet';
+
+const reducers = combineReducers({
+    RequestFeedback,
+    CharacterSheet,
+});
 
 export const store = createStore(
     reducers,
