@@ -7,12 +7,12 @@ import translationIT from "./locales/it/translation.json";
 import translationEN from "./locales/en/translation.json";
 
 const resources = {
- en: {
-   translation: translationEN,
- },
- it: {
-   translation: translationIT,
- },
+  en: {
+    translation: translationEN,
+  },
+  it: {
+    translation: translationIT,
+  },
 };
 
 i18n
@@ -22,13 +22,11 @@ i18n
   .use(initReactI18next)
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
-    debug: true,
- 
-    lng: 'it',
+    debug: false,
+    lng: 'en',
     fallbackLng: 'en',
     whitelist: ['en', 'it'],
     resources,
- 
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default
     },

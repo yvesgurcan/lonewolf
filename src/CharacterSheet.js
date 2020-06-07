@@ -45,6 +45,7 @@ import {
     Input,
     Spacer,
 } from './UtilityComponents'
+import i18next from 'i18next';
 
 let APItimeout = null
 
@@ -60,10 +61,10 @@ function CharacterSheetView(props) {
     const {t} = useTranslation();
 
     useEffect(() => {
-        console.log("Set debugApp to true to see game state data.")
+        console.log("Set debugApp to true to see game state data.");
 
-        props.dispatch({type: "INIT"})
-        props.dispatch({type: "INIT_REQUEST_FEEDBACK"})
+        props.dispatch({type: "INIT"});
+        props.dispatch({type: "INIT_REQUEST_FEEDBACK"});
     }, []);
 
     return (
@@ -103,6 +104,16 @@ function LinkToProject() {
 
 function GameMetaDataView(props) {
     const {t} = useTranslation();
+
+    const langs = [
+        { name: 'en' },
+        { name: 'it' }
+    ];
+
+    const onChange = (input) => {
+        props.dispatch({type: "CHANGE_LANG", value: input.value, API: props.API, save: true});
+        i18next.changeLanguage(input.value);
+    };
     
     return (
         <ShowDetails label="GameId" startVisible>
@@ -111,6 +122,8 @@ function GameMetaDataView(props) {
             <Text>{props.CharacterSheet.GameStarted}</Text>
             <Label>{t("GameLastSaved")}</Label>
             <Text>{props.CharacterSheet.GameSaved || "-"}</Text>
+            <Label>{t("Language")}</Label>
+            <Input key="Language" name="Language" select={langs} onChange={onChange} />
         </ShowDetails>
     )
 }
