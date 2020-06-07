@@ -1,6 +1,6 @@
 # lonewolf
 
-A simple character sheet to play the Choose Your Own Adventure books of the Lone Wolf series
+A simple character sheet to play the Choose Your Own Adventure books of the Lone Wolf series.
 
 ## TL;DR
 

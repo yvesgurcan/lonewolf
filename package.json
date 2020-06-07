@@ -1,28 +1,30 @@
 {
-  "name": "lonewolf-charactersheet",
-  "version": "0.10.0",
-  "private": true,
-  "dependencies": {
-    "i18next": "^19.4.5",
-    "i18next-xhr-backend": "^3.2.2",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
-    "react-i18next": "^11.5.0",
-    "react-redux": "^5.0.6",
-    "react-transition-group": "^2.2.1",
-    "redux": "^3.7.2"
-  },
-  "devDependencies": {
-    "gh-pages": "^2.2.0",
-    "react-scripts": "1.0.17"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
-  },
-  "homepage": "https://lonewolf.yvesgurcan.com/build"
+    "name": "lonewolf-charactersheet",
+    "description": "A simple character sheet to play the Choose Your Own Adventure books of the Lone Wolf series.",
+    "version": "0.10.0",
+    "private": true,
+    "dependencies": {
+        "i18next": "^19.4.5",
+        "i18next-xhr-backend": "^3.2.2",
+        "react": "^16.2.0",
+        "react-dom": "^16.2.0",
+        "react-helmet": "^6.0.0",
+        "react-i18next": "^11.5.0",
+        "react-redux": "^5.0.6",
+        "react-transition-group": "^2.2.1",
+        "redux": "^3.7.2"
+    },
+    "devDependencies": {
+        "gh-pages": "^2.2.0",
+        "react-scripts": "1.0.17"
+    },
+    "scripts": {
+        "start": "react-scripts start",
+        "predeploy": "npm run build",
+        "deploy": "gh-pages -d build",
+        "build": "react-scripts build",
+        "test": "react-scripts test --env=jsdom",
+        "eject": "react-scripts eject"
+    },
+    "homepage": "https://lonewolf.yvesgurcan.com/build"
 }

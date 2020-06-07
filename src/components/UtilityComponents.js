@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { mapStateToProps } from './mapStateToProps';
 import Transition from 'react-transition-group/Transition';
 import { useTranslation } from 'react-i18next';
+import { mapStateToProps } from '../lib/mapStateToProps';
 import {
-    View, // mimicks React Native built-in component
-    Text, // mimicks React Native built-in component
+    View,
+    Text,
     Label,
     LabelInline,
-    TextInput, // mimicks React Native built-in component
+    TextInput,
     TextArea,
-    Picker, // mimicks React Native built-in component
+    Picker,
     PickerItemGroup,
-    PickerItem, // mimicks React Native built-in component (Picker.Item)
-    Switch, // mimicks React Native built-in component
-    Button, // mimicks React Native built-in component
+    PickerItem,
+    Switch,
+    Button,
 } from './WebComponents';
-import Styles from './Styles';
+import Styles from '../styles';
 
 export function ShowDetails(props) {
     const { t } = useTranslation();
@@ -60,7 +60,7 @@ export function Group(props) {
         <View hidden={props.hidden}>
             <Label hidden={props.type === 'checkbox'}>
                 {t(props.name)}
-                {props.append ? <Text> ({props.append})</Text> : null}
+                {props.append ? <Text> ({t(props.append)})</Text> : null}
             </Label>
             <Input
                 name={props.name.replace(/ /g, '')}
@@ -81,8 +81,8 @@ export function Group(props) {
                         : { ...Styles.CheckboxLabel }
                 }
             >
-                {props.name}
-                {props.append ? <Text> ({props.append})</Text> : null}
+                {t(props.name)}
+                {props.append ? <Text> ({t(props.append)})</Text> : null}
             </LabelInline>
         </View>
     );

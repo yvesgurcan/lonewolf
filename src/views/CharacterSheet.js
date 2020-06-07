@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Provider, connect } from 'react-redux';
+import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { store } from './Store';
-import { mapStateToProps } from './mapStateToProps';
+import i18next from 'i18next';
+import { mapStateToProps } from '../lib/mapStateToProps';
 import {
     View,
     Header1,
@@ -12,20 +12,11 @@ import {
     Label,
     LabelInline,
     ButtonContainer,
-} from './WebComponents';
-import Styles from './Styles';
-import { ShowDetails, Group, Input, Spacer } from './UtilityComponents';
-import i18next from 'i18next';
+} from '../components/WebComponents';
+import Styles from '../styles';
+import { ShowDetails, Group, Input, Spacer } from '../components/UtilityComponents';
 
 let APItimeout = null;
-
-export default function App(props) {
-    return (
-        <Provider store={store}>
-            <CharacterSheet />
-        </Provider>
-    );
-}
 
 function CharacterSheetView(props) {
     const { t } = useTranslation();
@@ -41,6 +32,7 @@ function CharacterSheetView(props) {
         <View style={Styles.Body}>
             <Header1>{t('CharacterSheet')}</Header1>
             <LinkToProject />
+            <Language />
             <GameMetaData />
             <Book />
             <Combat>
@@ -63,6 +55,7 @@ function CharacterSheetView(props) {
     );
 }
 const CharacterSheet = connect(mapStateToProps)(CharacterSheetView);
+export default CharacterSheet;
 
 function LinkToProject() {
     return (
@@ -77,10 +70,10 @@ function LinkToProject() {
     );
 }
 
-function GameMetaDataView(props) {
+function LanguageView(props) {
     const { t } = useTranslation();
 
-    const langs = [{ name: 'en' }, { name: 'it' }];
+    const langs = [{ name: 'en' }, { name: 'fr'}, { name: 'it' }];
 
     const onChange = (input) => {
         props.dispatch({
@@ -93,6 +86,21 @@ function GameMetaDataView(props) {
     };
 
     return (
+        <ShowDetails label="Language">
+            <Input
+                key="Language"
+                name="Language"
+                select={langs}
+                onChange={onChange}
+            />
+        </ShowDetails>
+    );
+}
+const Language = connect(mapStateToProps)(LanguageView);
+
+function GameMetaDataView(props) {
+    const { t } = useTranslation();
+    return (
         <ShowDetails label="GameId" startVisible>
             <Text>
                 {props.RequestFeedback.actualGameID !== undefined
@@ -103,13 +111,6 @@ function GameMetaDataView(props) {
             <Text>{props.CharacterSheet.GameStarted}</Text>
             <Label>{t('GameLastSaved')}</Label>
             <Text>{props.CharacterSheet.GameSaved || '-'}</Text>
-            <Label>{t('Language')}</Label>
-            <Input
-                key="Language"
-                name="Language"
-                select={langs}
-                onChange={onChange}
-            />
         </ShowDetails>
     );
 }
@@ -1189,7 +1190,6 @@ function BeltPouchView() {
         <ShowDetails label="BeltPouch">
             <Input
                 name="BeltPouch"
-                append="BeltPouchDescription"
                 type="number"
             />
         </ShowDetails>
@@ -1420,7 +1420,7 @@ function SaveAndLoadRemotelyView(props) {
                 onChange={modifyGameID}
                 noAutoSave
             />
-            <Label>Password</Label>
+            <Label>{t("Password")}</Label>
             <Input
                 type="password"
                 value={props.RequestFeedback.password}

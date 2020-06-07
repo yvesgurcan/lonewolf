@@ -1,4 +1,4 @@
-import { store } from './Store';
+import { store } from '../store/store';
 
 let APItimeout = null;
 

@@ -1,4 +1,4 @@
-const Styles = {
+const styles = {
     Boilerplate: {
         padding: '0px',
         margin: '0px',
@@ -154,4 +154,4 @@ const Styles = {
     },
 };
 
-export default Styles;
+export default styles;

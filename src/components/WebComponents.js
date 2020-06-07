@@ -1,7 +1,7 @@
 /* React components that rely on web HTML tags */
 
 import React, { Component, useState } from 'react';
-import Styles from './Styles';
+import Styles from '../styles';
 import { useTranslation } from 'react-i18next';
 
 export function View(props) {

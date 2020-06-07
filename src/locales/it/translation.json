@@ -1,5 +1,6 @@
 {
-    "Loading...": "Caricamento...",
+    "locale": "it",
+    "Loading": "Caricamento...",
     "Kai": "Kai",
     "Magnakai": "Magnakai",
     "GrandMaster": "Grande Maestro",
@@ -9,6 +10,7 @@
     "GameLastSaved": "Ultimo Salvataggio",
     "Language": "Lingua",
     "en": "Inglese",
+    "fr": "Francese",
     "it": "Italiano",
     "Book": "Libro",
     "TableContents": "Indice dei Contenuti",
@@ -135,7 +137,6 @@
     "CircleSpirit": "Cerchio dello Spirito",
     "CircleSpiritBonus": "+3 COMBATTIVITÀ +3 RESISTENZA",
     "BeltPouch": "Borsa",
-    "BeltPouchDescription": "Contiene Corone (massimo 50)",
     "Meals": "Pasti",
     "BackpackItems": "Zaino",
     "SpecialItems": "Oggetti Speciali",
